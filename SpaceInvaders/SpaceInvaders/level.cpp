@@ -91,15 +91,21 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     VALIDATE(m_pBullet->Initialise(m_iWidth / 2.0f, m_iHeight / 2.0f, fBulletVelX, fBulletVelY));
 	*/
 
-    m_pPlayer = new CPlayer();
-    VALIDATE(m_pPlayer->Initialise());
+	//TODO: player code
+
+   /* m_pPlayer = new CPlayer();
+    VALIDATE(m_pPlayer->Initialise());*/
 
     // Set the paddle's position to be centered on the x, 
     // and a little bit up from the bottom of the window.
-    m_pPlayer->SetX(_iWidth / 2.0f);
-    m_pPlayer->SetY(_iHeight - ( 1.5f * m_pPlayer->GetHeight()));
 
-    const int kiNumEnemys = 36;
+    /*m_pPlayer->SetX(_iWidth / 2.0f);
+    m_pPlayer->SetY(_iHeight - ( 1.5f * m_pPlayer->GetHeight()));*/
+
+	//TODO: enemy code
+
+
+   /* const int kiNumEnemys = 36;
     const int kiStartX = 20;
     const int kiGap = 5;
 
@@ -125,7 +131,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
         m_vecEnemys.push_back(pEnemy);
     }
 
-    SetEnemysRemaining(kiNumEnemys);
+    SetEnemysRemaining(kiNumEnemys);*/
 	m_fpsCounter = new CFPSCounter();
 	VALIDATE(m_fpsCounter->Initialise());
 
@@ -136,13 +142,13 @@ void
 CLevel::Draw()
 {
 	m_pBackground->Draw();
-	for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
+	/*for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
     {
         m_vecEnemys[i]->Draw();
-    }
+    }*/
 
-    m_pPlayer->Draw();
-    m_pBullet->Draw();
+    //m_pPlayer->Draw();
+    //m_pBullet->Draw();
 
     DrawScore();
 	DrawFPS();
@@ -152,20 +158,20 @@ void
 CLevel::Process(float _fDeltaTick)
 {
 	m_pBackground->Process(_fDeltaTick);
-	m_pBullet->Process(_fDeltaTick);
-	m_pPlayer->Process(_fDeltaTick);
-	ProcessBulletWallCollision();
-	//ProcessPlayerWallCollison();
-    ProcessBulletPlayerCollision();
-    ProcessBulletEnemyCollision();
+	//m_pBullet->Process(_fDeltaTick);
+	////m_pPlayer->Process(_fDeltaTick);
+	//ProcessBulletWallCollision();
+	////ProcessPlayerWallCollison();
+ //   ProcessBulletPlayerCollision();
+ //   //ProcessBulletEnemyCollision();
 
-    ProcessCheckForWin();
-	ProcessBulletBounds();
+ //   ProcessCheckForWin();
+	//ProcessBulletBounds();
 
-    for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
-    {
-        m_vecEnemys[i]->Process(_fDeltaTick);
-    }
+ //   for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
+ //   {
+ //       m_vecEnemys[i]->Process(_fDeltaTick);
+ //   }
 	
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }

@@ -16,7 +16,7 @@
 
 // Local Includes
 //TODO: inclResource
-//#include "resource.h"
+#include "resource.h"
 #include "utils.h"
 #include "backbuffer.h"
 #include "game.h"
@@ -44,7 +44,7 @@ bool
 CBackGround::Initialise()
 {
 	//TODO: BACKGROUND SPRITES
-	//VALIDATE(CEntity::Initialise(IDB_BACKGROUND, IDB_BACKGROUNDMASK));
+	VALIDATE(CEntity::Initialise(IDB_BACKGROUND, IDB_BACKGROUNDMASK));
 
 	return (true);
 }

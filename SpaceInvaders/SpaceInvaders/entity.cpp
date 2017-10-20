@@ -16,7 +16,7 @@
 
 // Local Includes
 //TODO: inclResource
-//#include "resource.h"
+#include "resource.h"
 #include "Sprite.h"
 #include "utils.h"
 
@@ -88,12 +88,6 @@ float
 CEntity::GetHeight() const
 {
     return (static_cast<float>(m_pSprite->GetHeight()));
-}
-
-void
-CEntity::SetHeight(float _f)
-{
-	m_fX = _f;
 }
 
 void

@@ -20,6 +20,7 @@
 
 // Local Includes
 #include "clock.h"
+#include "level.h"
 
 // Types
 
@@ -61,6 +62,7 @@ public:
 
 protected:
     CClock* m_pClock;
+	CLevel* m_pLevel;
 
     CBackBuffer* m_pBackBuffer;
 

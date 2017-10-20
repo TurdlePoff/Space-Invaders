@@ -32,7 +32,8 @@ CGame* CGame::s_pGame = 0;
 // Implementation
 
 CGame::CGame()
-: m_pClock(0)
+: m_pLevel(0)
+, m_pClock(0)
 , m_hApplicationInstance(0)
 , m_hMainWindow(0)
 , m_pBackBuffer(0)
@@ -42,6 +43,9 @@ CGame::CGame()
 
 CGame::~CGame()
 {
+	delete m_pLevel;
+	m_pLevel = 0;
+
     delete m_pBackBuffer;
     m_pBackBuffer = 0;
 
@@ -62,7 +66,10 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
 
-	ShowCursor(false);
+	m_pLevel = new CLevel();
+	VALIDATE(m_pLevel->Initialise(_iWidth, _iHeight));
+
+	ShowCursor(true);
 
     return (true);
 }
@@ -73,6 +80,7 @@ CGame::Draw()
     m_pBackBuffer->Clear();
 
 // Do all the game’s drawing here...
+	m_pLevel->Draw();
 
 
     m_pBackBuffer->Present();
@@ -83,7 +91,8 @@ CGame::Process(float _fDeltaTick)
 {
     // Process all the game’s logic here.
 	//Load a new sprite.
-	
+	m_pLevel->Process(_fDeltaTick);
+
 }
 
 void 

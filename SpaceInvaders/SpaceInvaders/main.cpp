@@ -55,7 +55,7 @@ CreateAndRegisterWindow(HINSTANCE _hInstance, int _iWidth, int _iHeight, LPCWSTR
     winclass.hInstance = _hInstance;
     winclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     winclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    winclass.hbrBackground = static_cast<HBRUSH> (GetStockObject(NULL_BRUSH));
+    winclass.hbrBackground = static_cast<HBRUSH> (GetStockObject(WHITE_BRUSH));
     winclass.lpszMenuName = NULL;
     winclass.lpszClassName = WINDOW_CLASS_NAME;
     winclass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
@@ -93,8 +93,11 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
 
-    const int kiWidth = 800;
-    const int kiHeight = 1000;
+	/*const int kiWidth = 800;
+	const int kiHeight = 1000;*/
+
+    const int kiWidth = 400;
+    const int kiHeight = 600;
 
     HWND hwnd = CreateAndRegisterWindow(_hInstance, kiWidth, kiHeight, L"Vivian - Space Invaders");
 
