@@ -77,8 +77,8 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     m_iWidth = _iWidth;
     m_iHeight = _iHeight;
 
-    const float fBulletVelX = 200.0f;
-    const float fBulletVelY = 75.0f;
+    /*const float fBulletVelX = 200.0f;
+    const float fBulletVelY = 75.0f;*/
 
 	m_pBackground = new CBackGround();
 	VALIDATE(m_pBackground->Initialise());
@@ -86,9 +86,10 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pBackground->SetX((float)m_iWidth / 2);
 	m_pBackground->SetY((float)m_iHeight / 2);
 
-	m_pBullet = new CBullet();
+	//TODO: bullet/ball code
+	/*m_pBullet = new CBullet();
     VALIDATE(m_pBullet->Initialise(m_iWidth / 2.0f, m_iHeight / 2.0f, fBulletVelX, fBulletVelY));
-
+*/
     m_pPlayer = new CPlayer();
     VALIDATE(m_pPlayer->Initialise());
 
