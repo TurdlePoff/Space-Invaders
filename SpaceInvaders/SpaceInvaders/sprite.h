@@ -17,7 +17,7 @@
 
 // Library Includes
 #include "windows.h"
-
+#include <vector>
 // Local Includes
 
 // Types
@@ -70,6 +70,12 @@ protected:
 
     static HDC s_hSharedSpriteDC;
     static int s_iRefCount;
+
+	std::vector<int> c_spriteContainer;
+	int m_numOfFrames;
+	bool m_paused;
+	bool m_loop;
+	bool m_animating;
 
 private:
 

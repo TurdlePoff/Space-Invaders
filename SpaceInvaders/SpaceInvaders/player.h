@@ -40,7 +40,6 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
-
 protected:
 
 private:

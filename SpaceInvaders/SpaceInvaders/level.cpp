@@ -89,7 +89,8 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	//TODO: bullet/ball code
 	/*m_pBullet = new CBullet();
     VALIDATE(m_pBullet->Initialise(m_iWidth / 2.0f, m_iHeight / 2.0f, fBulletVelX, fBulletVelY));
-*/
+	*/
+
     m_pPlayer = new CPlayer();
     VALIDATE(m_pPlayer->Initialise());
 
@@ -166,8 +167,6 @@ CLevel::Process(float _fDeltaTick)
         m_vecEnemys[i]->Process(_fDeltaTick);
     }
 	
-   
-    
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 

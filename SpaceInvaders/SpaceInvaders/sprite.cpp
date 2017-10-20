@@ -75,9 +75,11 @@ CSprite::Initialise(int _iSpriteResourceID, int _iMaskResourceID)
 void
 CSprite::Draw()
 {
+	//Sizes of sprites
     int iW = GetWidth();
     int iH = GetHeight();
 
+	//Positions of sprites
     int iX = m_iX - (iW / 2);
     int iY = m_iY - (iH / 2);
 

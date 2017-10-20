@@ -46,6 +46,9 @@ public:
 	float GetX() const;
 	float GetY() const;
 
+	void SetHeight(float _f);
+	void setWidth(float _f);
+
 	float GetHeight() const;
 	float GetWidth() const;
 
