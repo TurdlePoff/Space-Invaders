@@ -96,6 +96,11 @@ CEntity::SetHeight(float _f)
 	m_fY = _f;
 }
 
+void CEntity::SetWidth(float _f)
+{
+	m_fX = _f;
+}
+
 void
 CEntity::SetX(float _f)
 {

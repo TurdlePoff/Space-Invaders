@@ -37,7 +37,6 @@ public:
 		ACTION1,
 		ACTION2,
 		DEAD,
-		SHIP
 	};
 
 	enum EEnemy

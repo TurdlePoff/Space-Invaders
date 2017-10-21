@@ -47,7 +47,7 @@ public:
 	float GetY() const;
 
 	void SetHeight(float _f);
-	void setWidth(float _f);
+	void SetWidth(float _f);
 
 	float GetHeight() const;
 	float GetWidth() const;
@@ -66,6 +66,8 @@ protected:
 	
 	float m_fX;
 	float m_fY;
+	float m_fWidth;
+	float m_fHeight;
 
 private:
 
