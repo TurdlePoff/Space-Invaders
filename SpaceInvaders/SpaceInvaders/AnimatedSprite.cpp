@@ -1,38 +1,91 @@
-#ifndef __ANIMATEDSPRITE_H__
-#define __ANIMATEDSPRITE_H__
+#include "AnimatedSprite.h"
 
-#include "sprite.h"
-#include <vector>
-
-class CAnimatedSprite : public CSprite
+CAnimatedSprite::CAnimatedSprite()
+	: m_frameSpeed(0.0f)
+	, m_frameWidth(0)
+	, m_timeElapsed(0.0f)
+	, m_currentFrame(0)
+	, m_paused(false)
+	, m_loop(false)
+	, m_animating(false)
+	, m_numOfFrames(0)
 {
-	// Methods:
-public:
-	CAnimatedSprite();
-	~CAnimatedSprite();
+}
 
-	bool Initialise(int _iResourceID, int _iMaskResourceID);
-	void AddFrame(int x);
+CAnimatedSprite::~CAnimatedSprite()
+{
+}
 
-protected:
-	// W02.4: Add a field, the container for frame coordinates.
-	std::vector<int> coordContainer;
+bool CAnimatedSprite::Initialise(const int _kiSpriteID, const int _kiMaskID)
+{
+	return false;
+}
 
-	//Texture* m_pTexture;
-	float m_frameSpeed;
-	int m_frameWidth;
-	int m_frameHeight;
+void CAnimatedSprite::Draw()
+{
 
-	float m_timeElapsed;
-	int m_currentFrame;
-	int m_numOfFrames;
+}
 
-	bool m_paused;
-	bool m_loop;
-	bool m_animating;
+void CAnimatedSprite::Process(float _fDeltaTick)
+{
 
-private:
+}
 
-};
+void CAnimatedSprite::AddFrame(int x)
+{
 
-#endif // __ANIMATEDSPRITE_H__
+}
+
+int CAnimatedSprite::GetFrameSpeed()
+{
+	return m_frameSpeed;
+}
+
+int CAnimatedSprite::GetFrameWidth()
+{
+	return m_frameWidth;
+}
+
+void CAnimatedSprite::SetFrameSpeed(float f)
+{
+	m_frameSpeed = f;
+}
+
+void CAnimatedSprite::SetFrameWidth(int w)
+{
+	m_frameWidth = w;
+}
+
+bool CAnimatedSprite::IsAnimating()
+{
+	return m_animating;
+}
+
+void CAnimatedSprite::StartAnimating()
+{
+	m_animating = true;
+}
+
+/**
+* IsLooping - Checks if the animation is currently looping
+* - used for enemies when idle
+**/
+bool CAnimatedSprite::IsLooping()
+{
+	return m_loop;
+}
+
+void CAnimatedSprite::SetLooping(bool b)
+{
+	m_loop = true;
+}
+
+void CAnimatedSprite::Pause()
+{
+	m_paused = true;
+}
+
+bool CAnimatedSprite::IsPaused()
+{
+	return m_paused;
+}

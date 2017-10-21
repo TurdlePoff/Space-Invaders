@@ -80,8 +80,18 @@ protected:
 	static HDC s_hSharedSpriteDC;
 	static int s_iRefCount;
 
-	std::vector<int> c_spriteContainer;
+	std::vector<int> i_spriteContainer;
 	int m_numOfFrames;
+	bool m_paused;
+	bool m_loop;
+	bool m_animating;
+
+	float m_frameSpeed;
+	int m_frameWidth;
+
+	float m_timeElapsed;
+	int m_currentFrame;
+
 	bool m_paused;
 	bool m_loop;
 	bool m_animating;
