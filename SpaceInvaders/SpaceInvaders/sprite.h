@@ -32,6 +32,7 @@ class CSprite
     // Member Functions
 public:
     CSprite(ESprite _eType);
+	CSprite();
     ~CSprite();
 
 	bool Initialise();

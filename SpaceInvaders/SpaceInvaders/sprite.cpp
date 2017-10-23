@@ -42,6 +42,10 @@ CSprite::CSprite(ESprite _eType)
     ++s_iRefCount;
 }
 
+CSprite::CSprite()
+{
+}
+
 CSprite::~CSprite()
 {
 	DeleteObject(m_hSprite);
@@ -66,9 +70,23 @@ CSprite::Initialise()
         s_hSharedSpriteDC = CreateCompatibleDC(NULL);
     }
 
-	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BACKGROUND));
+	int iBackground = 0;
+	int iMask = 0;
+
+	if(m_eSpriteType == ESprite::BACKGROUND)
+	{
+		iBackground = IDB_BACKGROUND;
+		iMask = IDB_BACKGROUNDMASK;
+	}
+	else
+	{
+		iBackground = IDB_SS;
+		iMask = IDB_SSMASK;
+	}
+
+	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(iBackground));
 	VALIDATE(m_hSprite);
-	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BACKGROUNDMASK));
+	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(iMask));
 	VALIDATE(m_hMask);
 
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
@@ -80,6 +98,9 @@ CSprite::Initialise()
 void
 CSprite::Draw()
 {
+	//Sizes of sprites
+	int iW = GetWidth();
+	int iH = GetHeight();
 
 	switch (m_eSpriteType)
 	{
@@ -94,10 +115,6 @@ CSprite::Draw()
 	default:
 		break;
 	}
-
-	//Sizes of sprites
-    int iW = GetWidth();
-    int iH = GetHeight();
 
 	//Positions of sprites
     int iX = m_iX - (iW / 2);
