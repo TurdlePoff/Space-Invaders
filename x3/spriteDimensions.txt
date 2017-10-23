@@ -10,3 +10,6 @@ Dead Enemy: 52w x 28h
 Barricade: 	64w x 44h
 
 Bullet: 	12w x 20h
+
+Front gap: 4
+Mid gaps: 8

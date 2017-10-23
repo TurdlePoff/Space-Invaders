@@ -20,7 +20,7 @@
 // Library Includes
 
 // Local Includes
-
+#include "ESpriteType.h"
 // Types
 
 // Constants
@@ -31,11 +31,23 @@ class CSprite;
 class CEntity
 {
 	// Member Functions
+
+	// Member Variables
+public:
+protected:
+	CSprite* m_pSprite;
+	
+	float m_fX;
+	float m_fY;
+	float m_fWidth;
+	float m_fHeight;
+
+private:
 public:
 	CEntity();
 	virtual ~CEntity();
 
-	virtual bool Initialise(const int _kiSpriteID, const int _kiMaskID);
+	virtual bool Initialise(ESprite enemyType);
 
 	virtual void Draw() = 0;
 	virtual void Process(float _fDeltaTick);
@@ -57,19 +69,6 @@ protected:
 private:
 	CEntity(const CEntity& _kr);
 	CEntity& operator= (const CEntity& _kr);
-
-	// Member Variables
-public:
-
-protected:
-	CSprite* m_pSprite;
-	
-	float m_fX;
-	float m_fY;
-	float m_fWidth;
-	float m_fHeight;
-
-private:
 
 };
 

@@ -44,7 +44,8 @@ bool
 CBackGround::Initialise()
 {
 	//TODO: BACKGROUND SPRITES
-	VALIDATE(CEntity::Initialise(IDB_BACKGROUND, IDB_BACKGROUNDMASK));
+
+	VALIDATE(CEntity::Initialise(ESprite::BACKGROUND));
 
 	return (true);
 }

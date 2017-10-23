@@ -43,10 +43,10 @@ CEntity::~CEntity()
 }
 
 bool
-CEntity::Initialise(const int _kiSpriteID, const int _kiMaskID)
+CEntity::Initialise(ESprite _eType)
 {
-    m_pSprite = new CSprite();
-    VALIDATE(m_pSprite->Initialise(_kiSpriteID, _kiMaskID));
+    m_pSprite = new CSprite(_eType);
+    VALIDATE(m_pSprite->Initialise());
 
     return (true);
 }

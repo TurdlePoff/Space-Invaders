@@ -21,6 +21,7 @@
 
 // Local Includes
 #include "entity.h"
+#include "ESpriteType.h"
 
 // Types
 
@@ -58,4 +59,4 @@ private:
 
 };
 
-#endif
+#endif    // __BACKGROUND_H__

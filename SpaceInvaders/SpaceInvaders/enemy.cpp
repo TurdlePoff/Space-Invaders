@@ -40,30 +40,8 @@ CEnemy::~CEnemy()
 }
 
 bool
-CEnemy::Initialise(EEnemy _eType)
+CEnemy::Initialise()
 {
-	switch (_eType)
-	{
-		case (ENEMYTOP):
-		{
-			//VALIDATE(CEntity::Initialise(IDB_BRICKSPRITE, IDB_BRICKMASK));
-			break;
-		}
-		case (ENEMYMED):
-		{
-			break;
-		}
-		case (ENEMYBOT):
-		{
-			break;
-		}
-		case (ENEMYSHIP):
-		{
-			break;
-		}
-		default:
-			break;
-	}
 	//TODO: ENEMY SPRITES
     //VALIDATE(CEntity::Initialise(IDB_BRICKSPRITE, IDB_BRICKMASK));
 

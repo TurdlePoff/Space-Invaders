@@ -13,11 +13,15 @@
 //
 
 // Library Includes
+#include <iostream>
+#include <map>
+#include <string>
 
 // Local Includes
 #include "Game.h"
 #include "BackBuffer.h"
 #include "utils.h"
+#include "resource.h"
 
 // This include
 #include "Sprite.h"
@@ -30,8 +34,9 @@ int CSprite::s_iRefCount = 0;
 
 // Implementation
 
-CSprite::CSprite()
-: m_iX(0)
+CSprite::CSprite(ESprite _eType)
+: m_eSpriteType(_eType)
+, m_iX(0)
 , m_iY(0)
 {
     ++s_iRefCount;
@@ -52,7 +57,7 @@ CSprite::~CSprite()
 }
 
 bool
-CSprite::Initialise(int _iSpriteResourceID, int _iMaskResourceID)
+CSprite::Initialise()
 {
     HINSTANCE hInstance = CGame::GetInstance().GetAppInstance();
 
@@ -61,13 +66,13 @@ CSprite::Initialise(int _iSpriteResourceID, int _iMaskResourceID)
         s_hSharedSpriteDC = CreateCompatibleDC(NULL);
     }
 
-    m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(_iSpriteResourceID));
-    VALIDATE(m_hSprite);
-    m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(_iMaskResourceID));
-    VALIDATE(m_hMask);
+	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BACKGROUND));
+	VALIDATE(m_hSprite);
+	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_BACKGROUNDMASK));
+	VALIDATE(m_hMask);
 
-    GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
-    GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
+	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
+	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
     return (true);
 }
@@ -75,6 +80,21 @@ CSprite::Initialise(int _iSpriteResourceID, int _iMaskResourceID)
 void
 CSprite::Draw()
 {
+
+	switch (m_eSpriteType)
+	{
+	case ESprite::BACKGROUND:
+	{
+		break;
+	}
+	case ESprite::PLAYER:
+	{
+		break;
+	}
+	default:
+		break;
+	}
+
 	//Sizes of sprites
     int iW = GetWidth();
     int iH = GetHeight();
@@ -99,7 +119,7 @@ CSprite::Draw()
 void
 CSprite::Process(float _fDeltaTick)
 {
-
+	//Sprite doesnt have anything to process but AnimatedSprite does.
 }
 
 int

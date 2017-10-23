@@ -39,14 +39,6 @@ public:
 		DEAD,
 	};
 
-	enum EEnemy
-	{
-		ENEMYTOP,
-		ENEMYMED,
-		ENEMYBOT,
-		ENEMYSHIP
-	};
-
 protected:
 	bool m_bHit;
 
@@ -57,7 +49,7 @@ public:
     CEnemy();
     virtual ~CEnemy();
 
-    virtual bool Initialise(EEnemy _eType);
+    virtual bool Initialise();
 
     virtual void Draw();
     virtual void Process(float _fDeltaTick);

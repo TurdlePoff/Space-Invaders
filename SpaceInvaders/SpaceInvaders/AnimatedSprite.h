@@ -20,6 +20,7 @@
 // Library Includes
 #include "windows.h"
 #include <vector>
+#include "sprite.h"
 
 // Local Includes
 
@@ -28,18 +29,18 @@
 // Constants
 
 // Prototypes
-class CAnimatedSprite
+class CAnimatedSprite : CSprite
 {
 	// Member Functions
 public:
 	CAnimatedSprite();
 	virtual ~CAnimatedSprite();
 
-	virtual bool Initialise(const int _kiSpriteID, const int _kiMaskID);
-
+	bool Initialise(const int _kiSpriteID, const int _kiMaskID);
 
 	void Draw();
 	void Process(float _fDeltaTick);
+
 	void AddFrame(int x);
 
 	int GetFrameSpeed();
@@ -60,8 +61,8 @@ public:
 protected:
 
 private:
-	CAnimatedSprite(const CAnimatedSprite& _kr);
-	CAnimatedSprite& operator= (const CAnimatedSprite& _kr);
+	//CAnimatedSprite(const CAnimatedSprite& _kr);
+	//CAnimatedSprite& operator= (const CAnimatedSprite& _kr);
 
 	// Member Variables
 public:
@@ -91,10 +92,6 @@ protected:
 
 	float m_timeElapsed;
 	int m_currentFrame;
-
-	bool m_paused;
-	bool m_loop;
-	bool m_animating;
 
 private:
 

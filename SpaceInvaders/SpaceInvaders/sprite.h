@@ -20,6 +20,7 @@
 #include <vector>
 
 // Local Includes
+#include "ESpriteType.h"
 
 // Types
 
@@ -30,10 +31,10 @@ class CSprite
 {
     // Member Functions
 public:
-    CSprite();
+    CSprite(ESprite _eType);
     ~CSprite();
 
-	bool Initialise(int _iResourceID, int _iMaskResourceID);
+	bool Initialise();
 
     void Draw();
     void Process(float _fDeltaTick);
@@ -49,6 +50,8 @@ public:
     void TranslateRelative(int _iX, int _iY);
     void TranslateAbsolute(int _iX, int _iY);
 
+	void AccessSprite();
+
 protected:
 
 private:
@@ -62,6 +65,7 @@ protected:
     //Center handle
     int m_iX;
     int m_iY;
+	ESprite m_eSpriteType;
 
     HBITMAP m_hSprite;
     HBITMAP m_hMask;
