@@ -49,7 +49,7 @@ public:
     CEnemy();
     virtual ~CEnemy();
 
-    virtual bool Initialise();
+    virtual bool Initialise(ESprite _spriteType);
 
     virtual void Draw();
     virtual void Process(float _fDeltaTick);

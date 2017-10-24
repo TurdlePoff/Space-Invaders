@@ -40,10 +40,9 @@ CEnemy::~CEnemy()
 }
 
 bool
-CEnemy::Initialise()
+CEnemy::Initialise(ESprite _spriteType)
 {
-	//TODO: ENEMY SPRITES
-    //VALIDATE(CEntity::Initialise(IDB_BRICKSPRITE, IDB_BRICKMASK));
+    VALIDATE(CEntity::Initialise(_spriteType));
 
     return (true);
 }

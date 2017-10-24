@@ -77,7 +77,10 @@ protected:
 	CBackGround* m_pBackground;
     CBullet* m_pBullet;
     CPlayer* m_pPlayer;
-    std::vector<CEnemy*> m_vecEnemys;
+    std::vector<CEnemy*> m_vecTopEnemys;
+	std::vector<CEnemy*> m_vecMidEnemys;
+	std::vector<CEnemy*> m_vecBotEnemys;
+
 	CFPSCounter* m_fpsCounter;
 
     int m_iWidth;

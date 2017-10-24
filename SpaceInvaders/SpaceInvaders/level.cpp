@@ -48,11 +48,11 @@ CLevel::CLevel()
 
 CLevel::~CLevel()
 {
-    while (m_vecEnemys.size() > 0)
+    while (m_vecTopEnemys.size() > 0)
     {
-        CEnemy* pEnemy = m_vecEnemys[m_vecEnemys.size() - 1];
+        CEnemy* pEnemy = m_vecTopEnemys[m_vecTopEnemys.size() - 1];
 
-        m_vecEnemys.pop_back();
+		m_vecTopEnemys.pop_back();
 
         delete pEnemy;
     }
@@ -77,8 +77,8 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     m_iWidth = _iWidth;
     m_iHeight = _iHeight;
 
-    const float fBulletVelX = 200.0f;
-    const float fBulletVelY = 75.0f;
+    const float fBulletVelX = 1.0f;
+    const float fBulletVelY = 1.0f;
 
 	m_pBackground = new CBackGround();
 	VALIDATE(m_pBackground->Initialise());
@@ -88,31 +88,29 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 
 	//TODO: bullet/ball code
 	m_pBullet = new CBullet();
-    VALIDATE(m_pBullet->Initialise(m_iWidth / 2.0f, m_iHeight / 2.0f, fBulletVelX, fBulletVelY));
+    VALIDATE(m_pBullet->Initialise(m_iWidth, m_iHeight, -fBulletVelX, -fBulletVelY));
 	m_pBullet->SetX((float)m_iWidth / 2);
-	m_pBullet->SetY((float)m_iHeight - 100.0f);
+	m_pBullet->SetY((float)m_iHeight - 200.0f);
 
 	//TODO: player code
-
     m_pPlayer = new CPlayer();
     VALIDATE(m_pPlayer->Initialise());
 	m_pPlayer->SetX((float)m_iWidth / 2);
 	m_pPlayer->SetY((float)m_iHeight - 100.0f);
 
 	/*
-
     // Set the paddle's position to be centered on the x, 
     // and a little bit up from the bottom of the window.
 
     /*m_pPlayer->SetX(_iWidth / 2.0f);
-    m_pPlayer->SetY(_iHeight - ( 1.5f * m_pPlayer->GetHeight()));*/
+    m_pPlayer->SetY(_iHeight - ( 1.5f * m_pPlayer->GetHeight()));
+	*/
 
 	//TODO: enemy code
 
-
-   /* const int kiNumEnemys = 36;
-    const int kiStartX = 20;
-    const int kiGap = 5;
+   const int kiNumEnemys = 7;
+    const int kiStartX = 30;
+    const int kiGap = 10;
 
     int iCurrentX = kiStartX;
     int iCurrentY = kiStartX;
@@ -120,7 +118,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     for (int i = 0; i < kiNumEnemys; ++i)
     {
         CEnemy* pEnemy = new CEnemy();
-        VALIDATE(pEnemy->Initialise());
+        VALIDATE(pEnemy->Initialise(ESprite::ENEMYTOP));
 
         pEnemy->SetX(static_cast<float>(iCurrentX));
         pEnemy->SetY(static_cast<float>(iCurrentY));
@@ -133,10 +131,12 @@ CLevel::Initialise(int _iWidth, int _iHeight)
             iCurrentY += 20;
         }
 
-        m_vecEnemys.push_back(pEnemy);
+		m_vecTopEnemys.push_back(pEnemy);
     }
 
-    SetEnemysRemaining(kiNumEnemys);*/
+    SetEnemysRemaining(kiNumEnemys);
+
+
 	m_fpsCounter = new CFPSCounter();
 	VALIDATE(m_fpsCounter->Initialise());
 
@@ -147,10 +147,10 @@ void
 CLevel::Draw()
 {
 	m_pBackground->Draw();
-	/*for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
+	for (unsigned int i = 0; i < m_vecTopEnemys.size(); ++i)
     {
-        m_vecEnemys[i]->Draw();
-    }*/
+		m_vecTopEnemys[i]->Draw();
+    }
 
     m_pPlayer->Draw();
     m_pBullet->Draw();
@@ -171,12 +171,12 @@ CLevel::Process(float _fDeltaTick)
  //   //ProcessBulletEnemyCollision();
 
  //   ProcessCheckForWin();
-	//ProcessBulletBounds();
+	ProcessBulletBounds();
 
- //   for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
- //   {
- //       m_vecEnemys[i]->Process(_fDeltaTick);
- //   }
+    for (unsigned int i = 0; i < m_vecTopEnemys.size(); ++i)
+    {
+		m_vecTopEnemys[i]->Process(_fDeltaTick);
+    }
 	
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
@@ -250,20 +250,20 @@ CLevel::ProcessBulletPlayerCollision()
 void
 CLevel::ProcessBulletEnemyCollision()
 {
-    for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
+    for (unsigned int i = 0; i < m_vecTopEnemys.size(); ++i)
     {
-        if (!m_vecEnemys[i]->IsHit())
+        if (!m_vecTopEnemys[i]->IsHit())
         {
             float fBulletR = m_pBullet->GetRadius();
 
             float fBulletX = m_pBullet->GetX();
             float fBulletY = m_pBullet->GetY(); 
 
-            float fEnemyX = m_vecEnemys[i]->GetX();
-            float fEnemyY = m_vecEnemys[i]->GetY();
+            float fEnemyX = m_vecTopEnemys[i]->GetX();
+            float fEnemyY = m_vecTopEnemys[i]->GetY();
 
-            float fEnemyH = m_vecEnemys[i]->GetHeight();
-            float fEnemyW = m_vecEnemys[i]->GetWidth();
+            float fEnemyH = m_vecTopEnemys[i]->GetHeight();
+            float fEnemyW = m_vecTopEnemys[i]->GetWidth();
 
             if ((fBulletX + fBulletR > fEnemyX - fEnemyW / 2) &&
                 (fBulletX - fBulletR < fEnemyX + fEnemyW / 2) &&
@@ -273,7 +273,7 @@ CLevel::ProcessBulletEnemyCollision()
                 //Hit the front side of the brick...
                 m_pBullet->SetY((fEnemyY + fEnemyH / 2.0f) + fBulletR);
                 m_pBullet->SetVelocityY(m_pBullet->GetVelocityY() * -1);
-                m_vecEnemys[i]->SetHit(true);
+				m_vecTopEnemys[i]->SetHit(true);
 
                 SetEnemysRemaining(GetEnemysRemaining() - 1);
             }
@@ -284,9 +284,9 @@ CLevel::ProcessBulletEnemyCollision()
 void
 CLevel::ProcessCheckForWin()
 {
-    for (unsigned int i = 0; i < m_vecEnemys.size(); ++i)
+    for (unsigned int i = 0; i < m_vecTopEnemys.size(); ++i)
     {
-        if (!m_vecEnemys[i]->IsHit())
+        if (!m_vecTopEnemys[i]->IsHit())
         {
             return;
         }
@@ -363,6 +363,6 @@ CLevel::DrawFPS()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC(); 
 
-	m_fpsCounter->DrawFPSText(hdc, m_iWidth, m_iHeight);
+	m_fpsCounter->DrawFPSText(hdc, m_iWidth-100, m_iHeight-100);
 
 }

@@ -36,6 +36,8 @@ int CSprite::s_iRefCount = 0;
 
 CSprite::CSprite(ESprite _eType)
 : m_eSpriteType(_eType)
+, m_iFramePositionW(8)
+, m_iFramePositionH(0) //The Y position where the sprite is located on the sprite sheet
 , m_iX(0)
 , m_iY(0)
 {
@@ -49,42 +51,49 @@ CSprite::CSprite(ESprite _eType)
 		}
 		case ESprite::BULLET:
 		{
+			m_iFramePositionH = 256;
 			m_iW = 12;
 			m_iH = 20;
 			break;
 		}
 		case ESprite::PLAYER:
 		{
+			m_iFramePositionH = 8;
 			m_iW = 52;
 			m_iH = 32;
 			break;
 		}
 		case ESprite::ENEMYTOP:
 		{
+			m_iFramePositionH = 48;
 			m_iW = 44;
 			m_iH = 32;
 			break;
 		}
 		case ESprite::ENEMYMED:
 		{
+			m_iFramePositionH = 88;
 			m_iW = 48;
 			m_iH = 32;
 			break;
 		}
 		case ESprite::ENEMYBOT:
 		{
+			m_iFramePositionH = 128;
 			m_iW = 32;
 			m_iH = 32;
 			break;
 		}
 		case ESprite::ENEMYSHIP:
 		{
+			m_iFramePositionH = 168;
 			m_iW = 64;
 			m_iH = 44;
 			break;
 		}
 		case ESprite::BARRICADE:
 		{
+			m_iFramePositionH = 204;
 			m_iW = 44;
 			m_iH = 32;
 			break;
@@ -153,42 +162,18 @@ CSprite::Draw()
 	int iW = GetWidth();
 	int iH = GetHeight();
 	//Positions of sprites
-	int iX = m_iX;
-	int iY = m_iY;
-
-	int iGapX = 4;
-	int iGapY = 8;
-	switch (m_eSpriteType)
-	{
-		case ESprite::BACKGROUND:
-		{
-			iX -= (iW / 2);
-			iY -= (iH / 2);
-			break;
-		}
-		case ESprite::PLAYER:
-		{
-			iW += iGapX;
-			iH += iGapY;
-			iX -= (iW / 2);
-			iY -= (iH / 2);
-			break;
-		}
-		default:
-			break;
-	}
-
-	
+	int iX = m_iX - (iW / 2);
+	int iY = m_iY - (iH / 2);	
 
     CBackBuffer* pBackBuffer = CGame::GetInstance().GetBackBuffer();
 
     HGDIOBJ hOldObj = SelectObject(s_hSharedSpriteDC, m_hMask);
 
-    BitBlt(pBackBuffer->GetBFDC(), iX, iY, iW, iH, s_hSharedSpriteDC, 0, 0, SRCAND);
+    BitBlt(pBackBuffer->GetBFDC(), iX, iY, iW, iH, s_hSharedSpriteDC, m_iFramePositionW, m_iFramePositionH, SRCAND);
 
     SelectObject(s_hSharedSpriteDC, m_hSprite);
 
-    BitBlt(pBackBuffer->GetBFDC(), iX, iY, iW, iH, s_hSharedSpriteDC, 0, 0, SRCPAINT);
+    BitBlt(pBackBuffer->GetBFDC(), iX, iY, iW, iH, s_hSharedSpriteDC, m_iFramePositionW, m_iFramePositionH, SRCPAINT);
 
     SelectObject(s_hSharedSpriteDC, hOldObj);
 }

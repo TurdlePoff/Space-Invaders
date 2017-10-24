@@ -43,7 +43,7 @@ bool
 CBullet::Initialise(float _fPosX, float _fPosY, float _fVelocityX, float _fVelocityY)
 {
 	//BulletSprites
-    //VALIDATE(CEntity::Initialise(IDB_BULLETSPRITE, IDB_BULLETMASK));
+    VALIDATE(CEntity::Initialise(ESprite::BULLET));
     //TODO: BULLET
     m_fX = _fPosX;
     m_fY = _fPosY;
@@ -63,8 +63,8 @@ CBullet::Draw()
 void
 CBullet::Process(float _fDeltaTick)
 {
-    m_fX += m_fVelocityX * _fDeltaTick;
-    m_fY += m_fVelocityY * _fDeltaTick;
+    m_fX += m_fVelocityX;
+    m_fY += m_fVelocityY;
 
     CEntity::Process(_fDeltaTick);
 }

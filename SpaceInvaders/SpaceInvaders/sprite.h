@@ -68,6 +68,9 @@ protected:
     int m_iY;
 	int m_iW;
 	int m_iH;
+	int m_iFramePositionW;
+	int m_iFramePositionH;
+
 	ESprite m_eSpriteType;
 
     HBITMAP m_hSprite;
