@@ -96,7 +96,7 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
 	/*const int kiWidth = 800;
 	const int kiHeight = 1000;*/
 
-    const int kiWidth = 400;
+    const int kiWidth = 800;
     const int kiHeight = 600;
 
     HWND hwnd = CreateAndRegisterWindow(_hInstance, kiWidth, kiHeight, L"Vivian - Space Invaders");

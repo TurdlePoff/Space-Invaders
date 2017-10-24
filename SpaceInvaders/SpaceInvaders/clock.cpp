@@ -40,38 +40,45 @@ CClock::~CClock()
 bool
 CClock::Initialise()
 {
-	__int64 _currTime;
+	__int64 _TimerFrequency, _currTime;
+	QueryPerformanceFrequency((LARGE_INTEGER*)&_TimerFrequency);
+	m_SecondsPerCount = 1.0 / static_cast<double>(_TimerFrequency);
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&_currTime);
-	m_fCurrentTime = static_cast<float>(_currTime);
-	m_fLastTime = static_cast<float>(_currTime);
+	m_fCurrentTime = static_cast<double>(_currTime);
+	m_fLastTime = static_cast<double>(_currTime);
 
-    return (true);
+	return (true);
 }
 
 void
 CClock::Process()
 {
+	//Get the time this frame.
+
 	__int64 currTime;
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 
-    m_fLastTime = m_fCurrentTime;
+	m_fCurrentTime = static_cast<double>(currTime);
 
-    m_fCurrentTime = static_cast<float>(currTime);
+	//Time difference between this frame and the previous frame
+	m_fDeltaTime = (m_fCurrentTime - m_fLastTime)*m_SecondsPerCount;
 
-    if (m_fLastTime == 0.0f)
-    {
-        m_fLastTime = m_fCurrentTime;
-    }
+	//Prepare for the next frame
+	m_fLastTime = m_fCurrentTime;
 
-    m_fDeltaTime = m_fCurrentTime - m_fLastTime;
+	//Force non-negative
+	if (m_fDeltaTime < 0.0)
+	{
+		m_fDeltaTime = 0.0;
+	}
 
-    m_fTimeElapsed += m_fDeltaTime;
+	m_fTimeElapsed += m_fDeltaTime;
 }
 
 float
 CClock::GetDeltaTick()
 {
-    return (m_fDeltaTime / 1000.0f);
+	return static_cast<float>(m_fDeltaTime);
 }

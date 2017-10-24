@@ -77,7 +77,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     m_iWidth = _iWidth;
     m_iHeight = _iHeight;
 
-    const float fBulletVelX = 1.0f;
+    const float fBulletVelX = 0.0f;
     const float fBulletVelY = 1.0f;
 
 	m_pBackground = new CBackGround();
@@ -98,18 +98,9 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pPlayer->SetX((float)m_iWidth / 2);
 	m_pPlayer->SetY((float)m_iHeight - 100.0f);
 
-	/*
-    // Set the paddle's position to be centered on the x, 
-    // and a little bit up from the bottom of the window.
-
-    /*m_pPlayer->SetX(_iWidth / 2.0f);
-    m_pPlayer->SetY(_iHeight - ( 1.5f * m_pPlayer->GetHeight()));
-	*/
-
 	//TODO: enemy code
-
-   const int kiNumEnemys = 7;
-    const int kiStartX = 30;
+    const int kiNumEnemys = 11;
+    const int kiStartX = 100;
     const int kiGap = 10;
 
     int iCurrentX = kiStartX;
@@ -118,7 +109,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     for (int i = 0; i < kiNumEnemys; ++i)
     {
         CEnemy* pEnemy = new CEnemy();
-        VALIDATE(pEnemy->Initialise(ESprite::ENEMYTOP));
+        VALIDATE(pEnemy->Initialise(ESprite::ENEMYMED));
 
         pEnemy->SetX(static_cast<float>(iCurrentX));
         pEnemy->SetY(static_cast<float>(iCurrentY));
@@ -165,12 +156,12 @@ CLevel::Process(float _fDeltaTick)
 	m_pBackground->Process(_fDeltaTick);
 	m_pBullet->Process(_fDeltaTick);
 	m_pPlayer->Process(_fDeltaTick);
-	//ProcessBulletWallCollision();
-	////ProcessPlayerWallCollison();
- //   ProcessBulletPlayerCollision();
- //   //ProcessBulletEnemyCollision();
+	ProcessBulletWallCollision();
+	//ProcessPlayerWallCollison();
+    ProcessBulletPlayerCollision();
+    ProcessBulletEnemyCollision();
 
- //   ProcessCheckForWin();
+    ProcessCheckForWin();
 	ProcessBulletBounds();
 
     for (unsigned int i = 0; i < m_vecTopEnemys.size(); ++i)
@@ -339,11 +330,12 @@ void
 CLevel::DrawScore()
 {
     HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-
-    const int kiX = 0;
-    const int kiY = m_iHeight - 14;
+	//m_iWidth - 100, 
+    const int kiX = 100;
+	const int kiY = m_iHeight - 100;
 	SetBkMode(hdc, TRANSPARENT);
-    
+	SetTextColor(hdc, RGB(255, 255, 255));
+
     TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
 }
 
@@ -362,7 +354,7 @@ void
 CLevel::DrawFPS()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC(); 
-
+	SetTextColor(hdc, RGB(255, 255, 255));
 	m_fpsCounter->DrawFPSText(hdc, m_iWidth-100, m_iHeight-100);
 
 }

@@ -60,19 +60,19 @@ CPlayer::Process(float _fDeltaTick)
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		m_fX += 1.0f;
+		m_fX += 800.0f * (_fDeltaTick/2.0f);
 	}
 	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{ 
-		m_fX -= 1.0f;
+		m_fX -= 800.0f * (_fDeltaTick / 2.0f);
 	}
 	if (m_fX - fHalfPlayerW <= 0)
 	{
 		m_fX = fHalfPlayerW;
 	}
-	else if (m_fX + m_pSprite->GetWidth() >= 400)
+	else if (m_fX + m_pSprite->GetWidth() >= 800.0f)
 	{
-		m_fX = 400-m_pSprite->GetWidth();
+		m_fX = 800.0f-m_pSprite->GetWidth();
 	}
 	
 	CEntity::Process(_fDeltaTick);

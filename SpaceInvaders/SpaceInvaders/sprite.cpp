@@ -63,21 +63,21 @@ CSprite::CSprite(ESprite _eType)
 			m_iH = 32;
 			break;
 		}
-		case ESprite::ENEMYTOP:
+		case ESprite::ENEMYMED:
 		{
 			m_iFramePositionH = 48;
 			m_iW = 44;
 			m_iH = 32;
 			break;
 		}
-		case ESprite::ENEMYMED:
+		case ESprite::ENEMYBOT:
 		{
 			m_iFramePositionH = 88;
 			m_iW = 48;
 			m_iH = 32;
 			break;
 		}
-		case ESprite::ENEMYBOT:
+		case ESprite::ENEMYTOP:
 		{
 			m_iFramePositionH = 128;
 			m_iW = 32;
@@ -152,6 +152,11 @@ CSprite::Initialise()
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
+	if (m_eSpriteType == ESprite::BACKGROUND)
+	{
+		m_iW = m_bitmapSprite.bmWidth;
+		m_iH = m_bitmapSprite.bmHeight;
+	}
     return (true);
 }
 

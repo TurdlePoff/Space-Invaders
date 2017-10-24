@@ -50,7 +50,9 @@ protected:
     float m_fTimeElapsed;
     float m_fDeltaTime;
     float m_fLastTime;
-    float m_fCurrentTime;
+	double m_fCurrentTime;
+	double m_SecondsPerCount;
+	int m_iFrameCount = 0;
 
 private:
 

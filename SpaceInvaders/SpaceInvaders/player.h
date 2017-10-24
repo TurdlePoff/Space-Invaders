@@ -22,12 +22,14 @@
 // Local Includes
 #include "entity.h"
 #include "Sprite.h"
+#include "bullet.h"
 
 // Types
 
 // Constants
 
 // Prototypes
+
 class CPlayer : public CEntity
 {
     // Member Functions
@@ -47,6 +49,8 @@ private:
     CPlayer& operator= (const CPlayer& _kr);
 
     // Member Variables
+	CBullet* m_pBullet;
+
 public:
 
 protected:
