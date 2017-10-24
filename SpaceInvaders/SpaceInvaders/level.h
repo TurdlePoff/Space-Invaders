@@ -20,6 +20,7 @@
 // Library Includes
 #include <vector>
 #include <string>
+#include <ctime>
 
 // Local Includes
 
@@ -75,11 +76,13 @@ public:
 
 protected:
 	CBackGround* m_pBackground;
-    CBullet* m_pBullet;
     CPlayer* m_pPlayer;
     std::vector<CEnemy*> m_vecTopEnemys;
 	std::vector<CEnemy*> m_vecMidEnemys;
 	std::vector<CEnemy*> m_vecBotEnemys;
+	std::vector<CBullet*> m_vecBullets;
+	clock_t m_cBeginBullet;
+	clock_t m_cEndBullet;
 
 	CFPSCounter* m_fpsCounter;
 
