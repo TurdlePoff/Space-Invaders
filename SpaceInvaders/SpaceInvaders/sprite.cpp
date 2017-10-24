@@ -39,6 +39,57 @@ CSprite::CSprite(ESprite _eType)
 , m_iX(0)
 , m_iY(0)
 {
+	switch (_eType)
+	{
+		case ESprite::BACKGROUND:
+		{
+			m_iW = 400;
+			m_iH = 600;
+			break;
+		}
+		case ESprite::BULLET:
+		{
+			m_iW = 12;
+			m_iH = 20;
+			break;
+		}
+		case ESprite::PLAYER:
+		{
+			m_iW = 52;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::ENEMYTOP:
+		{
+			m_iW = 44;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::ENEMYMED:
+		{
+			m_iW = 48;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::ENEMYBOT:
+		{
+			m_iW = 32;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::ENEMYSHIP:
+		{
+			m_iW = 64;
+			m_iH = 44;
+			break;
+		}
+		case ESprite::BARRICADE:
+		{
+			m_iW = 44;
+			m_iH = 32;
+			break;
+		}
+	}
     ++s_iRefCount;
 }
 
@@ -101,24 +152,33 @@ CSprite::Draw()
 	//Sizes of sprites
 	int iW = GetWidth();
 	int iH = GetHeight();
+	//Positions of sprites
+	int iX = m_iX;
+	int iY = m_iY;
 
+	int iGapX = 4;
+	int iGapY = 8;
 	switch (m_eSpriteType)
 	{
-	case ESprite::BACKGROUND:
-	{
-		break;
-	}
-	case ESprite::PLAYER:
-	{
-		break;
-	}
-	default:
-		break;
+		case ESprite::BACKGROUND:
+		{
+			iX -= (iW / 2);
+			iY -= (iH / 2);
+			break;
+		}
+		case ESprite::PLAYER:
+		{
+			iW += iGapX;
+			iH += iGapY;
+			iX -= (iW / 2);
+			iY -= (iH / 2);
+			break;
+		}
+		default:
+			break;
 	}
 
-	//Positions of sprites
-    int iX = m_iX - (iW / 2);
-    int iY = m_iY - (iH / 2);
+	
 
     CBackBuffer* pBackBuffer = CGame::GetInstance().GetBackBuffer();
 
@@ -142,13 +202,13 @@ CSprite::Process(float _fDeltaTick)
 int
 CSprite::GetWidth() const
 {
-    return (m_bitmapSprite.bmWidth);
+    return m_iW;
 }
 
 int
 CSprite::GetHeight() const
 {
-    return (m_bitmapSprite.bmHeight);
+    return m_iH;
 }
 
 int 

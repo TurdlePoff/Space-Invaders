@@ -9,6 +9,7 @@ enum class ESprite
 	ENEMYBOT,
 	ENEMYSHIP,
 	BACKGROUND,
+	BARRICADE,
 	BULLET,
 	PLAYER
 };

@@ -77,8 +77,8 @@ CLevel::Initialise(int _iWidth, int _iHeight)
     m_iWidth = _iWidth;
     m_iHeight = _iHeight;
 
-    /*const float fBulletVelX = 200.0f;
-    const float fBulletVelY = 75.0f;*/
+    const float fBulletVelX = 200.0f;
+    const float fBulletVelY = 75.0f;
 
 	m_pBackground = new CBackGround();
 	VALIDATE(m_pBackground->Initialise());
@@ -87,14 +87,19 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pBackground->SetY((float)m_iHeight / 2);
 
 	//TODO: bullet/ball code
-	/*m_pBullet = new CBullet();
+	m_pBullet = new CBullet();
     VALIDATE(m_pBullet->Initialise(m_iWidth / 2.0f, m_iHeight / 2.0f, fBulletVelX, fBulletVelY));
-	*/
+	m_pBullet->SetX((float)m_iWidth / 2);
+	m_pBullet->SetY((float)m_iHeight - 100.0f);
 
 	//TODO: player code
 
-   /* m_pPlayer = new CPlayer();
-    VALIDATE(m_pPlayer->Initialise());*/
+    m_pPlayer = new CPlayer();
+    VALIDATE(m_pPlayer->Initialise());
+	m_pPlayer->SetX((float)m_iWidth / 2);
+	m_pPlayer->SetY((float)m_iHeight - 100.0f);
+
+	/*
 
     // Set the paddle's position to be centered on the x, 
     // and a little bit up from the bottom of the window.
@@ -147,8 +152,8 @@ CLevel::Draw()
         m_vecEnemys[i]->Draw();
     }*/
 
-    //m_pPlayer->Draw();
-    //m_pBullet->Draw();
+    m_pPlayer->Draw();
+    m_pBullet->Draw();
 
     DrawScore();
 	DrawFPS();
@@ -158,8 +163,8 @@ void
 CLevel::Process(float _fDeltaTick)
 {
 	m_pBackground->Process(_fDeltaTick);
-	//m_pBullet->Process(_fDeltaTick);
-	////m_pPlayer->Process(_fDeltaTick);
+	m_pBullet->Process(_fDeltaTick);
+	m_pPlayer->Process(_fDeltaTick);
 	//ProcessBulletWallCollision();
 	////ProcessPlayerWallCollison();
  //   ProcessBulletPlayerCollision();

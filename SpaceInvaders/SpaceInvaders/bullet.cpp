@@ -44,7 +44,7 @@ CBullet::Initialise(float _fPosX, float _fPosY, float _fVelocityX, float _fVeloc
 {
 	//BulletSprites
     //VALIDATE(CEntity::Initialise(IDB_BULLETSPRITE, IDB_BULLETMASK));
-    
+    //TODO: BULLET
     m_fX = _fPosX;
     m_fY = _fPosY;
 

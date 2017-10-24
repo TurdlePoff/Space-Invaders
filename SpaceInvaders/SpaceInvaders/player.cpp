@@ -41,7 +41,7 @@ bool
 CPlayer::Initialise()
 {
 	//PLAYER SPRITES INITIALISE-------------------------------------------
-    //VALIDATE(CEntity::Initialise(IDB_PlayerSPRITE, IDB_PlayerMASK)); 
+    VALIDATE(CEntity::Initialise(ESprite::PLAYER)); 
 
     return (true);
 }
@@ -60,19 +60,19 @@ CPlayer::Process(float _fDeltaTick)
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		m_fX += 400.0f * _fDeltaTick;
+		m_fX += 1.0f;
 	}
 	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{ 
-		m_fX -= 400.0f * _fDeltaTick;
+		m_fX -= 1.0f;
 	}
 	if (m_fX - fHalfPlayerW <= 0)
 	{
 		m_fX = fHalfPlayerW;
 	}
-	else if (m_fX + fHalfPlayerW >= 385)
+	else if (m_fX + m_pSprite->GetWidth() >= 400)
 	{
-		m_fX = 385-fHalfPlayerW;
+		m_fX = 400-m_pSprite->GetWidth();
 	}
 	
 	CEntity::Process(_fDeltaTick);

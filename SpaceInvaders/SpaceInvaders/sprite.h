@@ -66,6 +66,8 @@ protected:
     //Center handle
     int m_iX;
     int m_iY;
+	int m_iW;
+	int m_iH;
 	ESprite m_eSpriteType;
 
     HBITMAP m_hSprite;
