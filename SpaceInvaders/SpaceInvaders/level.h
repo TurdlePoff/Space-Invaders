@@ -6,10 +6,10 @@
 //
 // (c) 2016 Media Design School
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "level.h"
+// Description	: Decalaration file for level
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 
 #pragma once
