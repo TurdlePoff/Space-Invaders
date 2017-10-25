@@ -185,7 +185,7 @@ CLevel::Process(float _fDeltaTick)
 	{
 		m_cEndBullet = clock();
 		double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
-		if (elapsed_secs > 0.2f || elapsed_secs < 0.0f)
+		if (elapsed_secs > 0.5f || elapsed_secs < 0.0f)
 		{
 			CBullet* pBullet = new CBullet();
 			const float fBulletVelX = 0.0f;
@@ -284,10 +284,13 @@ CLevel::EnemyMovement(float _fDeltaTick)
 			wall = true;
 		}
 
-		if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() + (m_pPlayer->GetHeight()/2)) 
-			|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 700.0f) //700 = lose line
+		if (m_vecEnemies[i]->IsHit() == false)
 		{
-			lose = true;
+			if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() + (m_pPlayer->GetHeight() / 2))
+				|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 700.0f) //700 = lose line
+			{
+				lose = true;
+			}
 		}
 	}
 
