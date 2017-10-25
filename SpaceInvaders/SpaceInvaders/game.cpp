@@ -143,3 +143,17 @@ CGame::GetWindow()
 {
     return (m_hMainWindow);
 }
+
+void
+CGame::GameOverWon()
+{
+	MessageBox(m_hMainWindow, L"Winner!", L"Game Over", MB_OK);
+	PostQuitMessage(0);
+}
+
+void
+CGame::GameOverLost()
+{
+	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
+	PostQuitMessage(0);
+}

@@ -66,6 +66,29 @@ CEntity::Process(float _fDeltaTick)
     m_pSprite->Process(_fDeltaTick);
 }
 
+bool CEntity::IsCollidingWith(CEntity& e)
+{
+	bool colliding = false;
+
+	int e1 = m_pSprite->GetHeight() / 2;
+	float e1X = m_pSprite->GetX();
+	float e1Y = m_pSprite->GetY();
+
+	int e2 = e.m_pSprite->GetHeight() / 2;
+	float e2X = e.m_pSprite->GetX();
+	float e2Y = e.m_pSprite->GetY();
+
+	float collision = e1 + e2;
+	float actualdistance = sqrt(pow((e2X - e1X), 2) + pow((e2Y - e1Y), 2));
+
+	if (actualdistance < collision)
+	{
+		colliding = true;
+	}
+
+	return colliding;
+}
+
 float 
 CEntity::GetX() const
 {

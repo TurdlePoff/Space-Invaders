@@ -42,7 +42,7 @@ CClock::Initialise()
 {
 	__int64 _TimerFrequency, _currTime;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&_TimerFrequency);
-	m_SecondsPerCount = 1.0 / static_cast<double>(_TimerFrequency);
+	m_SecondsPerCount = 1.0f / static_cast<double>(_TimerFrequency);
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&_currTime);
 	m_fCurrentTime = static_cast<double>(_currTime);

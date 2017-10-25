@@ -92,9 +92,3 @@ CBullet::SetVelocityY(float _fY)
 {
     m_fVelocityY = _fY;
 }
-
-float 
-CBullet::GetRadius() const
-{
-    return (GetWidth() / 2.0f);
-}

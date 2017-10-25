@@ -46,8 +46,6 @@ public:
     void SetVelocityX(float _fX);
     void SetVelocityY(float _fY);
 
-    float GetRadius() const;
-
 protected:
 
 private:

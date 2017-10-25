@@ -64,6 +64,8 @@ public:
 	float GetHeight() const;
 	float GetWidth() const;
 
+	bool IsCollidingWith(CEntity& e);
+
 protected:
 
 private:

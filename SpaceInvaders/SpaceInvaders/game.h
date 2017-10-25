@@ -41,6 +41,8 @@ public:
     void Process(float _fDeltaTick);
 
     void ExecuteOneFrame();
+	void GameOverWon();
+	void GameOverLost();
 
     CBackBuffer* GetBackBuffer();
     HINSTANCE GetAppInstance();

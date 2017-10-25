@@ -18,6 +18,7 @@
 #define __ENEMY_H__
 
 // Library Includes
+#include <ctime>
 
 // Local Includes
 #include "entity.h"
@@ -54,10 +55,19 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
+	float GetVelocityX() const;
+	float GetVelocityY() const;
+	void SetVelocityX(float _fX);
+	void SetVelocityY(float _fY);
+
     void SetHit(bool _b);
     bool IsHit() const;
+	int m_iPoints;
+	ESprite m_eSpriteType;
 
 protected:
+	float m_fVelocityX;
+	float m_fVelocityY;
 
 private:
     CEnemy(const CEnemy& _kr);

@@ -10,6 +10,7 @@ CAnimatedSprite::CAnimatedSprite()
 	, m_animating(false)
 	, m_numOfFrames(0)
 {
+
 }
 
 CAnimatedSprite::~CAnimatedSprite()

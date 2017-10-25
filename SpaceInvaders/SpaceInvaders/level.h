@@ -52,9 +52,6 @@ public:
     int GetEnemysRemaining() const;
 
 protected:
-    void ProcessBulletWallCollision();
-	void ProcessPlayerWallCollison();
-    void ProcessBulletPlayerCollision();
     void ProcessBulletEnemyCollision();
 
     void ProcessCheckForWin();
@@ -64,6 +61,8 @@ protected:
     void UpdateScoreText();
     void DrawScore();
 	void DrawFPS();
+
+	void EnemyMovement(float _fDeltaTick);
 
     void SetEnemysRemaining(int _i);
 
@@ -77,9 +76,7 @@ public:
 protected:
 	CBackGround* m_pBackground;
     CPlayer* m_pPlayer;
-    std::vector<CEnemy*> m_vecTopEnemys;
-	std::vector<CEnemy*> m_vecMidEnemys;
-	std::vector<CEnemy*> m_vecBotEnemys;
+    std::vector<CEnemy*> m_vecEnemies;
 	std::vector<CBullet*> m_vecBullets;
 	clock_t m_cBeginBullet;
 	clock_t m_cEndBullet;
@@ -89,7 +86,17 @@ protected:
     int m_iWidth;
     int m_iHeight;
 
+	int m_iEnemyContainerPosX;
+	int m_iEnemyContainerPosY;
+	int m_iEnemyContainerWidth;
+	int m_iEnemyContainerHeight;
+
+	clock_t m_cBeginEnemyMove;
+	clock_t m_cEndEnemyMove;
+
     int m_iEnemysRemaining;
+
+	bool RIGHT = true;
 
     std::string m_strScore;
 
