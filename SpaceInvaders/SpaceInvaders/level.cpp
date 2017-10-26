@@ -46,6 +46,7 @@ CLevel::CLevel()
 , m_cEndEnemyMove(0)
 {
 	m_cEndEnemyMove = clock();
+	srand((unsigned)time(NULL));
 }
 
 CLevel::~CLevel()
@@ -65,11 +66,11 @@ CLevel::~CLevel()
     /*delete m_pBullet;
     m_pBullet = 0;*/
 
-	while (m_vecBullets.size() > 0)
+	while (m_vecPlayerBullets.size() > 0)
 	{
-		CBullet* pBullet = m_vecBullets[m_vecBullets.size() - 1];
+		CBullet* pBullet = m_vecPlayerBullets[m_vecPlayerBullets.size() - 1];
 
-		m_vecBullets.pop_back();
+		m_vecPlayerBullets.pop_back();
 
 		delete pBullet;
 	}
@@ -162,9 +163,14 @@ CLevel::Draw()
 
     m_pPlayer->Draw();
 
-	for (unsigned int j = 0; j < m_vecBullets.size(); ++j)
+	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
-		m_vecBullets[j]->Draw();
+		m_vecPlayerBullets[j]->Draw();
+	}
+
+	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+	{
+		m_vecEnemyBullets[j]->Draw();
 	}
 
     DrawScore();
@@ -183,25 +189,22 @@ CLevel::Process(float _fDeltaTick)
 	
 	if (GetAsyncKeyState(VK_SPACE))
 	{
-		m_cEndBullet = clock();
-		double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
-		if (elapsed_secs > 0.5f || elapsed_secs < 0.0f)
-		{
-			CBullet* pBullet = new CBullet();
-			const float fBulletVelX = 0.0f;
-			const float fBulletVelY = -1.0f;
-
-			pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
-			pBullet->SetX(m_pPlayer->GetX());
-			pBullet->SetY(m_pPlayer->GetY() - 20.0f);
-			m_vecBullets.push_back(pBullet);
-			m_cBeginBullet = clock();
-		}
+		FireBullet(true, 0.5f); //isPlayer = true (player)
 	}
 
-	for (unsigned int i = 0; i < m_vecBullets.size(); ++i)
+	//Generate a random number between 0 + 5
+	float randTime = rand() % (110 + 90);
+
+	FireBullet(false, randTime); //isPlayer = true (player)
+
+	for (unsigned int i = 0; i < m_vecPlayerBullets.size(); ++i)
 	{
-		m_vecBullets[i]->Process(_fDeltaTick);
+		m_vecPlayerBullets[i]->Process(_fDeltaTick);
+	}
+
+	for (unsigned int i = 0; i < m_vecEnemyBullets.size(); ++i)
+	{
+		m_vecEnemyBullets[i]->Process(_fDeltaTick);
 	}
 
     ProcessBulletEnemyCollision();
@@ -212,6 +215,37 @@ CLevel::Process(float _fDeltaTick)
 	EnemyMovement(_fDeltaTick);
 
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
+}
+
+void CLevel::FireBullet(bool isPlayer, float timeBetweenShot)
+{
+	m_cEndBullet = clock();
+	double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
+	if (elapsed_secs > timeBetweenShot || elapsed_secs < 0.0f)
+	{
+		pBullet = new CBullet();
+		const float fBulletVelX = 0.0f;
+		float fBulletVelY = -1.0f;
+
+		if (isPlayer)
+		{
+			pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+			pBullet->SetX(m_pPlayer->GetX());
+			pBullet->SetY(m_pPlayer->GetY() - 20.0f);
+			m_vecPlayerBullets.push_back(pBullet);
+		}
+		else
+		{
+			int randEnemy = rand() % (55 + 0);
+
+			fBulletVelY *= -1;
+			pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+			pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
+			pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
+			m_vecEnemyBullets.push_back(pBullet);
+		}
+		m_cBeginBullet = clock();
+	}
 }
 
 CPlayer* 
@@ -225,16 +259,16 @@ CLevel::ProcessBulletEnemyCollision()
 {
     for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
     {
-		for (unsigned int j = 0; j < m_vecBullets.size(); ++j)
+		for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 		{
 			if (!m_vecEnemies[i]->IsHit())
 			{
 				//If bullet collides with enemy entity
-				if(m_vecBullets[j]->IsCollidingWith(*m_vecEnemies[i]))
+				if(m_vecPlayerBullets[j]->IsCollidingWith(*m_vecEnemies[i]))
 				{
 					//Hide enemy, erase bullet, decrease enemy count
 					m_vecEnemies[i]->SetHit(true);
-					m_vecBullets.erase(m_vecBullets.begin() + j);
+					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
 					if(m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
 						SetEnemysRemaining(GetEnemysRemaining() - 1);
 				}
@@ -242,6 +276,23 @@ CLevel::ProcessBulletEnemyCollision()
         }
     }
 }
+
+//void
+//CLevel::ProcessBulletPlayerCollision()
+//{
+//	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
+//	{
+//		//If bullet collides with enemy entity
+//		if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pPlayer))
+//		{
+//			//Hide enemy, erase bullet, decrease enemy count
+//			m_pPlayer->SetHit(true);
+//			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
+//			if (m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
+//				SetEnemysRemaining(GetEnemysRemaining() - 1);
+//		}
+//	}
+//}
 
 void
 CLevel::ProcessCheckForWin()
@@ -260,11 +311,19 @@ CLevel::ProcessCheckForWin()
 void
 CLevel::ProcessBulletBounds()
 {
-	for (unsigned int j = 0; j < m_vecBullets.size(); ++j)
+	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
-		if (m_vecBullets[j]->GetY() < 0)
+		if (m_vecPlayerBullets[j]->GetY() < 0)
 		{
-  			m_vecBullets.erase(m_vecBullets.begin()+j);
+			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin()+j);
+		}
+	}
+
+	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+	{
+		if (m_vecEnemyBullets[j]->GetY() > 800)
+		{
+			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 		}
 	}
 }
@@ -299,9 +358,8 @@ CLevel::EnemyMovement(float _fDeltaTick)
 		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
 		{
 			wall = false;
-			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY()+50);
+			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY() + 50); //Increment level down by 50
 			m_vecEnemies[i]->SetVelocityX(m_vecEnemies[i]->GetVelocityX() *-1);
-
 			m_vecEnemies[i]->Process(_fDeltaTick);
 		}
 	}
@@ -310,7 +368,6 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	{
 		CGame::GetInstance().GameOverLost();
 	}
-
 }
 
 int 

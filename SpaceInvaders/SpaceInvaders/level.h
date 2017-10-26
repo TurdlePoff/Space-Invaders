@@ -53,10 +53,13 @@ public:
 
 protected:
     void ProcessBulletEnemyCollision();
+	void ProcessBulletPlayerCollision();
 
     void ProcessCheckForWin();
 
     void ProcessBulletBounds();
+
+	void FireBullet(bool isPlayer, float timeBetweenShot);
 
     void UpdateScoreText();
     void DrawScore();
@@ -76,8 +79,12 @@ public:
 protected:
 	CBackGround* m_pBackground;
     CPlayer* m_pPlayer;
+	CBullet* pBullet;
+
     std::vector<CEnemy*> m_vecEnemies;
-	std::vector<CBullet*> m_vecBullets;
+	std::vector<CBullet*> m_vecEnemyBullets;
+	std::vector<CBullet*> m_vecPlayerBullets;
+
 	clock_t m_cBeginBullet;
 	clock_t m_cEndBullet;
 
