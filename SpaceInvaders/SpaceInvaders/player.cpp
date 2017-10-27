@@ -28,6 +28,9 @@
 // Implementation
 
 CPlayer::CPlayer()
+: m_iPlayerScore(0)
+, m_iPlayerLives(3)
+, m_bIsShooting(false)
 {
 
 }
@@ -76,4 +79,35 @@ CPlayer::Process(float _fDeltaTick)
 	}
 	
 	CEntity::Process(_fDeltaTick);
+}
+
+void 
+CPlayer::SetPlayerAlive(bool isAlive)
+{
+	m_bCurrentlyAlive = isAlive;
+}
+
+bool CPlayer::GetIsPlayerAlive()
+{
+	return m_bCurrentlyAlive;
+}
+
+int CPlayer::GetPlayerScore()
+{
+	return m_iPlayerScore;
+}
+
+void CPlayer::IncreasePlayerScore(int _points)
+{
+	m_iPlayerScore += _points;
+}
+
+void CPlayer::SetIsShooting(bool _isShooting)
+{
+	m_bIsShooting = _isShooting;
+}
+
+bool CPlayer::GetIsShooting()
+{
+	return m_bIsShooting;
 }

@@ -41,6 +41,12 @@ public:
 
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
+	void SetPlayerAlive(bool _isAlive);
+	bool GetIsPlayerAlive();
+	int GetPlayerScore();
+	void IncreasePlayerScore(int _points);
+	void SetIsShooting(bool _isShooting);
+	bool GetIsShooting();
 
 protected:
 
@@ -50,6 +56,10 @@ private:
 
     // Member Variables
 	CBullet* m_pBullet;
+	int m_iPlayerScore;
+	int m_iPlayerLives;
+	bool m_bCurrentlyAlive;
+	bool m_bIsShooting;
 
 public:
 

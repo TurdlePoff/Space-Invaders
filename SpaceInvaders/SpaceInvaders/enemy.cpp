@@ -32,13 +32,13 @@ CEnemy::CEnemy()
 : m_bHit(false)
 , m_fVelocityX(0.0f)
 , m_fVelocityY(0.0f)
+, m_bCanShoot(false)
 {
 	srand(time(NULL));
 }
 
 CEnemy::~CEnemy()
 {
-
 }
 
 bool
@@ -96,6 +96,11 @@ CEnemy::Process(float _fDeltaTick)
     }
 }
 
+ESprite CEnemy::GetSpriteType()
+{
+	return m_eSpriteType;
+}
+
 float
 CEnemy::GetVelocityX() const
 {
@@ -120,6 +125,16 @@ CEnemy::SetVelocityY(float _fY)
 	m_fVelocityY = _fY;
 }
 
+void CEnemy::SetCanShoot(bool _b)
+{
+	m_bCanShoot = _b;
+}
+
+bool CEnemy::GetCanShoot()
+{
+	return m_bCanShoot;
+}
+
 void
 CEnemy::SetHit(bool _b)
 {
@@ -130,4 +145,9 @@ bool
 CEnemy::IsHit() const
 {
     return (m_bHit);
+}
+
+int CEnemy::GetEnemyPoints()
+{
+	return m_iPoints;
 }

@@ -36,7 +36,7 @@ public:
 	CAnimatedSprite();
 	virtual ~CAnimatedSprite();
 
-	bool Initialise(const int _kiSpriteID, const int _kiMaskID);
+	bool Initialise(ESprite _eSprite);
 
 	void Draw();
 	void Process(float _fDeltaTick);
@@ -45,6 +45,8 @@ public:
 
 	int GetFrameSpeed();
 	int GetFrameWidth();
+	int GetFrameHeight();
+
 
 	void SetFrameSpeed(float f);
 	void SetFrameWidth(int w);
@@ -89,6 +91,7 @@ protected:
 
 	float m_frameSpeed;
 	int m_frameWidth;
+	int m_frameHeight;
 
 	float m_timeElapsed;
 	int m_currentFrame;

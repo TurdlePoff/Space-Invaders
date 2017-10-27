@@ -17,14 +17,26 @@ CAnimatedSprite::~CAnimatedSprite()
 {
 }
 
-bool CAnimatedSprite::Initialise(const int _kiSpriteID, const int _kiMaskID)
+bool CAnimatedSprite::Initialise(ESprite _eSprite)
 {
-	return false;
+	m_frameWidth = 0;
+	m_frameHeight = 0;
+	m_frameSpeed = 0;
+
+	m_loop = false;
+	m_paused = false;
+	m_animating = true;
+
+	CSprite::CSprite(_eSprite);
+
+	StartAnimating();
+
+	return (true);
 }
 
 void CAnimatedSprite::Draw()
 {
-
+	//INITIALISE
 }
 
 void CAnimatedSprite::Process(float _fDeltaTick)
@@ -47,6 +59,11 @@ int CAnimatedSprite::GetFrameWidth()
 	return m_frameWidth;
 }
 
+int CAnimatedSprite::GetFrameHeight()
+{
+	return m_frameHeight;
+}
+
 void CAnimatedSprite::SetFrameSpeed(float f)
 {
 	m_frameSpeed = f;
@@ -65,6 +82,9 @@ bool CAnimatedSprite::IsAnimating()
 void CAnimatedSprite::StartAnimating()
 {
 	m_animating = true;
+
+	m_timeElapsed = 0;
+	m_currentFrame = 0;
 }
 
 /**

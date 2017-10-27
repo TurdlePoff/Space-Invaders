@@ -93,6 +93,8 @@ protected:
     int m_iWidth;
     int m_iHeight;
 
+	float m_iLVLEnemyVelocity;
+
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;
 	int m_iEnemyContainerWidth;

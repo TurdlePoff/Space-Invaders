@@ -35,15 +35,15 @@
 //#define CHEAT_BOUNCE_ON_BACK_WALL
 
 CLevel::CLevel()
-: m_iEnemysRemaining(0)
-, m_pPlayer(0)
-, m_iWidth(0)
-, m_iHeight(0)
-, m_fpsCounter(0)
-, m_cBeginBullet(0)
-, m_cEndBullet(0)
-, m_cBeginEnemyMove(0)
-, m_cEndEnemyMove(0)
+	: m_iEnemysRemaining(0)
+	, m_pPlayer(0)
+	, m_iWidth(0)
+	, m_iHeight(0)
+	, m_fpsCounter(0)
+	, m_cBeginBullet(0)
+	, m_cEndBullet(0)
+	, m_cBeginEnemyMove(0)
+	, m_cEndEnemyMove(0)
 {
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -51,20 +51,20 @@ CLevel::CLevel()
 
 CLevel::~CLevel()
 {
-    while (m_vecEnemies.size() > 0)
-    {
-        CEnemy* pEnemy = m_vecEnemies[m_vecEnemies.size() - 1];
+	while (m_vecEnemies.size() > 0)
+	{
+		CEnemy* pEnemy = m_vecEnemies[m_vecEnemies.size() - 1];
 
 		m_vecEnemies.pop_back();
 
-        delete pEnemy;
-    }
+		delete pEnemy;
+	}
 
-    delete m_pPlayer;
-    m_pPlayer = 0;
+	delete m_pPlayer;
+	m_pPlayer = 0;
 
-    /*delete m_pBullet;
-    m_pBullet = 0;*/
+	/*delete m_pBullet;
+	m_pBullet = 0;*/
 
 	while (m_vecPlayerBullets.size() > 0)
 	{
@@ -86,8 +86,8 @@ CLevel::~CLevel()
 bool
 CLevel::Initialise(int _iWidth, int _iHeight)
 {
-    m_iWidth = _iWidth;
-    m_iHeight = _iHeight;
+	m_iWidth = _iWidth;
+	m_iHeight = _iHeight;
 
 	//Background initialisation
 	m_pBackground = new CBackGround();
@@ -97,59 +97,60 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pBackground->SetY((float)m_iHeight / 2);
 
 	//Player initialisation
-    m_pPlayer = new CPlayer();
-    VALIDATE(m_pPlayer->Initialise());
+	m_pPlayer = new CPlayer();
+	VALIDATE(m_pPlayer->Initialise());
 	m_pPlayer->SetX((float)m_iWidth / 2);
 	m_pPlayer->SetY((float)m_iHeight - 100.0f);
+	m_pPlayer->SetPlayerAlive(true);
 
 	//Enemy initialisation
 	const int kiNumEnemys = 55;
-    const int kiStartX = 90;
-    int kiGap = 10;
+	const int kiStartX = 90;
+	int kiGap = 10;
 
-    int iCurrentX = kiStartX;
-    int iCurrentY = kiStartX;
+	int iCurrentX = kiStartX;
+	int iCurrentY = kiStartX;
 
-    for (int i = 0; i < kiNumEnemys; ++i)
-    {
-        CEnemy* pEnemy = new CEnemy();
-		if(i < 11)
+	for (int i = 0; i < kiNumEnemys; ++i)
+	{
+		CEnemy* pEnemy = new CEnemy();
+		if (i < 11)
 		{
 			VALIDATE(pEnemy->Initialise(ESprite::ENEMYTOP));
 			kiGap = 28;
 		}
-		else if(i >= 11 && i < 33)
+		else if (i >= 11 && i < 33)
 		{
 			VALIDATE(pEnemy->Initialise(ESprite::ENEMYMED));
 			kiGap = 16;
 		}
-		else 
+		else
 		{
 			VALIDATE(pEnemy->Initialise(ESprite::ENEMYBOT));
 			kiGap = 12;
 
 		}
 
-        pEnemy->SetX(static_cast<float>(iCurrentX));
-        pEnemy->SetY(static_cast<float>(iCurrentY));
-		pEnemy->SetVelocityX(1.0f);
-        iCurrentX += static_cast<int>(pEnemy->GetWidth()) + kiGap;
+		pEnemy->SetX(static_cast<float>(iCurrentX));
+		pEnemy->SetY(static_cast<float>(iCurrentY));
+		pEnemy->SetVelocityX(0.3f);
+		iCurrentX += static_cast<int>(pEnemy->GetWidth()) + kiGap;
 
-        if (iCurrentX > 730)
-        {
-            iCurrentX = kiStartX;
-            iCurrentY += 50;
-        }
+		if (iCurrentX > 730)
+		{
+			iCurrentX = kiStartX;
+			iCurrentY += 50;
+		}
 
 		m_vecEnemies.push_back(pEnemy);
-    }
+	}
 
-    SetEnemysRemaining(kiNumEnemys);
+	SetEnemysRemaining(kiNumEnemys);
 
 	m_fpsCounter = new CFPSCounter();
 	VALIDATE(m_fpsCounter->Initialise());
 
-    return (true);
+	return (true);
 }
 
 void
@@ -157,11 +158,11 @@ CLevel::Draw()
 {
 	m_pBackground->Draw();
 	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-    {
+	{
 		m_vecEnemies[i]->Draw();
-    }
+	}
 
-    m_pPlayer->Draw();
+	m_pPlayer->Draw();
 
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
@@ -173,7 +174,7 @@ CLevel::Draw()
 		m_vecEnemyBullets[j]->Draw();
 	}
 
-    DrawScore();
+	DrawScore();
 	DrawFPS();
 }
 
@@ -186,14 +187,14 @@ CLevel::Process(float _fDeltaTick)
 
 
 	////TODO: bullet/ball code
-	
+
 	if (GetAsyncKeyState(VK_SPACE))
 	{
 		FireBullet(true, 0.5f); //isPlayer = true (player)
 	}
 
 	//Generate a random number between 0 + 5
-	float randTime = rand() % (110 + 90);
+	int randTime = rand() % (110 + 90);
 
 	FireBullet(false, randTime); //isPlayer = true (player)
 
@@ -207,9 +208,9 @@ CLevel::Process(float _fDeltaTick)
 		m_vecEnemyBullets[i]->Process(_fDeltaTick);
 	}
 
-    ProcessBulletEnemyCollision();
+	ProcessBulletEnemyCollision();
 
-    ProcessCheckForWin();
+	ProcessCheckForWin();
 	ProcessBulletBounds();
 
 	EnemyMovement(_fDeltaTick);
@@ -248,33 +249,35 @@ void CLevel::FireBullet(bool isPlayer, float timeBetweenShot)
 	}
 }
 
-CPlayer* 
+CPlayer*
 CLevel::GetPlayer() const
 {
-    return (m_pPlayer);
+	return (m_pPlayer);
 }
 
 void
 CLevel::ProcessBulletEnemyCollision()
 {
-    for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-    {
+	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+	{
 		for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 		{
 			if (!m_vecEnemies[i]->IsHit())
 			{
 				//If bullet collides with enemy entity
-				if(m_vecPlayerBullets[j]->IsCollidingWith(*m_vecEnemies[i]))
+				if (m_vecPlayerBullets[j]->IsCollidingWith(*m_vecEnemies[i]))
 				{
 					//Hide enemy, erase bullet, decrease enemy count
 					m_vecEnemies[i]->SetHit(true);
+					//TODO: SET SPRITE DEAD
+
 					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
-					if(m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
-						SetEnemysRemaining(GetEnemysRemaining() - 1);
+					//if(m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
+					SetEnemysRemaining(GetEnemysRemaining() - 1);
 				}
 			}
-        }
-    }
+		}
+	}
 }
 
 //void
@@ -286,9 +289,9 @@ CLevel::ProcessBulletEnemyCollision()
 //		if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pPlayer))
 //		{
 //			//Hide enemy, erase bullet, decrease enemy count
-//			m_pPlayer->SetHit(true);
+//			m_pPlayer->SetPlayerAlive(false);
 //			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
-//			if (m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
+//			if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
 //				SetEnemysRemaining(GetEnemysRemaining() - 1);
 //		}
 //	}
@@ -297,13 +300,13 @@ CLevel::ProcessBulletEnemyCollision()
 void
 CLevel::ProcessCheckForWin()
 {
-    for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-    {
-        if (!m_vecEnemies[i]->IsHit())
-        {
-            return;
-        }
-    }
+	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+	{
+		if (!m_vecEnemies[i]->IsHit())
+		{
+			return;
+		}
+	}
 
 	CGame::GetInstance().GameOverWon();
 }
@@ -315,7 +318,7 @@ CLevel::ProcessBulletBounds()
 	{
 		if (m_vecPlayerBullets[j]->GetY() < 0)
 		{
-			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin()+j);
+			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
 		}
 	}
 
@@ -370,42 +373,42 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	}
 }
 
-int 
+int
 CLevel::GetEnemysRemaining() const
 {
-    return (m_iEnemysRemaining);
+	return (m_iEnemysRemaining);
 }
 
-void 
+void
 CLevel::SetEnemysRemaining(int _i)
 {
-    m_iEnemysRemaining = _i;
-    UpdateScoreText();
+	m_iEnemysRemaining = _i;
+	UpdateScoreText();
 }
 
 void
 CLevel::DrawScore()
 {
-    HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-    const int kiX = 100;
+	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
+	const int kiX = 100;
 	const int kiY = m_iHeight - 100;
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(255, 255, 255));
 
-    TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
+	TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
 }
-void 
+void
 CLevel::UpdateScoreText()
 {
-    m_strScore = "Enemys Remaining: ";
+	m_strScore = "Enemys Remaining: ";
 
-    m_strScore += ToString(GetEnemysRemaining());
+	m_strScore += ToString(GetEnemysRemaining());
 }
 
-void 
+void
 CLevel::DrawFPS()
 {
-	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC(); 
+	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
 	SetTextColor(hdc, RGB(255, 255, 255));
-	m_fpsCounter->DrawFPSText(hdc, m_iWidth-100, m_iHeight-90);
+	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 100, m_iHeight - 90);
 }

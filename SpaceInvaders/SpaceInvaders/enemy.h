@@ -33,12 +33,6 @@ class CEnemy : public CEntity
 {
 	// Member Variables
 public:
-	enum EState
-	{
-		ACTION1,
-		ACTION2,
-		DEAD,
-	};
 
 protected:
 	bool m_bHit;
@@ -55,15 +49,19 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
+	ESprite GetSpriteType();
+
 	float GetVelocityX() const;
 	float GetVelocityY() const;
 	void SetVelocityX(float _fX);
 	void SetVelocityY(float _fY);
 
+	void SetCanShoot(bool _b);
+	bool GetCanShoot();
+
     void SetHit(bool _b);
     bool IsHit() const;
-	int m_iPoints;
-	ESprite m_eSpriteType;
+	int GetEnemyPoints();
 
 protected:
 	float m_fVelocityX;
@@ -72,6 +70,10 @@ protected:
 private:
     CEnemy(const CEnemy& _kr);
     CEnemy& operator= (const CEnemy& _kr);
+	int m_iPoints;
+	ESprite m_eSpriteType;
+	bool m_bCanShoot;
+
 };
 
 
