@@ -59,7 +59,7 @@ protected:
 
     void ProcessBulletBounds();
 
-	void FireBullet(bool isPlayer, float timeBetweenShot);
+	void FireBullet(bool isPlayer, float bulletSpeed);
 
     void UpdateScoreText();
     void DrawScore();
@@ -68,6 +68,13 @@ protected:
 	void EnemyMovement(float _fDeltaTick);
 
     void SetEnemysRemaining(int _i);
+
+	void SetLVLEnemyShootingDelay(float _f);
+	float GetLVLEnemyShootingDelay();
+	void SetLVLEnemyBulletSpeed(float _f);
+	float GetLVLEnemyBulletSpeed();
+	void SetLVLPlayerBulletSpeed(float _f);
+	float GetLVLPlayerBulletSpeed();
 
 private:
     CLevel(const CLevel& _kr);
@@ -93,7 +100,10 @@ protected:
     int m_iWidth;
     int m_iHeight;
 
-	float m_iLVLEnemyVelocity;
+	float m_fLVLEnemyShootingDelay;
+	float m_fLVLEnemyBulletVelocity;
+	float m_fLVLPlayerBulletVelocity;
+	float m_fLVLEnemyVelocity;
 
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;

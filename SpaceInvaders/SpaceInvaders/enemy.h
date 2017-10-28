@@ -59,6 +59,7 @@ public:
 	void SetCanShoot(bool _b);
 	bool GetCanShoot();
 
+
     void SetHit(bool _b);
     bool IsHit() const;
 	int GetEnemyPoints();

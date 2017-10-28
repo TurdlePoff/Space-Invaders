@@ -44,6 +44,9 @@ CLevel::CLevel()
 	, m_cEndBullet(0)
 	, m_cBeginEnemyMove(0)
 	, m_cEndEnemyMove(0)
+	, m_fLVLEnemyBulletVelocity(1.0f)
+	, m_fLVLPlayerBulletVelocity(6.0f)
+	, m_fLVLEnemyShootingDelay(2.0f)
 {
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -129,6 +132,10 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 			VALIDATE(pEnemy->Initialise(ESprite::ENEMYBOT));
 			kiGap = 12;
 
+			if (i >= 44)
+			{
+				pEnemy->SetCanShoot(true);
+			}
 		}
 
 		pEnemy->SetX(static_cast<float>(iCurrentX));
@@ -188,15 +195,16 @@ CLevel::Process(float _fDeltaTick)
 
 	////TODO: bullet/ball code
 
-	if (GetAsyncKeyState(VK_SPACE))
+	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting())
 	{
-		FireBullet(true, 0.5f); //isPlayer = true (player)
+		FireBullet(true, GetLVLPlayerBulletSpeed()); //isPlayer = true (player)
+		m_pPlayer->SetIsShooting(true);
 	}
 
 	//Generate a random number between 0 + 5
 	int randTime = rand() % (110 + 90);
 
-	FireBullet(false, randTime); //isPlayer = true (player)
+	FireBullet(false, GetLVLEnemyBulletSpeed()); //isPlayer = true (player)
 
 	for (unsigned int i = 0; i < m_vecPlayerBullets.size(); ++i)
 	{
@@ -218,34 +226,38 @@ CLevel::Process(float _fDeltaTick)
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
-void CLevel::FireBullet(bool isPlayer, float timeBetweenShot)
+void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 {
-	m_cEndBullet = clock();
-	double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
-	if (elapsed_secs > timeBetweenShot || elapsed_secs < 0.0f)
-	{
-		pBullet = new CBullet();
-		const float fBulletVelX = 0.0f;
-		float fBulletVelY = -1.0f;
+	pBullet = new CBullet();
+	const float fBulletVelX = 0.0f;
+	float fBulletVelY = -bulletSpeed;
 
-		if (isPlayer)
-		{
-			pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
-			pBullet->SetX(m_pPlayer->GetX());
-			pBullet->SetY(m_pPlayer->GetY() - 20.0f);
-			m_vecPlayerBullets.push_back(pBullet);
-		}
-		else
+	if (isPlayer)
+	{
+		pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+		pBullet->SetX(m_pPlayer->GetX());
+		pBullet->SetY(m_pPlayer->GetY() - 20.0f);
+		m_vecPlayerBullets.push_back(pBullet);
+	}
+	else
+	{
+		m_cEndBullet = clock();
+		double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
+		if (elapsed_secs > GetLVLEnemyShootingDelay() || elapsed_secs < 0.0f)
 		{
 			int randEnemy = rand() % (55 + 0);
 
-			fBulletVelY *= -1;
-			pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
-			pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
-			pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
-			m_vecEnemyBullets.push_back(pBullet);
+			if (m_vecEnemies[randEnemy]->GetCanShoot() && !m_vecEnemies[randEnemy]->IsHit())
+			{
+				fBulletVelY *= -1;
+				pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+				pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
+				pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
+				m_vecEnemyBullets.push_back(pBullet);
+				m_cBeginBullet = clock();
+
+			}
 		}
-		m_cBeginBullet = clock();
 	}
 }
 
@@ -270,10 +282,20 @@ CLevel::ProcessBulletEnemyCollision()
 					//Hide enemy, erase bullet, decrease enemy count
 					m_vecEnemies[i]->SetHit(true);
 					//TODO: SET SPRITE DEAD
+					if (i > 11)
+					{
+						m_vecEnemies[i - 11]->SetCanShoot(true);
+					}
+					//TODO: SET SPRITE DEAD
+					m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
 					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
-					//if(m_vecEnemies[i]->m_eSpriteType != ESprite::ENEMYSHIP)
-					SetEnemysRemaining(GetEnemysRemaining() - 1);
+					m_pPlayer->SetIsShooting(false);
+
+					if (m_vecEnemies[i]->GetSpriteType() != ESprite::ENEMYSHIP)
+					{
+						SetEnemysRemaining(GetEnemysRemaining() - 1);
+					}
 				}
 			}
 		}
@@ -319,6 +341,7 @@ CLevel::ProcessBulletBounds()
 		if (m_vecPlayerBullets[j]->GetY() < 0)
 		{
 			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
+			m_pPlayer->SetIsShooting(false);
 		}
 	}
 
@@ -386,6 +409,16 @@ CLevel::SetEnemysRemaining(int _i)
 	UpdateScoreText();
 }
 
+void CLevel::SetLVLEnemyShootingDelay(float _f)
+{
+	m_fLVLEnemyShootingDelay = _f;
+}
+
+float CLevel::GetLVLEnemyShootingDelay()
+{
+	return m_fLVLEnemyShootingDelay;
+}
+
 void
 CLevel::DrawScore()
 {
@@ -411,4 +444,24 @@ CLevel::DrawFPS()
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
 	SetTextColor(hdc, RGB(255, 255, 255));
 	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 100, m_iHeight - 90);
+}
+
+void CLevel::SetLVLEnemyBulletSpeed(float _f)
+{
+	m_fLVLEnemyBulletVelocity = _f;
+}
+
+float CLevel::GetLVLEnemyBulletSpeed()
+{
+	return m_fLVLEnemyBulletVelocity;
+}
+
+void CLevel::SetLVLPlayerBulletSpeed(float _f)
+{
+	m_fLVLPlayerBulletVelocity = _f;
+}
+
+float CLevel::GetLVLPlayerBulletSpeed()
+{
+	return m_fLVLPlayerBulletVelocity;
 }
