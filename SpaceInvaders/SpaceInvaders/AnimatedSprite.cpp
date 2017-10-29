@@ -1,9 +1,9 @@
 #include "AnimatedSprite.h"
 
 CAnimatedSprite::CAnimatedSprite()
-	: m_frameSpeed(0.0f)
+	: m_frameSpeed(0)
 	, m_frameWidth(0)
-	, m_timeElapsed(0.0f)
+	, m_timeElapsed(0)
 	, m_currentFrame(0)
 	, m_paused(false)
 	, m_loop(false)
@@ -64,7 +64,7 @@ int CAnimatedSprite::GetFrameHeight()
 	return m_frameHeight;
 }
 
-void CAnimatedSprite::SetFrameSpeed(float f)
+void CAnimatedSprite::SetFrameSpeed(int f)
 {
 	m_frameSpeed = f;
 }

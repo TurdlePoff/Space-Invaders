@@ -34,7 +34,7 @@ CEnemy::CEnemy()
 , m_fVelocityY(0.0f)
 , m_bCanShoot(false)
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 }
 
 CEnemy::~CEnemy()

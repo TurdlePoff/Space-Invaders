@@ -48,7 +48,7 @@ public:
 	int GetFrameHeight();
 
 
-	void SetFrameSpeed(float f);
+	void SetFrameSpeed(int f);
 	void SetFrameWidth(int w);
 
 	bool IsAnimating();
@@ -89,7 +89,7 @@ protected:
 	bool m_loop;
 	bool m_animating;
 
-	float m_frameSpeed;
+	int m_frameSpeed;
 	int m_frameWidth;
 	int m_frameHeight;
 

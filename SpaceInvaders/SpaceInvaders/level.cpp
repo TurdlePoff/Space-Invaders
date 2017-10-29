@@ -98,6 +98,11 @@ CLevel::~CLevel()
 
 }
 
+/********
+* Initialise: Initialise function for CLevel
+*
+* parameter
+*********/
 bool
 CLevel::Initialise(int _iWidth, int _iHeight)
 {
@@ -153,6 +158,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 		pEnemy->SetX(static_cast<float>(iCurrentX));
 		pEnemy->SetY(static_cast<float>(iCurrentY));
 		pEnemy->SetVelocityX(20.0f);
+		pEnemy->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
 		iCurrentX += static_cast<int>(pEnemy->GetWidth()) + kiGap;
 
 		if (iCurrentX > 730)
@@ -163,6 +169,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 
 		m_vecEnemies.push_back(pEnemy);
 	}
+
 
 	SetEnemysRemaining(kiNumEnemys);
 
@@ -179,6 +186,11 @@ CLevel::Draw()
 
 	m_pPlayer->Draw();
 
+	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+	{
+		m_vecEnemies[i]->Draw();
+	}
+
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
 		m_vecPlayerBullets[j]->Draw();
@@ -187,11 +199,6 @@ CLevel::Draw()
 	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
 	{
 		m_vecEnemyBullets[j]->Draw();
-	}
-
-	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-	{
-		m_vecEnemies[i]->Draw();
 	}
 
 	DrawScore();
@@ -321,23 +328,23 @@ CLevel::ProcessBulletEnemyCollision()
 }
 
 
-void
-CLevel::ProcessBulletPlayerCollision()
-{
-	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
-	{
-		//If bullet collides with enemy entity
-		if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pPlayer))
-		{
-			//Hide enemy, erase bullet, decrease enemy count
-			m_pPlayer->SetPlayerAlive(false);
-			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
-
-			/*if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
-				SetEnemysRemaining(GetEnemysRemaining() - 1);*/
-		}
-	}
-}
+//void
+//CLevel::ProcessBulletPlayerCollision()
+//{
+//	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+//	{
+//		//If enemy bullet collides with player entity
+//		if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pPlayer))
+//		{
+//			//Hide enemy, erase bullet, decrease enemy count
+//			m_pPlayer->SetPlayerAlive(false);
+//			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
+//
+//			/*if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
+//				SetEnemysRemaining(GetEnemysRemaining() - 1);*/
+//		}
+//	}
+//}
 
 void
 CLevel::ProcessCheckForWin()
@@ -369,7 +376,7 @@ CLevel::ProcessBulletBounds()
 
 	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
 	{
-		if (m_vecEnemyBullets[j]->GetY() > 135)
+		if (m_vecEnemyBullets[j]->GetY() > m_iHeight - 135)
 		{
 			delete m_vecEnemyBullets[j];
 			m_vecEnemyBullets[j] = 0;
@@ -378,57 +385,13 @@ CLevel::ProcessBulletBounds()
 	}
 }
 
-//void
-//CLevel::EnemyMovement(float _fDeltaTick)
-//{
-//	bool wall = false;
-//	bool lose = false;
-//	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-//	{
-//		m_vecEnemies[i]->Process(_fDeltaTick);
-//
-//		if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 1000.0f)
-//			|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
-//		{
-//			wall = true;
-//		}
-//
-//		if (m_vecEnemies[i]->IsHit() == false)
-//		{
-//			if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() - (m_pPlayer->GetHeight() / 2))
-//				|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= m_iHeight-135.0f) //700 = lose line
-//			{
-//				lose = true;
-//			}
-//		}
-//	}
-//
-//	if (wall)
-//	{
-//		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-//		{
-//			wall = false;
-//			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY() + 50); //Increment level down by 50
-//			m_vecEnemies[i]->SetVelocityX(m_vecEnemies[i]->GetVelocityX() *-1);
-//			m_vecEnemies[i]->Process(_fDeltaTick);
-//		}
-//	}
-//
-//	if (lose)
-//	{
-//		CGame::GetInstance().GameOverLost();
-//	}
-//}
-
 void
 CLevel::EnemyMovement(float _fDeltaTick)
 {
 	bool wall = false;
 	bool lose = false;
 
-	
-
-	double elapsed_secs = double(m_cEndBullet - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
+	double elapsed_secs = double(m_cEndEnemyMove - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
 	if (elapsed_secs > GetLVLEnemySpeed() || elapsed_secs < 0.0f)
 	{
 		m_cBeginEnemyMove = clock();
