@@ -47,9 +47,17 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
-    CPlayer* GetPlayer() const;
+	void SetLVLEnemyShootingDelay(float _f);
+	float GetLVLEnemyShootingDelay();
+	void SetLVLEnemyBulletSpeed(float _f);
+	float GetLVLEnemyBulletSpeed();
+	void SetLVLEnemyMoveDelay(float _f);
+	float GetLVLEnemyMoveDelay();
 
-    int GetEnemysRemaining() const;
+	void SetLVLPlayerBulletSpeed(float _f);
+	float GetLVLPlayerBulletSpeed();
+	void SetLVLPlayerMovementSpeed(float _f);
+	float GetLVLPlayerMovementSpeed();
 
 protected:
     void ProcessBulletEnemyCollision();
@@ -61,7 +69,6 @@ protected:
 
 	void FireBullet(bool isPlayer, float bulletSpeed);
 
-    void UpdateScoreText();
     void DrawScore();
 	void DrawFPS();
 
@@ -69,14 +76,12 @@ protected:
 
     void SetEnemysRemaining(int _i);
 
-	void SetLVLEnemyShootingDelay(float _f);
-	float GetLVLEnemyShootingDelay();
-	void SetLVLEnemyBulletSpeed(float _f);
-	float GetLVLEnemyBulletSpeed();
-	void SetLVLPlayerBulletSpeed(float _f);
-	float GetLVLPlayerBulletSpeed();
-	void SetLVLEnemySpeed(float _f);
-	float GetLVLEnemySpeed();
+	
+
+
+	CPlayer* GetPlayer() const;
+
+	int GetEnemysRemaining() const;
 
 private:
     CLevel(const CLevel& _kr);
@@ -108,7 +113,7 @@ protected:
 	float m_fLVLEnemyShootingDelay;
 	float m_fLVLEnemyBulletVelocity;
 	float m_fLVLPlayerBulletVelocity;
-	float m_fLVLEnemySpeed;
+	float m_fLVLEnemyMoveDelay;
 
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;
@@ -118,9 +123,9 @@ protected:
 
     int m_iEnemysRemaining;
 
-	bool RIGHT = true;
-
+	std::string line;
     std::string m_strScore;
+	std::string m_strPlayerLives;
 
 private:
 

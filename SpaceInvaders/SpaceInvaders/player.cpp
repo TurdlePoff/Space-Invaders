@@ -111,3 +111,13 @@ bool CPlayer::GetIsShooting()
 {
 	return m_bIsShooting;
 }
+
+int CPlayer::GetPlayerLives()
+{
+	return m_iPlayerLives;
+}
+
+void CPlayer::SetPlayerLives(int _i)
+{
+	m_iPlayerLives = _i;
+}

@@ -16,7 +16,7 @@
 #include <vld.h>
 
 // Local Includes
-#include "Game.h"
+#include "game.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
@@ -49,7 +49,7 @@ CLevel::CLevel()
 	, m_fLVLEnemyBulletVelocity(1.0f)
 	, m_fLVLPlayerBulletVelocity(6.0f)
 	, m_fLVLEnemyShootingDelay(2.0f)
-	, m_fLVLEnemySpeed(1.0f)
+	, m_fLVLEnemyMoveDelay(1.0f)
 {
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -237,7 +237,7 @@ CLevel::Process(float _fDeltaTick)
 	}
 
 	ProcessBulletEnemyCollision();
-
+	ProcessBulletPlayerCollision();
 	ProcessCheckForWin();
 	ProcessBulletBounds();
 
@@ -303,12 +303,12 @@ CLevel::ProcessBulletEnemyCollision()
 				{
 					//Hide enemy, erase bullet, decrease enemy count
 					m_vecEnemies[i]->SetHit(true);
-					//TODO: SET SPRITE DEAD
+					//TODO: SET SPRITE DEAD ANIMATION
 					if (i > 11)
 					{
 						m_vecEnemies[i - 11]->SetCanShoot(true);
 					}
-					//TODO: SET SPRITE DEAD
+					//TODO: SET SPRITE DEAD ANIMATION
 					m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
 					delete m_vecPlayerBullets[j];
@@ -328,23 +328,28 @@ CLevel::ProcessBulletEnemyCollision()
 }
 
 
-//void
-//CLevel::ProcessBulletPlayerCollision()
-//{
-//	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
-//	{
-//		//If enemy bullet collides with player entity
-//		if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pPlayer))
-//		{
-//			//Hide enemy, erase bullet, decrease enemy count
-//			m_pPlayer->SetPlayerAlive(false);
-//			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
-//
-//			/*if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
-//				SetEnemysRemaining(GetEnemysRemaining() - 1);*/
-//		}
-//	}
-//}
+void
+CLevel::ProcessBulletPlayerCollision()
+{
+	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+	{
+		//If enemy bullet collides with player entity
+		if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pPlayer))
+		{
+			//Hide enemy, erase bullet, decrease enemy count
+			m_pPlayer->SetPlayerAlive(false);
+			delete m_vecEnemyBullets[j];
+			m_vecEnemyBullets[j] = 0;
+			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
+
+			m_pPlayer->SetPlayerLives(m_pPlayer->GetPlayerLives() - 1);
+			if (m_pPlayer->GetPlayerLives() == 0)
+			{
+				CGame::GetInstance().GameOverLost();
+			}
+		}
+	}
+}
 
 void
 CLevel::ProcessCheckForWin()
@@ -392,7 +397,7 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	bool lose = false;
 
 	double elapsed_secs = double(m_cEndEnemyMove - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
-	if (elapsed_secs > GetLVLEnemySpeed() || elapsed_secs < 0.0f)
+	if (elapsed_secs > GetLVLEnemyMoveDelay() || elapsed_secs < 0.0f)
 	{
 		m_cBeginEnemyMove = clock();
 
@@ -446,7 +451,6 @@ void
 CLevel::SetEnemysRemaining(int _i)
 {
 	m_iEnemysRemaining = _i;
-	UpdateScoreText();
 }
 
 void CLevel::SetLVLEnemyShootingDelay(float _f)
@@ -467,22 +471,19 @@ CLevel::DrawScore()
 	const int kiY = 20;
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(27, 233, 56));
-	std::string line = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+	line = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+	m_strScore = "SCORE: ";
+	m_strScore += ToString(m_pPlayer->GetPlayerScore());
 	TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
 
 	SetTextColor(hdc, RGB(27, 233, 56));
 	TextOutA(hdc, 0, m_iHeight - 135, line.c_str(), static_cast<int>(line.size()));
 
-}
-void
-CLevel::UpdateScoreText()
-{
-	m_strScore = "SCORE: ";
-
-	m_strScore += ToString(m_pPlayer->GetPlayerScore());
+	m_strPlayerLives = "Player Lives: ";
+	m_strPlayerLives += ToString(m_pPlayer->GetPlayerLives());
+	TextOutA(hdc, 20, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
 
 }
-
 void
 CLevel::DrawFPS()
 {
@@ -502,7 +503,7 @@ CLevel::DrawFPS()
 	//SelectObject(hdc, font);
 
 	SetTextColor(hdc, RGB(27, 233, 56));
-	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 100, m_iHeight - 70);
+	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 30, m_iHeight - 80);
 
 	//HFONT font2 = CreateFont(
 	//	40,	 //Height
@@ -540,12 +541,12 @@ float CLevel::GetLVLPlayerBulletSpeed()
 	return m_fLVLPlayerBulletVelocity;
 }
 
-void CLevel::SetLVLEnemySpeed(float _f)
+void CLevel::SetLVLEnemyMoveDelay(float _f)
 {
-	m_fLVLEnemySpeed = _f;
+	m_fLVLEnemyMoveDelay = _f;
 }
 
-float CLevel::GetLVLEnemySpeed()
+float CLevel::GetLVLEnemyMoveDelay()
 {
-	return m_fLVLEnemySpeed;
+	return m_fLVLEnemyMoveDelay;
 }

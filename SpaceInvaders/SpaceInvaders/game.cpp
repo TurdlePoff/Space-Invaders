@@ -13,27 +13,25 @@
 //
 
 // Library Includes
+#include <windows.h>
 
 // Local Includes
-#include "Clock.h"
-#include "BackBuffer.h"
 #include "utils.h"
-#include "sprite.h"
-
+#include "BackBuffer.h"
 
 // This Include
 #include "Game.h"
 
 // Static Variables
 CGame* CGame::s_pGame = 0;
+CLevel* CGame::m_pLevel = 0;
 
 // Static Function Prototypes
 
 // Implementation
 
 CGame::CGame()
-: m_pLevel(0)
-, m_pClock(0)
+: m_pClock(0)
 , m_hApplicationInstance(0)
 , m_hMainWindow(0)
 , m_pBackBuffer(0)
@@ -79,9 +77,8 @@ CGame::Draw()
 {
     m_pBackBuffer->Clear();
 
-// Do all the game’s drawing here...
+	// Do all the game’s drawing here...
 	m_pLevel->Draw();
-
 
     m_pBackBuffer->Present();
 }
@@ -118,6 +115,13 @@ CGame::GetInstance()
 
     return (*s_pGame);
 }
+
+CLevel&
+CGame::GetLevelInstance()
+{
+	return (*m_pLevel);
+}
+
 
 void 
 CGame::DestroyInstance()
@@ -157,3 +161,10 @@ CGame::GameOverLost()
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 	PostQuitMessage(0);
 }
+
+//void CGame::UpdateLevel(float pSpeed, float pBSpeed, bool pInv, float eSpeed, float eBSpeed, float eMSpeed)
+//{
+//	CLevel& level = GetLevelInstance();
+//	level.SetLVLPlayerBulletSpeed(pBSpeed);
+//}
+

@@ -185,6 +185,8 @@
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
+    <Image Include="..\Sprites\spritesSheet.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask.bmp" />
     <Image Include="Sprites\spritesSheet.bmp" />
     <Image Include="Sprites\spritesSheetMask.bmp" />
   </ItemGroup>

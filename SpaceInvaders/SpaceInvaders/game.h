@@ -16,11 +16,12 @@
 #define __GAME_H__
 
 // Library Includes
-#include <windows.h>
+#include <Windows.h>
 
 // Local Includes
 #include "clock.h"
 #include "level.h"
+#include "utils.h"
 
 // Types
 
@@ -49,6 +50,7 @@ public:
     HWND GetWindow();
 
     // Singleton Methods
+	static CLevel& GetLevelInstance();
     static CGame& GetInstance();
     static void DestroyInstance();
 
@@ -64,7 +66,7 @@ public:
 
 protected:
     CClock* m_pClock;
-	CLevel* m_pLevel;
+	static CLevel* m_pLevel;
 
     CBackBuffer* m_pBackBuffer;
 

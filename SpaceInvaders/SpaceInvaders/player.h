@@ -47,6 +47,8 @@ public:
 	void IncreasePlayerScore(int _points);
 	void SetIsShooting(bool _isShooting);
 	bool GetIsShooting();
+	int GetPlayerLives();
+	void SetPlayerLives(int _i);
 
 protected:
 

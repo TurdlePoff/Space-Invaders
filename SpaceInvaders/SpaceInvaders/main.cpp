@@ -13,21 +13,75 @@
 //
 
 //Library Includes
-#include <windows.h>
-#include <windowsx.h>
 
 //Local Includes
-#include "Game.h"
-#include "Clock.h"
+#include "game.h"
+#include "resource.h"
 #include "utils.h"
+#include <windows.h>
 
 #define WINDOW_CLASS_NAME L"BSENGGFRAMEWORK"
+HWND g_hDebugWindow;
+CGame& g_rGame = CGame::GetInstance();
+
+template<typename T>
+std::wstring ToWideString(const T& _value)
+{
+	std::wstringstream theStream;
+	theStream << _value << std::ends;
+	return (theStream.str());
+}
+
+float ReadFromEditBox(HWND _hDlg, int _iResourceID)
+{
+	wchar_t _pcValue[10];
+	ZeroMemory(_pcValue, 10);
+	GetDlgItemText(_hDlg, _iResourceID, _pcValue, 10);
+	if (_pcValue[0] == 0)
+	{
+		return 0.0f;
+	}
+	else
+	{
+		return static_cast<float>(_wtof(_pcValue));
+	}
+}
+
+void WriteToEditBox(HWND _hDlg, int _iResourceID, float _fValue)
+{
+	std::wstring _strValue = ToWideString(_fValue);
+	SetDlgItemText(_hDlg, _iResourceID, _strValue.c_str());
+}
 
 LRESULT CALLBACK
-WindowProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
+WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 {
+	CLevel& g_rLevel = CGame::GetLevelInstance();
+
     switch (_uiMsg)
     {
+		case WM_KEYDOWN:
+		{
+			switch (_wParam)
+			{
+			case VK_ESCAPE:
+			{
+				//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
+
+
+				WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, g_rLevel.GetLVLPlayerBulletSpeed());
+				WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLVLEnemyMoveDelay());
+				WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLVLEnemyBulletSpeed());
+
+				ShowWindow(g_hDebugWindow, SW_NORMAL);
+				break;
+			}
+			default:
+				break;
+			return (0);
+			}
+		}
+		break;
         case WM_DESTROY:
         {
             PostQuitMessage(0);
@@ -39,7 +93,58 @@ WindowProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
         default:break;
     } 
 
-    return (DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam));
+    return (DefWindowProc(_hwnd, _uiMsg, _wParam, _lParam));
+}
+
+LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
+	UINT _msg,
+	WPARAM _wparam,
+	LPARAM _lparam)
+{
+	CLevel& g_rLevel = CGame::GetLevelInstance();
+
+	switch (_msg)
+	{
+		case WM_COMMAND:
+		{
+			switch (LOWORD(_wparam))
+			{
+				case IDOK:
+				{
+					//level stuff
+
+					g_rLevel.SetLVLPlayerBulletSpeed(ReadFromEditBox(_hwnd, IDC_PBULSPD));
+					
+					g_rLevel.SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
+					g_rLevel.SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
+
+					//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
+
+					ShowWindow(_hwnd, SW_HIDE);
+					return TRUE;
+					break;
+				}
+				case IDCANCEL:
+				{
+					ShowWindow(_hwnd, SW_HIDE);
+					return TRUE;
+					break;
+				}
+				default:
+					break;
+			}
+			break;
+		}
+		case WM_CLOSE:
+		{
+			ShowWindow(_hwnd, SW_HIDE);
+			return TRUE;
+			break;
+		}
+	default:
+		break;
+	}
+	return FALSE;
 }
 
 HWND 
@@ -100,10 +205,10 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
     const int kiHeight = 800;
 
     HWND hwnd = CreateAndRegisterWindow(_hInstance, kiWidth, kiHeight, L"Vivian - Space Invaders");
+	g_hDebugWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_DEBUGWINDOW), hwnd, DebugDlgProc);
 
-    CGame& rGame = CGame::GetInstance();
 
-    if (!rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
+    if (!g_rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
     {
         // Failed
         return (0);
@@ -118,7 +223,7 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
         }
         else
         {
-            rGame.ExecuteOneFrame(); //HEREEEEEEEEEEEE is where the game stuff gets called
+			g_rGame.ExecuteOneFrame(); //HEREEEEEEEEEEEE is where the game stuff gets called
         }
     }
 
