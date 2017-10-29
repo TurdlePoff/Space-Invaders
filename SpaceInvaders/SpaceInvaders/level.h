@@ -58,6 +58,8 @@ public:
 	float GetLVLPlayerBulletSpeed();
 	void SetLVLPlayerMovementSpeed(float _f);
 	float GetLVLPlayerMovementSpeed();
+	void SetLVLPlayerInvincibility(bool _b);
+	bool GetLVLPlayerInvincibility();
 
 protected:
     void ProcessBulletEnemyCollision();
@@ -112,8 +114,11 @@ protected:
 
 	float m_fLVLEnemyShootingDelay;
 	float m_fLVLEnemyBulletVelocity;
-	float m_fLVLPlayerBulletVelocity;
 	float m_fLVLEnemyMoveDelay;
+
+	float m_fLVLPlayerBulletVelocity;
+	float m_fLVLPlayerSpeed;
+	bool m_fLVLPlayerInvincibility;
 
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;

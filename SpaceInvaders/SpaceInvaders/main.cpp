@@ -118,6 +118,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 					g_rLevel.SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
 					g_rLevel.SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
 
+					g_rLevel.SetLVLPlayerInvincibility(IsDlgButtonChecked(g_hDebugWindow, IDC_PINV));
 					//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 
 					ShowWindow(_hwnd, SW_HIDE);

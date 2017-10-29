@@ -50,6 +50,8 @@ CLevel::CLevel()
 	, m_fLVLPlayerBulletVelocity(6.0f)
 	, m_fLVLEnemyShootingDelay(2.0f)
 	, m_fLVLEnemyMoveDelay(1.0f)
+	, m_fLVLPlayerSpeed(6.0f)
+	, m_fLVLPlayerInvincibility(false)
 {
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -342,10 +344,14 @@ CLevel::ProcessBulletPlayerCollision()
 			m_vecEnemyBullets[j] = 0;
 			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 
-			m_pPlayer->SetPlayerLives(m_pPlayer->GetPlayerLives() - 1);
-			if (m_pPlayer->GetPlayerLives() == 0)
+			if (!GetLVLPlayerInvincibility())
 			{
-				CGame::GetInstance().GameOverLost();
+				m_pPlayer->SetPlayerLives(m_pPlayer->GetPlayerLives() - 1);
+
+				if (m_pPlayer->GetPlayerLives() == 0)
+				{
+					CGame::GetInstance().GameOverLost();
+				}
 			}
 		}
 	}
@@ -481,6 +487,10 @@ CLevel::DrawScore()
 
 	m_strPlayerLives = "Player Lives: ";
 	m_strPlayerLives += ToString(m_pPlayer->GetPlayerLives());
+	if (GetLVLPlayerInvincibility())
+	{
+		m_strPlayerLives += "                                                                     YOU ARE CURRENTLY INVINCIBLE";
+	}
 	TextOutA(hdc, 20, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
 
 }
@@ -539,6 +549,26 @@ void CLevel::SetLVLPlayerBulletSpeed(float _f)
 float CLevel::GetLVLPlayerBulletSpeed()
 {
 	return m_fLVLPlayerBulletVelocity;
+}
+
+void CLevel::SetLVLPlayerMovementSpeed(float _f)
+{
+	m_fLVLPlayerSpeed = _f;
+}
+
+float CLevel::GetLVLPlayerMovementSpeed()
+{
+	return m_fLVLPlayerSpeed;
+}
+
+void CLevel::SetLVLPlayerInvincibility(bool _b)
+{
+	m_fLVLPlayerInvincibility = _b;
+}
+
+bool CLevel::GetLVLPlayerInvincibility()
+{
+	return m_fLVLPlayerInvincibility;
 }
 
 void CLevel::SetLVLEnemyMoveDelay(float _f)
