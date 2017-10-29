@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-#include <vld.h>
+//#include <vld.h>
 
 // Local Includes
 #include "game.h"
