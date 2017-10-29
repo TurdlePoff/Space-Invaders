@@ -13,6 +13,7 @@
 //
 
 // Library Includes
+#include <vld.h>
 
 // Local Includes
 #include "Game.h"
@@ -23,6 +24,7 @@
 #include "backbuffer.h"
 #include "framecounter.h"
 #include "background.h"
+
 // This Include
 #include "Level.h"
 
@@ -47,6 +49,7 @@ CLevel::CLevel()
 	, m_fLVLEnemyBulletVelocity(1.0f)
 	, m_fLVLPlayerBulletVelocity(6.0f)
 	, m_fLVLEnemyShootingDelay(2.0f)
+	, m_fLVLEnemySpeed(1.0f)
 {
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -61,13 +64,11 @@ CLevel::~CLevel()
 		m_vecEnemies.pop_back();
 
 		delete pEnemy;
+		pEnemy = 0;
 	}
 
 	delete m_pPlayer;
 	m_pPlayer = 0;
-
-	/*delete m_pBullet;
-	m_pBullet = 0;*/
 
 	while (m_vecPlayerBullets.size() > 0)
 	{
@@ -76,6 +77,17 @@ CLevel::~CLevel()
 		m_vecPlayerBullets.pop_back();
 
 		delete pBullet;
+		pBullet = 0;
+	}
+
+	while (m_vecEnemyBullets.size() > 0)
+	{
+		CBullet* pEnemyBullet = m_vecEnemyBullets[m_vecEnemyBullets.size() - 1];
+
+		m_vecEnemyBullets.pop_back();
+
+		delete pEnemyBullet;
+		pEnemyBullet = 0;
 	}
 
 	delete m_fpsCounter;
@@ -103,7 +115,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pPlayer = new CPlayer();
 	VALIDATE(m_pPlayer->Initialise());
 	m_pPlayer->SetX((float)m_iWidth / 2);
-	m_pPlayer->SetY((float)m_iHeight - 100.0f);
+	m_pPlayer->SetY((float)m_iHeight - 150.0f);
 	m_pPlayer->SetPlayerAlive(true);
 
 	//Enemy initialisation
@@ -140,7 +152,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 
 		pEnemy->SetX(static_cast<float>(iCurrentX));
 		pEnemy->SetY(static_cast<float>(iCurrentY));
-		pEnemy->SetVelocityX(0.3f);
+		pEnemy->SetVelocityX(20.0f);
 		iCurrentX += static_cast<int>(pEnemy->GetWidth()) + kiGap;
 
 		if (iCurrentX > 730)
@@ -164,10 +176,6 @@ void
 CLevel::Draw()
 {
 	m_pBackground->Draw();
-	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-	{
-		m_vecEnemies[i]->Draw();
-	}
 
 	m_pPlayer->Draw();
 
@@ -181,6 +189,11 @@ CLevel::Draw()
 		m_vecEnemyBullets[j]->Draw();
 	}
 
+	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+	{
+		m_vecEnemies[i]->Draw();
+	}
+
 	DrawScore();
 	DrawFPS();
 }
@@ -191,7 +204,7 @@ CLevel::Process(float _fDeltaTick)
 
 	m_pBackground->Process(_fDeltaTick);
 	m_pPlayer->Process(_fDeltaTick);
-
+	EnemyMovement(_fDeltaTick);
 
 	////TODO: bullet/ball code
 
@@ -221,19 +234,19 @@ CLevel::Process(float _fDeltaTick)
 	ProcessCheckForWin();
 	ProcessBulletBounds();
 
-	EnemyMovement(_fDeltaTick);
 
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
 void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 {
-	pBullet = new CBullet();
 	const float fBulletVelX = 0.0f;
 	float fBulletVelY = -bulletSpeed;
 
 	if (isPlayer)
 	{
+		pBullet = new CBullet();
+
 		pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
 		pBullet->SetX(m_pPlayer->GetX());
 		pBullet->SetY(m_pPlayer->GetY() - 20.0f);
@@ -249,6 +262,8 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 
 			if (m_vecEnemies[randEnemy]->GetCanShoot() && !m_vecEnemies[randEnemy]->IsHit())
 			{
+				pBullet = new CBullet();
+
 				fBulletVelY *= -1;
 				pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
 				pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
@@ -289,6 +304,9 @@ CLevel::ProcessBulletEnemyCollision()
 					//TODO: SET SPRITE DEAD
 					m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
+					delete m_vecPlayerBullets[j];
+					m_vecPlayerBullets[j] = 0;
+
 					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
 					m_pPlayer->SetIsShooting(false);
 
@@ -302,22 +320,24 @@ CLevel::ProcessBulletEnemyCollision()
 	}
 }
 
-//void
-//CLevel::ProcessBulletPlayerCollision()
-//{
-//	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
-//	{
-//		//If bullet collides with enemy entity
-//		if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pPlayer))
-//		{
-//			//Hide enemy, erase bullet, decrease enemy count
-//			m_pPlayer->SetPlayerAlive(false);
-//			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
-//			if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
-//				SetEnemysRemaining(GetEnemysRemaining() - 1);
-//		}
-//	}
-//}
+
+void
+CLevel::ProcessBulletPlayerCollision()
+{
+	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
+	{
+		//If bullet collides with enemy entity
+		if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pPlayer))
+		{
+			//Hide enemy, erase bullet, decrease enemy count
+			m_pPlayer->SetPlayerAlive(false);
+			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
+
+			/*if (m_pPlayer[i]->m_eSpriteType != ESprite::ENEMYSHIP)
+				SetEnemysRemaining(GetEnemysRemaining() - 1);*/
+		}
+	}
+}
 
 void
 CLevel::ProcessCheckForWin()
@@ -340,6 +360,8 @@ CLevel::ProcessBulletBounds()
 	{
 		if (m_vecPlayerBullets[j]->GetY() < 0)
 		{
+			delete m_vecPlayerBullets[j];
+			m_vecPlayerBullets[j] = 0;
 			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
 			m_pPlayer->SetIsShooting(false);
 		}
@@ -347,43 +369,98 @@ CLevel::ProcessBulletBounds()
 
 	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
 	{
-		if (m_vecEnemyBullets[j]->GetY() > 800)
+		if (m_vecEnemyBullets[j]->GetY() > 135)
 		{
+			delete m_vecEnemyBullets[j];
+			m_vecEnemyBullets[j] = 0;
 			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 		}
 	}
 }
+
+//void
+//CLevel::EnemyMovement(float _fDeltaTick)
+//{
+//	bool wall = false;
+//	bool lose = false;
+//	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+//	{
+//		m_vecEnemies[i]->Process(_fDeltaTick);
+//
+//		if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 1000.0f)
+//			|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
+//		{
+//			wall = true;
+//		}
+//
+//		if (m_vecEnemies[i]->IsHit() == false)
+//		{
+//			if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() - (m_pPlayer->GetHeight() / 2))
+//				|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= m_iHeight-135.0f) //700 = lose line
+//			{
+//				lose = true;
+//			}
+//		}
+//	}
+//
+//	if (wall)
+//	{
+//		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+//		{
+//			wall = false;
+//			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY() + 50); //Increment level down by 50
+//			m_vecEnemies[i]->SetVelocityX(m_vecEnemies[i]->GetVelocityX() *-1);
+//			m_vecEnemies[i]->Process(_fDeltaTick);
+//		}
+//	}
+//
+//	if (lose)
+//	{
+//		CGame::GetInstance().GameOverLost();
+//	}
+//}
 
 void
 CLevel::EnemyMovement(float _fDeltaTick)
 {
 	bool wall = false;
 	bool lose = false;
-	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+
+	
+
+	double elapsed_secs = double(m_cEndBullet - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
+	if (elapsed_secs > GetLVLEnemySpeed() || elapsed_secs < 0.0f)
 	{
-		m_vecEnemies[i]->Process(_fDeltaTick);
+		m_cBeginEnemyMove = clock();
 
-		if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 1000.0f)
-			|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
+		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
 		{
-			wall = true;
-		}
+			m_vecEnemies[i]->Process(_fDeltaTick);
 
-		if (m_vecEnemies[i]->IsHit() == false)
-		{
-			if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() + (m_pPlayer->GetHeight() / 2))
-				|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 700.0f) //700 = lose line
+			if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 990.0f)
+				|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
 			{
-				lose = true;
+				wall = true;
+			}
+
+			if (m_vecEnemies[i]->IsHit() == false) //if alive
+			{
+				if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() + (m_pPlayer->GetHeight() / 2))
+					|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 650.0f) //700 = lose line
+				{
+					lose = true;
+				}
 			}
 		}
 	}
 
+	m_cEndEnemyMove = clock();
+
 	if (wall)
 	{
+		wall = false;
 		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
 		{
-			wall = false;
 			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY() + 50); //Increment level down by 50
 			m_vecEnemies[i]->SetVelocityX(m_vecEnemies[i]->GetVelocityX() *-1);
 			m_vecEnemies[i]->Process(_fDeltaTick);
@@ -423,28 +500,62 @@ void
 CLevel::DrawScore()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-	const int kiX = 100;
-	const int kiY = m_iHeight - 100;
+	const int kiX = 20;
+	const int kiY = 20;
 	SetBkMode(hdc, TRANSPARENT);
-	SetTextColor(hdc, RGB(255, 255, 255));
-
+	SetTextColor(hdc, RGB(27, 233, 56));
+	std::string line = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
 	TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
+
+	SetTextColor(hdc, RGB(27, 233, 56));
+	TextOutA(hdc, 0, m_iHeight - 135, line.c_str(), static_cast<int>(line.size()));
+
 }
 void
 CLevel::UpdateScoreText()
 {
-	m_strScore = "Enemys Remaining: ";
+	m_strScore = "SCORE: ";
 
-	m_strScore += ToString(GetEnemysRemaining());
+	m_strScore += ToString(m_pPlayer->GetPlayerScore());
+
 }
 
 void
 CLevel::DrawFPS()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-	SetTextColor(hdc, RGB(255, 255, 255));
-	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 100, m_iHeight - 90);
+	//HFONT font = CreateFont(
+	//	0,	 //Height
+	//	0,  //Width
+	//	0,	 //Rotation
+	//	0,	 //Orientation
+	//	FW_EXTRALIGHT, //Weight
+	//	false, //Italic
+	//	false, //Underline
+	//	false, //Crossed out
+	//	DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+	//	DEFAULT_QUALITY, DEFAULT_PITCH, L"Arial");
+
+	//SelectObject(hdc, font);
+
+	SetTextColor(hdc, RGB(27, 233, 56));
+	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 100, m_iHeight - 70);
+
+	//HFONT font2 = CreateFont(
+	//	40,	 //Height
+	//	15,  //Width
+	//	0,	 //Rotation
+	//	0,	 //Orientation
+	//	FW_EXTRALIGHT, //Weight
+	//	false, //Italic
+	//	false, //Underline
+	//	false, //Crossed out
+	//	DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+	//	DEFAULT_QUALITY, DEFAULT_PITCH, L"Arial");
+	//SelectObject(hdc, font2);
+
 }
+
 
 void CLevel::SetLVLEnemyBulletSpeed(float _f)
 {
@@ -464,4 +575,14 @@ void CLevel::SetLVLPlayerBulletSpeed(float _f)
 float CLevel::GetLVLPlayerBulletSpeed()
 {
 	return m_fLVLPlayerBulletVelocity;
+}
+
+void CLevel::SetLVLEnemySpeed(float _f)
+{
+	m_fLVLEnemySpeed = _f;
+}
+
+float CLevel::GetLVLEnemySpeed()
+{
+	return m_fLVLEnemySpeed;
 }

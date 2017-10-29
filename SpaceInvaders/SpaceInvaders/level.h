@@ -75,6 +75,8 @@ protected:
 	float GetLVLEnemyBulletSpeed();
 	void SetLVLPlayerBulletSpeed(float _f);
 	float GetLVLPlayerBulletSpeed();
+	void SetLVLEnemySpeed(float _f);
+	float GetLVLEnemySpeed();
 
 private:
     CLevel(const CLevel& _kr);
@@ -95,6 +97,9 @@ protected:
 	clock_t m_cBeginBullet;
 	clock_t m_cEndBullet;
 
+	clock_t m_cBeginEnemyMove;
+	clock_t m_cEndEnemyMove;
+
 	CFPSCounter* m_fpsCounter;
 
     int m_iWidth;
@@ -103,15 +108,13 @@ protected:
 	float m_fLVLEnemyShootingDelay;
 	float m_fLVLEnemyBulletVelocity;
 	float m_fLVLPlayerBulletVelocity;
-	float m_fLVLEnemyVelocity;
+	float m_fLVLEnemySpeed;
 
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;
 	int m_iEnemyContainerWidth;
 	int m_iEnemyContainerHeight;
 
-	clock_t m_cBeginEnemyMove;
-	clock_t m_cEndEnemyMove;
 
     int m_iEnemysRemaining;
 
