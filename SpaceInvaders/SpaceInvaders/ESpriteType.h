@@ -11,7 +11,12 @@ enum class ESprite
 	BACKGROUND,
 	BARRICADE,
 	BULLET,
-	PLAYER
+	PLAYER,
+	DEADPLAYER,
+	DEADTOP,
+	DEADMED,
+	DEADBOT
+
 };
 
 #endif    // __ESPRITE_H__

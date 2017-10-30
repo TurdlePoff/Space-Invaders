@@ -49,8 +49,6 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
-	ESprite GetSpriteType();
-
 	float GetVelocityX() const;
 	float GetVelocityY() const;
 	void SetVelocityX(float _fX);
@@ -59,6 +57,8 @@ public:
 	void SetCanShoot(bool _b);
 	bool GetCanShoot();
 
+	void SetDead(bool _b);
+	bool IsDead() const;
 
     void SetHit(bool _b);
     bool IsHit() const;
@@ -72,8 +72,8 @@ private:
     CEnemy(const CEnemy& _kr);
     CEnemy& operator= (const CEnemy& _kr);
 	int m_iPoints;
-	ESprite m_eSpriteType;
 	bool m_bCanShoot;
+	bool m_bIsDead;
 
 };
 

@@ -58,25 +58,6 @@ CPlayer::Draw()
 void
 CPlayer::Process(float _fDeltaTick)
 {
-    
-	float fHalfPlayerW = m_pSprite->GetWidth() / 2.0f;
-
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-	{
-		m_fX += 2.0f;
-	}
-	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-	{ 
-		m_fX -= 2.0f;
-	}
-	if (m_fX - fHalfPlayerW <= 0)
-	{
-		m_fX = fHalfPlayerW;
-	}
-	else if (m_fX + m_pSprite->GetWidth() >= 1000.0f)
-	{
-		m_fX = 1000.0f - m_pSprite->GetWidth();
-	}
 	
 	CEntity::Process(_fDeltaTick);
 }
@@ -120,4 +101,14 @@ int CPlayer::GetPlayerLives()
 void CPlayer::SetPlayerLives(int _i)
 {
 	m_iPlayerLives = _i;
+}
+
+float CPlayer::GetPlayerSpeed()
+{
+	return m_iPlayerSpeed;
+}
+
+void CPlayer::SetPlayerLivesSpeed(float _f)
+{
+	m_iPlayerSpeed = _f;
 }

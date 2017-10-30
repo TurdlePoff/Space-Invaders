@@ -63,10 +63,26 @@ CSprite::CSprite(ESprite _eType)
 			m_iH = 32;
 			break;
 		}
+		case ESprite::DEADPLAYER:
+		{
+			m_iFramePositionH = 8;
+			m_iFramePositionW = 68;
+			m_iW = 60;
+			m_iH = 32;
+			break;
+		}
 		case ESprite::ENEMYMED:
 		{
 			m_iFramePositionH = 48;
 			m_iW = 44;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::DEADMED:
+		{
+			m_iFramePositionW = 112;
+			m_iFramePositionH = 48;
+			m_iW = 52;
 			m_iH = 32;
 			break;
 		}
@@ -77,10 +93,26 @@ CSprite::CSprite(ESprite _eType)
 			m_iH = 32;
 			break;
 		}
+		case ESprite::DEADBOT:
+		{
+			m_iFramePositionW = 104;
+			m_iFramePositionH = 48;
+			m_iW = 52;
+			m_iH = 32;
+			break;
+		}
 		case ESprite::ENEMYTOP:
 		{
 			m_iFramePositionH = 128;
 			m_iW = 32;
+			m_iH = 32;
+			break;
+		}
+		case ESprite::DEADTOP:
+		{
+			m_iFramePositionW = 88;
+			m_iFramePositionH = 128;
+			m_iW = 52;
 			m_iH = 32;
 			break;
 		}

@@ -41,14 +41,22 @@ public:
 
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
+
 	void SetPlayerAlive(bool _isAlive);
 	bool GetIsPlayerAlive();
+
 	int GetPlayerScore();
+
 	void IncreasePlayerScore(int _points);
+
 	void SetIsShooting(bool _isShooting);
 	bool GetIsShooting();
+
 	int GetPlayerLives();
 	void SetPlayerLives(int _i);
+
+	float GetPlayerSpeed();
+	void SetPlayerLivesSpeed(float _i);
 
 protected:
 
@@ -62,6 +70,7 @@ private:
 	int m_iPlayerLives;
 	bool m_bCurrentlyAlive;
 	bool m_bIsShooting;
+	float m_iPlayerSpeed;
 
 public:
 

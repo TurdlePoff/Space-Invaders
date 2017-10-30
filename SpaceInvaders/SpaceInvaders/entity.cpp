@@ -45,7 +45,7 @@ CEntity::~CEntity()
 bool
 CEntity::Initialise(ESprite _eType)
 {
-    m_pSprite = new CSprite(_eType);
+	SetSpriteType(_eType);
     VALIDATE(m_pSprite->Initialise());
 
     return (true);
@@ -87,6 +87,23 @@ bool CEntity::IsCollidingWith(CEntity& e)
 	}
 
 	return colliding;
+}
+
+ESprite CEntity::GetSpriteType()
+{
+	return m_eSpriteType;
+}
+
+void CEntity::SetSpriteType(ESprite _e)
+{
+	m_eSpriteType = _e;
+	if (m_pSprite != NULL)
+	{
+		/*delete m_pSprite;
+		m_pSprite = 0;*/
+	}
+	m_pSprite = new CSprite(m_eSpriteType);
+	m_pSprite->Initialise();
 }
 
 float 

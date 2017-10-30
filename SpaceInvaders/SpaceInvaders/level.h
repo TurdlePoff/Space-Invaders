@@ -74,11 +74,11 @@ protected:
     void DrawScore();
 	void DrawFPS();
 
+	void ProcessPlayerMovement();
 	void EnemyMovement(float _fDeltaTick);
 
     void SetEnemysRemaining(int _i);
 
-	
 
 
 	CPlayer* GetPlayer() const;

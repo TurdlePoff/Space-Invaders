@@ -50,7 +50,7 @@ CLevel::CLevel()
 	, m_fLVLPlayerBulletVelocity(6.0f)
 	, m_fLVLEnemyShootingDelay(2.0f)
 	, m_fLVLEnemyMoveDelay(1.0f)
-	, m_fLVLPlayerSpeed(6.0f)
+	, m_fLVLPlayerSpeed(4.0f)
 	, m_fLVLPlayerInvincibility(false)
 {
 	m_cEndEnemyMove = clock();
@@ -213,6 +213,7 @@ CLevel::Process(float _fDeltaTick)
 
 	m_pBackground->Process(_fDeltaTick);
 	m_pPlayer->Process(_fDeltaTick);
+	ProcessPlayerMovement();
 	EnemyMovement(_fDeltaTick);
 
 	////TODO: bullet/ball code
@@ -393,6 +394,29 @@ CLevel::ProcessBulletBounds()
 			m_vecEnemyBullets[j] = 0;
 			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 		}
+	}
+}
+
+void 
+CLevel::ProcessPlayerMovement()
+{
+	float fHalfPlayerW = m_pPlayer->GetWidth()/2.0f; //->GetSpriteType()->GetWidth() / 2.0f;
+
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	{
+		m_pPlayer->SetX(m_pPlayer->GetX() + GetLVLPlayerMovementSpeed());
+	}
+	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+	{
+		m_pPlayer->SetX(m_pPlayer->GetX() - GetLVLPlayerMovementSpeed());
+	}
+	if (m_pPlayer->GetX() - fHalfPlayerW <= 0)
+	{
+		m_pPlayer->SetX(fHalfPlayerW);
+	}
+	else if (m_pPlayer->GetX() + m_pPlayer->GetWidth() >= 1000.0f)
+	{
+		m_pPlayer->SetX(1000.0f - m_pPlayer->GetWidth());
 	}
 }
 

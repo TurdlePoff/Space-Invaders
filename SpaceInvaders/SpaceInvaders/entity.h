@@ -30,19 +30,6 @@ class CSprite;
 
 class CEntity
 {
-	// Member Functions
-
-	// Member Variables
-public:
-protected:
-	CSprite* m_pSprite;
-	
-	float m_fX;
-	float m_fY;
-	float m_fWidth;
-	float m_fHeight;
-
-private:
 public:
 	CEntity();
 	virtual ~CEntity();
@@ -64,13 +51,26 @@ public:
 	float GetHeight() const;
 	float GetWidth() const;
 
+
 	bool IsCollidingWith(CEntity& e);
+	ESprite GetSpriteType();
+	void SetSpriteType(ESprite m_eSpriteType);
+
+	void SetSpritePic(ESprite m_eSpriteType);
+
 
 protected:
+	CSprite* m_pSprite;
+
+	float m_fX;
+	float m_fY;
+	float m_fWidth;
+	float m_fHeight;
 
 private:
 	CEntity(const CEntity& _kr);
 	CEntity& operator= (const CEntity& _kr);
+	ESprite m_eSpriteType;
 
 };
 

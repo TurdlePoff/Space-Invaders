@@ -68,7 +68,7 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 			{
 				//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 
-
+				WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, g_rLevel.GetLVLPlayerMovementSpeed());
 				WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, g_rLevel.GetLVLPlayerBulletSpeed());
 				WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLVLEnemyMoveDelay());
 				WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLVLEnemyBulletSpeed());
@@ -113,12 +113,13 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 				{
 					//level stuff
 
+					g_rLevel.SetLVLPlayerMovementSpeed(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 					g_rLevel.SetLVLPlayerBulletSpeed(ReadFromEditBox(_hwnd, IDC_PBULSPD));
 					
 					g_rLevel.SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
 					g_rLevel.SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
 
-					g_rLevel.SetLVLPlayerInvincibility(IsDlgButtonChecked(g_hDebugWindow, IDC_PINV));
+					g_rLevel.SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
 					//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 
 					ShowWindow(_hwnd, SW_HIDE);

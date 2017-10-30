@@ -33,6 +33,7 @@ CEnemy::CEnemy()
 , m_fVelocityX(0.0f)
 , m_fVelocityY(0.0f)
 , m_bCanShoot(false)
+, m_bIsDead(false)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -44,7 +45,7 @@ CEnemy::~CEnemy()
 bool
 CEnemy::Initialise(ESprite _spriteType)
 {
-	m_eSpriteType = _spriteType;
+	SetSpriteType(_spriteType);
     VALIDATE(CEntity::Initialise(_spriteType));
 	int pointArray[5] = {10, 20, 30, 50, 100};
 
@@ -96,11 +97,6 @@ CEnemy::Process(float _fDeltaTick)
     }
 }
 
-ESprite CEnemy::GetSpriteType()
-{
-	return m_eSpriteType;
-}
-
 float
 CEnemy::GetVelocityX() const
 {
@@ -133,6 +129,16 @@ void CEnemy::SetCanShoot(bool _b)
 bool CEnemy::GetCanShoot()
 {
 	return m_bCanShoot;
+}
+
+void CEnemy::SetDead(bool _b)
+{
+	m_bIsDead = _b;
+}
+
+bool CEnemy::IsDead() const
+{
+	return m_bIsDead;
 }
 
 void
