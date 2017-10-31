@@ -21,7 +21,8 @@
 
 // Local Includes
 #include "entity.h"
-#include "ESpriteType.h"
+#include "EEnums.h"
+
 
 // Types
 

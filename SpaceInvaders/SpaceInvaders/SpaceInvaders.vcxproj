@@ -172,7 +172,7 @@
     <ClInclude Include="clock.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />
-    <ClInclude Include="ESpriteType.h" />
+    <ClInclude Include="EEnums.h" />
     <ClInclude Include="framecounter.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="level.h" />

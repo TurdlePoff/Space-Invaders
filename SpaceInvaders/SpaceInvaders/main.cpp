@@ -67,13 +67,16 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 			case VK_ESCAPE:
 			{
 				//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
+				if (g_rGame.GetGameState() == EGameState::GAME)
+				{
+					WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, (g_rLevel.GetLevelController().GetLVLPlayerMovementSpeed()));
+					WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, g_rLevel.GetLevelController().GetLVLPlayerBulletSpeed());
+					WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLevelController().GetLVLEnemyMoveDelay());
+					WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLevelController().GetLVLEnemyBulletSpeed());
 
-				WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, (g_rLevel.GetLevelController().GetLVLPlayerMovementSpeed()));
-				WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, g_rLevel.GetLevelController().GetLVLPlayerBulletSpeed());
-				WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLevelController().GetLVLEnemyMoveDelay());
-				WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLevelController().GetLVLEnemyBulletSpeed());
-
-				ShowWindow(g_hDebugWindow, SW_NORMAL);
+					ShowWindow(g_hDebugWindow, SW_NORMAL);
+				}
+				
 				break;
 			}
 			default:
@@ -112,23 +115,35 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 				case IDOK:
 				{
 					//level stuff
+					if (g_rGame.GetGameState() == EGameState::GAME)
+					{
+						g_rLevel.GetLevelController().SetLVLPlayerMovementSpeed(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
+						g_rLevel.GetLevelController().SetLVLPlayerBulletSpeed(ReadFromEditBox(_hwnd, IDC_PBULSPD));
 
-					g_rLevel.GetLevelController().SetLVLPlayerMovementSpeed(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
-					g_rLevel.GetLevelController().SetLVLPlayerBulletSpeed(ReadFromEditBox(_hwnd, IDC_PBULSPD));
-					
-					g_rLevel.GetLevelController().SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
-					g_rLevel.GetLevelController().SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
+						g_rLevel.GetLevelController().SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
+						g_rLevel.GetLevelController().SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
 
-					g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
-					//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
+						g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
+						//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 
-					ShowWindow(_hwnd, SW_HIDE);
+						ShowWindow(_hwnd, SW_HIDE);
+					}
 					return TRUE;
 					break;
 				}
 				case IDCANCEL:
 				{
 					ShowWindow(_hwnd, SW_HIDE);
+					return TRUE;
+					break;
+				}
+				case IDC_RETURN:
+				{
+					if (g_rGame.GetGameState() == EGameState::GAME)
+					{
+						g_rGame.SetGameState(EGameState::MENU);
+						ShowWindow(_hwnd, SW_HIDE);
+					}
 					return TRUE;
 					break;
 				}

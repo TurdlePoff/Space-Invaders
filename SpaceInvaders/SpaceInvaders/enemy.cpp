@@ -42,6 +42,13 @@ CEnemy::~CEnemy()
 {
 }
 
+/********************
+* CEnemy Initialiser: 
+* - Initialises enemy entity with specified sprite, 
+* - Sets each enemy with their own individual points
+* @parameter: _spriteType - Sprite to be initialised with entity
+* @return bool
+*********************/
 bool
 CEnemy::Initialise(ESprite _spriteType)
 {

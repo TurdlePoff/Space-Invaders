@@ -20,7 +20,7 @@
 // Library Includes
 
 // Local Includes
-#include "ESpriteType.h"
+#include "EEnums.h"
 // Types
 
 // Constants

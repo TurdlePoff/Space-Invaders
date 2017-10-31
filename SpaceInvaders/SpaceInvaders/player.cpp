@@ -6,10 +6,10 @@
 //
 // (c) 2016 Media Design School.
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "player.cpp"
+// Description	: Implemention file for Player 
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 
 // Library Includes
@@ -20,6 +20,7 @@
 
 // This Include
 #include "Player.h"
+#include "game.h"
 
 // Static Variables
 
@@ -27,6 +28,9 @@
 
 // Implementation
 
+/********************
+* CPlayer Contructor
+*********************/
 CPlayer::CPlayer()
 : m_iPlayerScore(0)
 , m_iPlayerLives(3)
@@ -36,11 +40,19 @@ CPlayer::CPlayer()
 
 }
 
+/********************
+* CPlayer Destructor
+*********************/
 CPlayer::~CPlayer()
 {
 
 }
 
+/********************
+* CPlayer Initialiser:
+* - Initialises player entity with specified sprite
+* @return bool
+*********************/
 bool
 CPlayer::Initialise()
 {
@@ -117,9 +129,48 @@ void CPlayer::SetPlayerLivesSpeed(float _f)
 void CPlayer::SetMenuSwitch()
 {
 	m_bAtStart = !m_bAtStart;
+	if (m_bAtStart)
+	{
+		SetX(1000 / 2 - 110);
+		SetY(750 / 2 - 50);
+	}
+	else
+	{
+		SetX(1000 / 2 - 100);
+		SetY(750 / 2 + 52);
+	}
 }
 
 bool CPlayer::GetMenuSwitch()
 {
 	return m_bAtStart;
+}
+
+void CPlayer::SwitchMenuItem(EGameState _state)
+{
+	SHORT keyState = GetKeyState(VK_CAPITAL);
+	bool isDown = keyState & 0x8000;
+
+	if (_state == EGameState::MENU)
+	{
+		if (!isDown)
+		{
+			if (GetAsyncKeyState(VK_RETURN))
+			{
+				if (m_bAtStart)
+				{
+					CGame::SetGameState(EGameState::GAME);
+				}
+				else
+				{
+					PostQuitMessage(0);
+				}
+			}
+			else if (GetAsyncKeyState(VK_UP) || (GetAsyncKeyState(VK_DOWN)))
+			{
+				SetMenuSwitch();
+			}
+		}
+		
+	}
 }

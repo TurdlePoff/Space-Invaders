@@ -23,6 +23,7 @@
 #include "level.h"
 #include "utils.h"
 #include "LevelLogic.h"
+#include "EEnums.h"
 
 // Types
 
@@ -30,11 +31,6 @@
 
 // Prototypes
 class CBackBuffer;
-
-enum EGameState
-{
-	MENU, GAME, LOST
-};
 
 class CGame
 {
@@ -57,10 +53,13 @@ public:
 
     // Singleton Methods
 	static CLevel& GetLevelInstance();
-	static CLevelLogic& GetLevelController();
 
     static CGame& GetInstance();
     static void DestroyInstance();
+
+	static void SetGameState(EGameState _state);
+	static EGameState GetGameState();
+	static EGameState m_eGameState;
 
 protected:
 
@@ -68,7 +67,6 @@ private:
     CGame();
     CGame(const CGame& _kr);
     CGame& operator= (const CGame& _kr);
-	EGameState m_gameState;
 
 
     // Member Variables
@@ -78,6 +76,8 @@ protected:
     CClock* m_pClock;
 	static CLevel* m_pLevel;
 	CBackGround* m_pMenu;
+	CPlayer* m_pMenuNavigator;
+
     CBackBuffer* m_pBackBuffer;
 	
     //Application data

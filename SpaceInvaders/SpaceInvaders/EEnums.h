@@ -20,4 +20,10 @@ enum class ESprite
 
 };
 
+
+enum class EGameState
+{
+	MENU, GAME, LOST
+};
+
 #endif    // __ESPRITE_H__

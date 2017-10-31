@@ -23,6 +23,8 @@
 #include "entity.h"
 #include "Sprite.h"
 #include "bullet.h"
+#include "EEnums.h"
+#include <Windows.h>
 
 // Types
 
@@ -60,6 +62,7 @@ public:
 
 	void SetMenuSwitch();
 	bool GetMenuSwitch();
+	void SwitchMenuItem(EGameState _state);
 
 protected:
 

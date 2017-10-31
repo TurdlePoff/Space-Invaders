@@ -90,13 +90,13 @@
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESpriteType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuNavigator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

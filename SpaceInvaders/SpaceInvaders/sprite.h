@@ -20,7 +20,7 @@
 #include <vector>
 
 // Local Includes
-#include "ESpriteType.h"
+#include "EEnums.h"
 
 // Types
 

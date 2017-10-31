@@ -19,6 +19,7 @@
 #include "utils.h"
 #include "BackBuffer.h"
 #include "background.h"
+#include "player.h"
 
 // This Include
 #include "Game.h"
@@ -26,7 +27,7 @@
 // Static Variables
 CGame* CGame::s_pGame = 0;
 CLevel* CGame::m_pLevel = 0;
-
+EGameState CGame::m_eGameState = (EGameState::MENU);
 // Static Function Prototypes
 
 // Implementation
@@ -36,7 +37,6 @@ CGame::CGame()
 , m_hApplicationInstance(0)
 , m_hMainWindow(0)
 , m_pBackBuffer(0)
-, m_gameState(MENU)
 {
 
 }
@@ -66,20 +66,16 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
 
-	if (m_gameState == MENU)
+	if (m_eGameState == EGameState::MENU)
 	{
-
 		m_pMenu = new CBackGround();
 		VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
 		m_pMenu->SetX((float)1000 / 2);
 		m_pMenu->SetY((float)750 / 2);
-
-
-	}
-	else if (m_gameState == GAME)
-	{
-		m_pLevel = new CLevel();
-		VALIDATE(m_pLevel->Initialise(_iWidth, _iHeight));
+		m_pMenuNavigator = new CPlayer();
+		VALIDATE(m_pMenuNavigator->Initialise());
+		m_pMenuNavigator->SetX(1000 / 2 - 110);
+		m_pMenuNavigator->SetY(750 / 2 - 50);
 	}
 	
 
@@ -93,12 +89,12 @@ CGame::Draw()
 {
     m_pBackBuffer->Clear();
 	// Do all the game’s drawing here...
-	if (m_gameState == MENU)
+	if (m_eGameState == EGameState::MENU)
 	{
 		m_pMenu->Draw();
-
+		m_pMenuNavigator->Draw();
 	}
-	else if (m_gameState == GAME)
+	else if (m_eGameState == EGameState::GAME)
 	{
 		m_pLevel->Draw();
 	}
@@ -110,12 +106,19 @@ CGame::Process(float _fDeltaTick)
 {
     // Process all the game’s logic here.
 	//Load a new sprite.
-	if (m_gameState == MENU)
+	if (m_eGameState == EGameState::MENU)
 	{
+		Sleep(200);
 		m_pMenu->Process(_fDeltaTick);
-
+		m_pMenuNavigator->Process(_fDeltaTick);
+		m_pMenuNavigator->SwitchMenuItem(m_eGameState);
+		if (m_eGameState == EGameState::GAME)
+		{
+			m_pLevel = new CLevel();
+			m_pLevel->Initialise(1000, 800);
+		}
 	}
-	else if (m_gameState == GAME)
+	else if (m_eGameState == EGameState::GAME)
 	{
 		m_pLevel->Process(_fDeltaTick);
 	}
@@ -158,6 +161,16 @@ CGame::DestroyInstance()
     s_pGame = 0;
 }
 
+void CGame::SetGameState(EGameState _state)
+{
+	m_eGameState = _state;
+}
+
+EGameState CGame::GetGameState()
+{
+	return m_eGameState;
+}
+
 CBackBuffer* 
 CGame::GetBackBuffer()
 {
@@ -187,7 +200,8 @@ void
 CGame::GameOverLost()
 {
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
-	PostQuitMessage(0);
+	//PostQuitMessage(0);
+	SetGameState(EGameState::MENU);
 }
 
 //void CGame::UpdateLevel(float pSpeed, float pBSpeed, bool pInv, float eSpeed, float eBSpeed, float eMSpeed)
