@@ -76,6 +76,8 @@ protected:
     CClock* m_pClock;
 	static CLevel* m_pLevel;
 	CBackGround* m_pMenu;
+	CBackGround* m_pInstructions;
+
 	CPlayer* m_pMenuNavigator;
 
     CBackBuffer* m_pBackBuffer;

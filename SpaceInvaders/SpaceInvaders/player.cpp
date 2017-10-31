@@ -35,10 +35,11 @@ CPlayer::CPlayer()
 : m_iPlayerScore(0)
 , m_iPlayerLives(3)
 , m_bIsShooting(false)
-, m_bAtStart(true)
+, m_eMenuItem(STARTMENU)
 {
 
 }
+
 
 /********************
 * CPlayer Destructor
@@ -126,51 +127,76 @@ void CPlayer::SetPlayerLivesSpeed(float _f)
 	m_iPlayerSpeed = _f;
 }
 
-void CPlayer::SetMenuSwitch()
+void CPlayer::SetMenuSwitch(EMenuSelector _mItem)
 {
-	m_bAtStart = !m_bAtStart;
-	if (m_bAtStart)
+	m_eMenuItem = _mItem;
+	if (m_eMenuItem == STARTMENU)
 	{
-		SetX(1000 / 2 - 110);
-		SetY(750 / 2 - 50);
+		SetX(1000 / 2 - 155);
+		SetY(750 / 2 - 25);
 	}
-	else
+	else if (m_eMenuItem == INSTMENU)
 	{
-		SetX(1000 / 2 - 100);
-		SetY(750 / 2 + 52);
+		SetX(1000 / 2 - 275);
+		SetY(750 / 2 + 75);
+	}
+	else if (m_eMenuItem == EXITMENU)
+	{
+		SetX(1000 / 2 - 130);
+		SetY(750 / 2 + 180);
 	}
 }
 
-bool CPlayer::GetMenuSwitch()
+EMenuSelector CPlayer::GetMenuSwitch()
 {
-	return m_bAtStart;
+	return m_eMenuItem;
 }
 
 void CPlayer::SwitchMenuItem(EGameState _state)
 {
-	SHORT keyState = GetKeyState(VK_CAPITAL);
-	bool isDown = keyState & 0x8000;
-
 	if (_state == EGameState::MENU)
 	{
-		if (!isDown)
+		Sleep(90);
+		if (GetAsyncKeyState(VK_RETURN))
 		{
-			if (GetAsyncKeyState(VK_RETURN))
+			if (GetMenuSwitch() == STARTMENU)
 			{
-				if (m_bAtStart)
-				{
-					CGame::SetGameState(EGameState::GAME);
-				}
-				else
-				{
-					PostQuitMessage(0);
-				}
+				CGame::SetGameState(EGameState::GAME);
 			}
-			else if (GetAsyncKeyState(VK_UP) || (GetAsyncKeyState(VK_DOWN)))
+			else if(GetMenuSwitch() == INSTMENU)
 			{
-				SetMenuSwitch();
+				CGame::SetGameState(EGameState::INSTRUCTIONS);
+			}
+			else 
+			{
+				PostQuitMessage(0);
 			}
 		}
-		
+		else if (GetAsyncKeyState(VK_UP))
+		{
+			if (GetMenuSwitch() == INSTMENU)
+			{
+				SetMenuSwitch(STARTMENU);
+			}
+			else if (GetMenuSwitch() == EXITMENU)
+			{
+				SetMenuSwitch(INSTMENU);
+			}
+		}
+		else if (GetAsyncKeyState(VK_DOWN))
+		{
+			if (GetMenuSwitch() == STARTMENU)
+			{
+				SetMenuSwitch(INSTMENU);
+			}
+			else if (GetMenuSwitch() == INSTMENU)
+			{
+				SetMenuSwitch(EXITMENU);
+			}
+		}
+		else if (GetAsyncKeyState(VK_SPACE))
+		{
+			//Get rid of key press stored in game
+		}
 	}
 }

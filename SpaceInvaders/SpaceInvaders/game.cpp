@@ -14,7 +14,7 @@
 
 // Library Includes
 #include <windows.h>
-
+#include <iostream>
 // Local Includes
 #include "utils.h"
 #include "BackBuffer.h"
@@ -72,12 +72,17 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 		VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
 		m_pMenu->SetX((float)1000 / 2);
 		m_pMenu->SetY((float)750 / 2);
+
 		m_pMenuNavigator = new CPlayer();
 		VALIDATE(m_pMenuNavigator->Initialise());
-		m_pMenuNavigator->SetX(1000 / 2 - 110);
-		m_pMenuNavigator->SetY(750 / 2 - 50);
+		m_pMenuNavigator->SetX(1000 / 2 - 155);
+		m_pMenuNavigator->SetY(750 / 2 - 25);
+
+		m_pInstructions = new CBackGround();
+		VALIDATE(m_pInstructions->Initialise(ESprite::INSTRUCTIONS));
+		m_pInstructions->SetX((float)1000 / 2);
+		m_pInstructions->SetY((float)750 / 2);
 	}
-	
 
 	ShowCursor(true);
 
@@ -94,6 +99,10 @@ CGame::Draw()
 		m_pMenu->Draw();
 		m_pMenuNavigator->Draw();
 	}
+	else if (m_eGameState == EGameState::INSTRUCTIONS)
+	{
+		m_pInstructions->Draw();
+	}
 	else if (m_eGameState == EGameState::GAME)
 	{
 		m_pLevel->Draw();
@@ -108,7 +117,6 @@ CGame::Process(float _fDeltaTick)
 	//Load a new sprite.
 	if (m_eGameState == EGameState::MENU)
 	{
-		Sleep(200);
 		m_pMenu->Process(_fDeltaTick);
 		m_pMenuNavigator->Process(_fDeltaTick);
 		m_pMenuNavigator->SwitchMenuItem(m_eGameState);
@@ -117,6 +125,23 @@ CGame::Process(float _fDeltaTick)
 			m_pLevel = new CLevel();
 			m_pLevel->Initialise(1000, 800);
 		}
+		else if (m_eGameState == EGameState::INSTRUCTIONS)
+		{
+			m_pInstructions->Process(_fDeltaTick);
+		}
+	}
+	else if (m_eGameState == EGameState::INSTRUCTIONS)
+	{
+		Sleep(200);
+		if (GetAsyncKeyState(VK_RETURN))
+		{
+			SetGameState(EGameState::MENU);
+		}
+		else
+		{
+			m_pInstructions->Process(_fDeltaTick);
+		}
+
 	}
 	else if (m_eGameState == EGameState::GAME)
 	{
@@ -201,6 +226,7 @@ CGame::GameOverLost()
 {
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 	//PostQuitMessage(0);
+	std::cin.clear();
 	SetGameState(EGameState::MENU);
 }
 

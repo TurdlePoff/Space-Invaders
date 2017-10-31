@@ -32,6 +32,11 @@
 
 // Prototypes
 
+enum EMenuSelector
+{
+	STARTMENU, INSTMENU, EXITMENU
+};
+
 class CPlayer : public CEntity
 {
     // Member Functions
@@ -60,8 +65,8 @@ public:
 	float GetPlayerSpeed();
 	void SetPlayerLivesSpeed(float _i);
 
-	void SetMenuSwitch();
-	bool GetMenuSwitch();
+	void SetMenuSwitch(EMenuSelector _mItem);
+	EMenuSelector GetMenuSwitch();
 	void SwitchMenuItem(EGameState _state);
 
 protected:
@@ -76,7 +81,7 @@ private:
 	bool m_bCurrentlyAlive;
 	bool m_bIsShooting;
 	float m_iPlayerSpeed;
-	bool m_bAtStart;
+	EMenuSelector m_eMenuItem;
 
 public:
 

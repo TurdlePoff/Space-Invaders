@@ -43,9 +43,6 @@
     <ClCompile Include="LevelLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenuNavigator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backbuffer.h">
@@ -93,9 +90,6 @@
     <ClInclude Include="LevelLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuNavigator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -124,9 +118,18 @@
     <Image Include="..\Sprites\backgroundMask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\Sprites\spritesSheet.bmp" />
-    <Image Include="..\Sprites\spritesSheetMask.bmp" />
-    <Image Include="..\Sprites\mainmenu.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\instructions.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\mainmenu.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\spritesSheet.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvaders.rc">

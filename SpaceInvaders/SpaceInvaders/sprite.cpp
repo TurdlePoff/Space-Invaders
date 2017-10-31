@@ -43,16 +43,12 @@ CSprite::CSprite(ESprite _eType)
 {
 	switch (_eType)
 	{
+		case ESprite::MAINMENU:
 		case ESprite::BACKGROUND:
+		case ESprite::INSTRUCTIONS:
 		{
 			m_iW = 1000;
 			m_iH = 800;
-			break;
-		}
-		case ESprite::MAINMENU:
-		{
-			m_iW = 400;
-			m_iH = 600;
 			break;
 		}
 		case ESprite::BULLET:
@@ -181,6 +177,11 @@ CSprite::Initialise()
 		iBackground = IDB_MAINMENU;
 		iMask = IDB_BACKGROUNDMASK;
 	}
+	else if (m_eSpriteType == ESprite::INSTRUCTIONS)
+	{
+		iBackground = IDB_INSTRUCTIONS;
+		iMask = IDB_BACKGROUNDMASK;
+	}
 	else 
 	{
 		iBackground = IDB_SS;
@@ -195,7 +196,7 @@ CSprite::Initialise()
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
-	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU)
+	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU || m_eSpriteType == ESprite::INSTRUCTIONS)
 	{
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;

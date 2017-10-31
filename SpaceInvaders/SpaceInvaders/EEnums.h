@@ -10,6 +10,7 @@ enum class ESprite
 	ENEMYSHIP,
 	BACKGROUND,
 	MAINMENU,
+	INSTRUCTIONS,
 	BARRICADE,
 	BULLET,
 	PLAYER,
@@ -23,7 +24,7 @@ enum class ESprite
 
 enum class EGameState
 {
-	MENU, GAME, LOST
+	MENU, INSTRUCTIONS, GAME, LOST
 };
 
 #endif    // __ESPRITE_H__
