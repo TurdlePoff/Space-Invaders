@@ -39,6 +39,7 @@
 CLevel::CLevel()
 	: m_iEnemysRemaining(0)
 	, m_pPlayer(0)
+	, m_pEnemyShip(0)
 	, m_iWidth(0)
 	, m_iHeight(0)
 	, m_fpsCounter(0)
@@ -47,8 +48,12 @@ CLevel::CLevel()
 	, m_cBeginEnemyMove(0)
 	, m_cEndEnemyMove(0)
 	, m_pLevelLogic(0)
+	, m_cBeginShipMove(0)
+	, m_cEndShipMove(0)
+	, m_iRandShipDirection(1)
 {
 	m_pLevelLogic = new CLevelLogic();
+	m_cEndShipMove = clock();
 
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
@@ -200,6 +205,11 @@ CLevel::Draw()
 	{
 		m_vecEnemyBullets[j]->Draw();
 	}
+	
+	if (m_pEnemyShip != nullptr)
+	{
+		m_pEnemyShip->Draw();
+	}
 
 	DrawScore();
 	DrawFPS();
@@ -213,7 +223,12 @@ CLevel::Process(float _fDeltaTick)
 	m_pPlayer->Process(_fDeltaTick);
 	ProcessPlayerMovement();
 	EnemyMovement(_fDeltaTick);
+	ProcessEnemyShip();
 
+	if (m_pEnemyShip != nullptr)
+	{
+		m_pEnemyShip->Process(_fDeltaTick);
+	}
 	////TODO: bullet/ball code
 
 	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting())
@@ -222,8 +237,7 @@ CLevel::Process(float _fDeltaTick)
 		m_pPlayer->SetIsShooting(true);
 	}
 
-	//Generate a random number between 0 + 5
-	int randTime = rand() % (110 + 90);
+	
 
 	FireBullet(false, m_pLevelLogic->GetLVLEnemyBulletSpeed()); //isPlayer = true (player)
 
@@ -241,8 +255,7 @@ CLevel::Process(float _fDeltaTick)
 	ProcessBulletPlayerCollision();
 	ProcessCheckForWin();
 	ProcessBulletBounds();
-
-
+	
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
@@ -258,12 +271,12 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 
 	if (isPlayer)
 	{
-		pBullet = new CBullet();
+		m_pBullet = new CBullet();
 
-		pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
-		pBullet->SetX(m_pPlayer->GetX());
-		pBullet->SetY(m_pPlayer->GetY() - 20.0f);
-		m_vecPlayerBullets.push_back(pBullet);
+		m_pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+		m_pBullet->SetX(m_pPlayer->GetX());
+		m_pBullet->SetY(m_pPlayer->GetY() - 20.0f);
+		m_vecPlayerBullets.push_back(m_pBullet);
 	}
 	else
 	{
@@ -275,13 +288,13 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 
 			if (m_vecEnemies[randEnemy]->GetCanShoot() && !m_vecEnemies[randEnemy]->IsHit())
 			{
-				pBullet = new CBullet();
+				m_pBullet = new CBullet();
 
 				fBulletVelY *= -1;
-				pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
-				pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
-				pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
-				m_vecEnemyBullets.push_back(pBullet);
+				m_pBullet->Initialise(static_cast<float>(m_iWidth), static_cast<float>(m_iHeight), fBulletVelX, fBulletVelY);
+				m_pBullet->SetX(m_vecEnemies[randEnemy]->GetX());
+				m_pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
+				m_vecEnemyBullets.push_back(m_pBullet);
 				m_cBeginBullet = clock();
 			}
 		}
@@ -326,10 +339,27 @@ CLevel::ProcessBulletEnemyCollision()
 					{
 						SetEnemysRemaining(GetEnemysRemaining() - 1);
 					}
-				}
+				}				
 			}
 		}
 	}
+
+	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
+	{
+		if (m_pEnemyShip != nullptr && m_vecPlayerBullets[j]->IsCollidingWith(*m_pEnemyShip))
+		{
+			m_pEnemyShip->SetHit(true);
+
+			m_pPlayer->IncreasePlayerScore(m_pEnemyShip->GetEnemyPoints());
+
+			delete m_vecPlayerBullets[j];
+			m_vecPlayerBullets[j] = 0;
+
+			m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
+			m_pPlayer->SetIsShooting(false);
+		}
+	}
+	
 }
 
 
@@ -440,6 +470,7 @@ CLevel::EnemyMovement(float _fDeltaTick)
 			if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 990.0f)
 				|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
 			{
+				
 				wall = true;
 			}
 
@@ -483,6 +514,60 @@ void
 CLevel::SetEnemysRemaining(int _i)
 {
 	m_iEnemysRemaining = _i;
+}
+
+void CLevel::ProcessEnemyShip()
+{
+	double elapsed_secs = double(m_cEndShipMove - m_cBeginShipMove) / CLOCKS_PER_SEC;
+	if (elapsed_secs > m_pLevelLogic->GetLVLShipRandTime() || elapsed_secs < 0.0f)
+	{
+		m_cBeginShipMove = clock();
+
+		if (m_pEnemyShip == nullptr)
+		{
+			m_pEnemyShip = new CEnemy();
+			m_pEnemyShip->Initialise(ESprite::ENEMYSHIP);
+		
+			//Generate a random number between 0 + 5
+			m_iRandShipDirection = rand() % 2;
+
+
+			if (m_iRandShipDirection == 1)
+			{
+				m_pEnemyShip->SetX(-10);
+				m_pEnemyShip->SetVelocityX(m_pLevelLogic->GetLVLEnemyShipSpeed());
+			}
+			else
+			{
+				m_pEnemyShip->SetX(1000);
+				m_pEnemyShip->SetVelocityX(m_pLevelLogic->GetLVLEnemyShipSpeed()*-1);
+			}
+			m_pEnemyShip->SetY(50);
+			m_pEnemyShip->SetHit(false);
+			m_pEnemyShip->Process(1);
+		}
+		else
+		{
+			if (m_iRandShipDirection == 1)
+			{
+				if ((m_pEnemyShip->GetX() + (m_pEnemyShip->GetWidth() / 2) >= 1000.0f)) //|| (m_pEnemyShip->GetX() - (m_pEnemyShip->GetWidth() / 2) <= 0.0f)
+				{
+					delete m_pEnemyShip;
+					m_pEnemyShip = 0;
+				}
+			}
+			else
+			{
+				if (m_pEnemyShip->GetX() - (m_pEnemyShip->GetWidth() / 2) <= 0.0f)
+				{
+					delete m_pEnemyShip;
+					m_pEnemyShip = 0;
+				}
+			}
+			m_pLevelLogic->SetLVLShipRandTime((rand() % (20 - 7 + 1)) + 2);
+		}
+	}
+	m_cEndShipMove = clock();
 }
 
 

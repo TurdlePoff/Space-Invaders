@@ -122,7 +122,7 @@ CSprite::CSprite(ESprite _eType)
 		{
 			m_iFramePositionH = 168;
 			m_iW = 64;
-			m_iH = 44;
+			m_iH = 28;
 			break;
 		}
 		case ESprite::BARRICADE:

@@ -7,6 +7,8 @@ CLevelLogic::CLevelLogic()
 , m_fLVLEnemyMoveDelay(1.0f)
 , m_fLVLPlayerSpeed(4.0f)
 , m_fLVLPlayerInvincibility(false)
+, m_fLVLEnemyShipSpeed(2.0f)
+, m_iShipRandTime(0)
 {
 
 }
@@ -63,6 +65,26 @@ void CLevelLogic::SetLVLEnemyMoveDelay(float _f)
 float CLevelLogic::GetLVLEnemyMoveDelay()
 {
 	return m_fLVLEnemyMoveDelay;
+}
+
+void CLevelLogic::SetLVLEnemyShipSpeed(float _f)
+{
+	m_fLVLEnemyShipSpeed = _f;
+}
+
+float CLevelLogic::GetLVLEnemyShipSpeed()
+{
+	return m_fLVLEnemyShipSpeed;
+}
+
+void CLevelLogic::SetLVLShipRandTime(float _f)
+{
+	m_iShipRandTime = _f;
+}
+
+float CLevelLogic::GetLVLShipRandTime()
+{
+	return m_iShipRandTime;
 }
 
 void CLevelLogic::SetLVLEnemyShootingDelay(float _f)

@@ -33,6 +33,11 @@ public:
 	void SetLVLEnemyMoveDelay(float _f);
 	float GetLVLEnemyMoveDelay();
 
+	void SetLVLEnemyShipSpeed(float _f);
+	float GetLVLEnemyShipSpeed();
+	void SetLVLShipRandTime(float _f);
+	float GetLVLShipRandTime();
+
 	void SetLVLPlayerBulletSpeed(float _f);
 	float GetLVLPlayerBulletSpeed();
 	void SetLVLPlayerMovementSpeed(float _f);
@@ -44,6 +49,9 @@ protected:
 	float m_fLVLEnemyShootingDelay;
 	float m_fLVLEnemyBulletVelocity;
 	float m_fLVLEnemyMoveDelay;
+
+	float m_fLVLEnemyShipSpeed;
+	int m_iShipRandTime;
 
 	float m_fLVLPlayerBulletVelocity;
 	float m_fLVLPlayerSpeed;

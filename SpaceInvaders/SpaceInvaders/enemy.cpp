@@ -75,7 +75,7 @@ CEnemy::Initialise(ESprite _spriteType)
 		}
 		case ESprite::ENEMYSHIP: //smol squid
 		{
-			m_iPoints = pointArray[rand() % 5 + 1];
+			m_iPoints = pointArray[rand() % 4 + 0];
 			break;
 		}
 	}

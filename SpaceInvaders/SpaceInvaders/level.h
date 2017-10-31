@@ -68,7 +68,7 @@ protected:
 
     void SetEnemysRemaining(int _i);
 
-
+	void ProcessEnemyShip();
 
 	CPlayer* GetPlayer() const;
 
@@ -84,7 +84,9 @@ public:
 protected:
 	CBackGround* m_pBackground;
     CPlayer* m_pPlayer;
-	CBullet* pBullet;
+	CBullet* m_pBullet;
+	CEnemy* m_pEnemyShip;
+
 	CLevelLogic* m_pLevelLogic;
 
     std::vector<CEnemy*> m_vecEnemies;
@@ -96,6 +98,10 @@ protected:
 
 	clock_t m_cBeginEnemyMove;
 	clock_t m_cEndEnemyMove;
+
+	clock_t m_cBeginShipMove;
+	clock_t m_cEndShipMove;
+	int m_iRandShipDirection;
 
 	CFPSCounter* m_fpsCounter;
 

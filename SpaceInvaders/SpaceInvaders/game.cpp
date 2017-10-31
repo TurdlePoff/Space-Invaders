@@ -28,10 +28,9 @@
 CGame* CGame::s_pGame = 0;
 CLevel* CGame::m_pLevel = 0;
 EGameState CGame::m_eGameState = (EGameState::MENU);
-// Static Function Prototypes
+bool CGame::m_bIsPaused = false;
 
 // Implementation
-
 CGame::CGame()
 : m_pClock(0)
 , m_hApplicationInstance(0)
@@ -152,14 +151,18 @@ CGame::Process(float _fDeltaTick)
 void 
 CGame::ExecuteOneFrame()
 {
-    float fDT = m_pClock->GetDeltaTick();
+	if (!GetPaused())
+	{
+		float fDT = m_pClock->GetDeltaTick();
 
-    Process(fDT);
-    Draw();
+		Process(fDT);
+		Draw();
 
-    m_pClock->Process();
+		m_pClock->Process();
 
-    Sleep(1);
+		Sleep(1);
+	}
+    
 }
 
 CGame&
@@ -194,6 +197,16 @@ void CGame::SetGameState(EGameState _state)
 EGameState CGame::GetGameState()
 {
 	return m_eGameState;
+}
+
+void CGame::SetPaused(bool _b)
+{
+	m_bIsPaused = _b;
+}
+
+bool CGame::GetPaused()
+{
+	return m_bIsPaused;
 }
 
 CBackBuffer* 

@@ -61,6 +61,11 @@ public:
 	static EGameState GetGameState();
 	static EGameState m_eGameState;
 
+	static bool m_bIsPaused;
+
+	static void SetPaused(bool _b);
+	static bool GetPaused();
+
 protected:
 
 private:
