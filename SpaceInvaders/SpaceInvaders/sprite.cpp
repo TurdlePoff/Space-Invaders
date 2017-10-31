@@ -45,6 +45,12 @@ CSprite::CSprite(ESprite _eType)
 	{
 		case ESprite::BACKGROUND:
 		{
+			m_iW = 1000;
+			m_iH = 800;
+			break;
+		}
+		case ESprite::MAINMENU:
+		{
 			m_iW = 400;
 			m_iH = 600;
 			break;
@@ -155,22 +161,27 @@ CSprite::~CSprite()
 bool
 CSprite::Initialise()
 {
-    HINSTANCE hInstance = CGame::GetInstance().GetAppInstance();
+	HINSTANCE hInstance = CGame::GetInstance().GetAppInstance();
 
-    if (!s_hSharedSpriteDC)
-    {
-        s_hSharedSpriteDC = CreateCompatibleDC(NULL);
-    }
+	if (!s_hSharedSpriteDC)
+	{
+		s_hSharedSpriteDC = CreateCompatibleDC(NULL);
+	}
 
 	int iBackground = 0;
 	int iMask = 0;
 
-	if(m_eSpriteType == ESprite::BACKGROUND)
+	if (m_eSpriteType == ESprite::BACKGROUND)
 	{
 		iBackground = IDB_BACKGROUND;
 		iMask = IDB_BACKGROUNDMASK;
 	}
-	else
+	else if (m_eSpriteType == ESprite::MAINMENU)
+	{
+		iBackground = IDB_MAINMENU;
+		iMask = IDB_BACKGROUNDMASK;
+	}
+	else 
 	{
 		iBackground = IDB_SS;
 		iMask = IDB_SSMASK;
@@ -184,7 +195,7 @@ CSprite::Initialise()
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
-	if (m_eSpriteType == ESprite::BACKGROUND)
+	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU)
 	{
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;

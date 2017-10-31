@@ -46,13 +46,10 @@ CLevel::CLevel()
 	, m_cEndBullet(0)
 	, m_cBeginEnemyMove(0)
 	, m_cEndEnemyMove(0)
-	, m_fLVLEnemyBulletVelocity(1.0f)
-	, m_fLVLPlayerBulletVelocity(6.0f)
-	, m_fLVLEnemyShootingDelay(2.0f)
-	, m_fLVLEnemyMoveDelay(1.0f)
-	, m_fLVLPlayerSpeed(4.0f)
-	, m_fLVLPlayerInvincibility(false)
+	, m_pLevelLogic(0)
 {
+	m_pLevelLogic = new CLevelLogic();
+
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
 }
@@ -111,9 +108,10 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_iWidth = _iWidth;
 	m_iHeight = _iHeight;
 
+
 	//Background initialisation
 	m_pBackground = new CBackGround();
-	VALIDATE(m_pBackground->Initialise());
+	VALIDATE(m_pBackground->Initialise(ESprite::BACKGROUND));
 	//Set the background position to start from {0,0}
 	m_pBackground->SetX((float)m_iWidth / 2);
 	m_pBackground->SetY((float)m_iHeight / 2);
@@ -220,14 +218,14 @@ CLevel::Process(float _fDeltaTick)
 
 	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting())
 	{
-		FireBullet(true, GetLVLPlayerBulletSpeed()); //isPlayer = true (player)
+		FireBullet(true, m_pLevelLogic->GetLVLPlayerBulletSpeed()); //isPlayer = true (player)
 		m_pPlayer->SetIsShooting(true);
 	}
 
 	//Generate a random number between 0 + 5
 	int randTime = rand() % (110 + 90);
 
-	FireBullet(false, GetLVLEnemyBulletSpeed()); //isPlayer = true (player)
+	FireBullet(false, m_pLevelLogic->GetLVLEnemyBulletSpeed()); //isPlayer = true (player)
 
 	for (unsigned int i = 0; i < m_vecPlayerBullets.size(); ++i)
 	{
@@ -248,6 +246,11 @@ CLevel::Process(float _fDeltaTick)
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
+CLevelLogic & CLevel::GetLevelController()
+{
+	return *m_pLevelLogic;
+}
+
 void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 {
 	const float fBulletVelX = 0.0f;
@@ -266,7 +269,7 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 	{
 		m_cEndBullet = clock();
 		double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
-		if (elapsed_secs > GetLVLEnemyShootingDelay() || elapsed_secs < 0.0f)
+		if (elapsed_secs > m_pLevelLogic->GetLVLEnemyShootingDelay() || elapsed_secs < 0.0f)
 		{
 			int randEnemy = rand() % (55 + 0);
 
@@ -280,7 +283,6 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 				pBullet->SetY(m_vecEnemies[randEnemy]->GetY() + 20.0f);
 				m_vecEnemyBullets.push_back(pBullet);
 				m_cBeginBullet = clock();
-
 			}
 		}
 	}
@@ -345,7 +347,7 @@ CLevel::ProcessBulletPlayerCollision()
 			m_vecEnemyBullets[j] = 0;
 			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 
-			if (!GetLVLPlayerInvincibility())
+			if (!m_pLevelLogic->GetLVLPlayerInvincibility())
 			{
 				m_pPlayer->SetPlayerLives(m_pPlayer->GetPlayerLives() - 1);
 
@@ -404,11 +406,11 @@ CLevel::ProcessPlayerMovement()
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		m_pPlayer->SetX(m_pPlayer->GetX() + GetLVLPlayerMovementSpeed());
+		m_pPlayer->SetX(m_pPlayer->GetX() + m_pLevelLogic->GetLVLPlayerMovementSpeed());
 	}
 	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		m_pPlayer->SetX(m_pPlayer->GetX() - GetLVLPlayerMovementSpeed());
+		m_pPlayer->SetX(m_pPlayer->GetX() - m_pLevelLogic->GetLVLPlayerMovementSpeed());
 	}
 	if (m_pPlayer->GetX() - fHalfPlayerW <= 0)
 	{
@@ -427,7 +429,7 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	bool lose = false;
 
 	double elapsed_secs = double(m_cEndEnemyMove - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
-	if (elapsed_secs > GetLVLEnemyMoveDelay() || elapsed_secs < 0.0f)
+	if (elapsed_secs > m_pLevelLogic->GetLVLEnemyMoveDelay() || elapsed_secs < 0.0f)
 	{
 		m_cBeginEnemyMove = clock();
 
@@ -483,15 +485,6 @@ CLevel::SetEnemysRemaining(int _i)
 	m_iEnemysRemaining = _i;
 }
 
-void CLevel::SetLVLEnemyShootingDelay(float _f)
-{
-	m_fLVLEnemyShootingDelay = _f;
-}
-
-float CLevel::GetLVLEnemyShootingDelay()
-{
-	return m_fLVLEnemyShootingDelay;
-}
 
 void
 CLevel::DrawScore()
@@ -511,7 +504,7 @@ CLevel::DrawScore()
 
 	m_strPlayerLives = "Player Lives: ";
 	m_strPlayerLives += ToString(m_pPlayer->GetPlayerLives());
-	if (GetLVLPlayerInvincibility())
+	if (m_pLevelLogic->GetLVLPlayerInvincibility())
 	{
 		m_strPlayerLives += "                                                                     YOU ARE CURRENTLY INVINCIBLE";
 	}
@@ -554,53 +547,3 @@ CLevel::DrawFPS()
 
 }
 
-
-void CLevel::SetLVLEnemyBulletSpeed(float _f)
-{
-	m_fLVLEnemyBulletVelocity = _f;
-}
-
-float CLevel::GetLVLEnemyBulletSpeed()
-{
-	return m_fLVLEnemyBulletVelocity;
-}
-
-void CLevel::SetLVLPlayerBulletSpeed(float _f)
-{
-	m_fLVLPlayerBulletVelocity = _f;
-}
-
-float CLevel::GetLVLPlayerBulletSpeed()
-{
-	return m_fLVLPlayerBulletVelocity;
-}
-
-void CLevel::SetLVLPlayerMovementSpeed(float _f)
-{
-	m_fLVLPlayerSpeed = _f;
-}
-
-float CLevel::GetLVLPlayerMovementSpeed()
-{
-	return m_fLVLPlayerSpeed;
-}
-
-void CLevel::SetLVLPlayerInvincibility(bool _b)
-{
-	m_fLVLPlayerInvincibility = _b;
-}
-
-bool CLevel::GetLVLPlayerInvincibility()
-{
-	return m_fLVLPlayerInvincibility;
-}
-
-void CLevel::SetLVLEnemyMoveDelay(float _f)
-{
-	m_fLVLEnemyMoveDelay = _f;
-}
-
-float CLevel::GetLVLEnemyMoveDelay()
-{
-	return m_fLVLEnemyMoveDelay;
-}

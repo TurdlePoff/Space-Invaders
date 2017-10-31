@@ -158,7 +158,9 @@
     <ClCompile Include="framecounter.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="level.cpp" />
+    <ClCompile Include="LevelLogic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuNavigator.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="sprite.cpp" />
   </ItemGroup>
@@ -174,6 +176,8 @@
     <ClInclude Include="framecounter.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="level.h" />
+    <ClInclude Include="LevelLogic.h" />
+    <ClInclude Include="MenuNavigator.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sprite.h" />
@@ -185,6 +189,7 @@
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
+    <Image Include="..\Sprites\mainmenu.bmp" />
     <Image Include="..\Sprites\spritesSheet.bmp" />
     <Image Include="..\Sprites\spritesSheetMask.bmp" />
     <Image Include="Sprites\spritesSheet.bmp" />

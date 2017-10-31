@@ -40,6 +40,12 @@
     <ClCompile Include="AnimatedSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LevelLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuNavigator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backbuffer.h">
@@ -87,6 +93,12 @@
     <ClInclude Include="ESpriteType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuNavigator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -114,6 +126,7 @@
     </Image>
     <Image Include="..\Sprites\spritesSheet.bmp" />
     <Image Include="..\Sprites\spritesSheetMask.bmp" />
+    <Image Include="..\Sprites\mainmenu.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvaders.rc">

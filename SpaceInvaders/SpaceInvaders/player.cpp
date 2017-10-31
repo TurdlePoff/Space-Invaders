@@ -31,6 +31,7 @@ CPlayer::CPlayer()
 : m_iPlayerScore(0)
 , m_iPlayerLives(3)
 , m_bIsShooting(false)
+, m_bAtStart(true)
 {
 
 }
@@ -111,4 +112,14 @@ float CPlayer::GetPlayerSpeed()
 void CPlayer::SetPlayerLivesSpeed(float _f)
 {
 	m_iPlayerSpeed = _f;
+}
+
+void CPlayer::SetMenuSwitch()
+{
+	m_bAtStart = !m_bAtStart;
+}
+
+bool CPlayer::GetMenuSwitch()
+{
+	return m_bAtStart;
 }

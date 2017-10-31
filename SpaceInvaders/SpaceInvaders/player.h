@@ -58,6 +58,9 @@ public:
 	float GetPlayerSpeed();
 	void SetPlayerLivesSpeed(float _i);
 
+	void SetMenuSwitch();
+	bool GetMenuSwitch();
+
 protected:
 
 private:
@@ -65,12 +68,12 @@ private:
     CPlayer& operator= (const CPlayer& _kr);
 
     // Member Variables
-	CBullet* m_pBullet;
 	int m_iPlayerScore;
 	int m_iPlayerLives;
 	bool m_bCurrentlyAlive;
 	bool m_bIsShooting;
 	float m_iPlayerSpeed;
+	bool m_bAtStart;
 
 public:
 

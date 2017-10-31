@@ -18,6 +18,7 @@
 // Local Includes
 #include "utils.h"
 #include "BackBuffer.h"
+#include "background.h"
 
 // This Include
 #include "Game.h"
@@ -35,6 +36,7 @@ CGame::CGame()
 , m_hApplicationInstance(0)
 , m_hMainWindow(0)
 , m_pBackBuffer(0)
+, m_gameState(MENU)
 {
 
 }
@@ -64,8 +66,22 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
 
-	m_pLevel = new CLevel();
-	VALIDATE(m_pLevel->Initialise(_iWidth, _iHeight));
+	if (m_gameState == MENU)
+	{
+
+		m_pMenu = new CBackGround();
+		VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
+		m_pMenu->SetX((float)1000 / 2);
+		m_pMenu->SetY((float)750 / 2);
+
+
+	}
+	else if (m_gameState == GAME)
+	{
+		m_pLevel = new CLevel();
+		VALIDATE(m_pLevel->Initialise(_iWidth, _iHeight));
+	}
+	
 
 	ShowCursor(true);
 
@@ -76,10 +92,16 @@ void
 CGame::Draw()
 {
     m_pBackBuffer->Clear();
-
 	// Do all the game’s drawing here...
-	m_pLevel->Draw();
+	if (m_gameState == MENU)
+	{
+		m_pMenu->Draw();
 
+	}
+	else if (m_gameState == GAME)
+	{
+		m_pLevel->Draw();
+	}
     m_pBackBuffer->Present();
 }
 
@@ -88,8 +110,15 @@ CGame::Process(float _fDeltaTick)
 {
     // Process all the game’s logic here.
 	//Load a new sprite.
-	m_pLevel->Process(_fDeltaTick);
+	if (m_gameState == MENU)
+	{
+		m_pMenu->Process(_fDeltaTick);
 
+	}
+	else if (m_gameState == GAME)
+	{
+		m_pLevel->Process(_fDeltaTick);
+	}
 }
 
 void 
@@ -121,7 +150,6 @@ CGame::GetLevelInstance()
 {
 	return (*m_pLevel);
 }
-
 
 void 
 CGame::DestroyInstance()

@@ -41,12 +41,10 @@ CBackGround::~CBackGround()
 }
 
 bool
-CBackGround::Initialise()
+CBackGround::Initialise(ESprite _eSprite)
 {
 	//TODO: BACKGROUND SPRITES
-
-	VALIDATE(CEntity::Initialise(ESprite::BACKGROUND));
-
+	VALIDATE(CEntity::Initialise(_eSprite));
 	return (true);
 }
 

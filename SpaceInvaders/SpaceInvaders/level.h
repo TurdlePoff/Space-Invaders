@@ -34,6 +34,7 @@ class CPlayer;
 class CEnemy;
 class CFPSCounter;
 class CBackGround;
+class CLevelLogic;
 
 class CLevel
 {
@@ -47,19 +48,7 @@ public:
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
-	void SetLVLEnemyShootingDelay(float _f);
-	float GetLVLEnemyShootingDelay();
-	void SetLVLEnemyBulletSpeed(float _f);
-	float GetLVLEnemyBulletSpeed();
-	void SetLVLEnemyMoveDelay(float _f);
-	float GetLVLEnemyMoveDelay();
-
-	void SetLVLPlayerBulletSpeed(float _f);
-	float GetLVLPlayerBulletSpeed();
-	void SetLVLPlayerMovementSpeed(float _f);
-	float GetLVLPlayerMovementSpeed();
-	void SetLVLPlayerInvincibility(bool _b);
-	bool GetLVLPlayerInvincibility();
+	CLevelLogic& GetLevelController();
 
 protected:
     void ProcessBulletEnemyCollision();
@@ -96,6 +85,7 @@ protected:
 	CBackGround* m_pBackground;
     CPlayer* m_pPlayer;
 	CBullet* pBullet;
+	CLevelLogic* m_pLevelLogic;
 
     std::vector<CEnemy*> m_vecEnemies;
 	std::vector<CBullet*> m_vecEnemyBullets;
@@ -111,14 +101,6 @@ protected:
 
     int m_iWidth;
     int m_iHeight;
-
-	float m_fLVLEnemyShootingDelay;
-	float m_fLVLEnemyBulletVelocity;
-	float m_fLVLEnemyMoveDelay;
-
-	float m_fLVLPlayerBulletVelocity;
-	float m_fLVLPlayerSpeed;
-	bool m_fLVLPlayerInvincibility;
 
 	int m_iEnemyContainerPosX;
 	int m_iEnemyContainerPosY;
