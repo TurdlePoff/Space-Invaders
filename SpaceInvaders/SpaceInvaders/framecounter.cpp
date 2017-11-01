@@ -68,12 +68,3 @@ void CFPSCounter::UpdateFPSText()
 	_itow_s(static_cast< int >(m_fFrameRate), wstrTemp, 10);
 	m_strFPS += wstrTemp;
 }
-
-
-void CFPSCounter::DrawFPSText(HDC _hdc, int _iWidth, int _iHeight)
-{
-	const int kiX = _iWidth - 70;
-	const int kiY = _iHeight - 14;
-	TextOut(_hdc, kiX, kiY, m_strFPS.c_str(), static_cast< int >(m_strFPS.size()));
-}
-

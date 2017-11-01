@@ -222,7 +222,7 @@ CLevel::Draw()
 	}
 
 	DrawScore();
-	DrawFPS();
+	DrawLevelCount();
 }
 
 void
@@ -337,7 +337,7 @@ CLevel::ProcessBulletEnemyCollision()
 						m_vecEnemies[i - 11]->SetCanShoot(true);
 					}
 					//TODO: SET SPRITE DEAD ANIMATION
-					m_pLevelLogic->IncreaseLVLPlayerScore(m_vecEnemies[i]->GetEnemyPoints());
+					m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore()+m_vecEnemies[i]->GetEnemyPoints());
 					//m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
 					delete m_vecPlayerBullets[j];
@@ -360,7 +360,7 @@ CLevel::ProcessBulletEnemyCollision()
 		if (m_pEnemyShip != nullptr && m_vecPlayerBullets[j]->IsCollidingWith(*m_pEnemyShip))
 		{
 			m_pEnemyShip->SetHit(true);
-			m_pLevelLogic->IncreaseLVLPlayerScore(m_pEnemyShip->GetEnemyPoints());
+			m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore() + m_pEnemyShip->GetEnemyPoints());
 			//m_pPlayer->IncreasePlayerScore(m_pEnemyShip->GetEnemyPoints());
 
 			delete m_vecPlayerBullets[j];
@@ -608,12 +608,17 @@ CLevel::DrawScore()
 	TextOutA(hdc, 20, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
 
 }
+
 void
-CLevel::DrawFPS()
+CLevel::DrawLevelCount()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
+	
+	SetBkMode(hdc, TRANSPARENT);
+	SetTextColor(hdc, RGB(27, 233, 56));
+	m_strPlayerLives = "Level: ";
+	m_strPlayerLives += ToString(m_pLevelLogic->GetLVLLevelCount());//m_pPlayer->GetPlayerScore());
 
 	SetTextColor(hdc, RGB(27, 233, 56));
-	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 30, m_iHeight - 80);
+	TextOutA(hdc, m_iWidth - 100, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
 }
-

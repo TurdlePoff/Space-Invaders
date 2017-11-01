@@ -62,6 +62,7 @@ protected:
 
     void DrawScore();
 	void DrawFPS();
+	void DrawLevelCount();
 
 	void ProcessPlayerMovement();
 	void EnemyMovement(float _fDeltaTick);
@@ -113,11 +114,11 @@ protected:
 	int m_iEnemyContainerWidth;
 	int m_iEnemyContainerHeight;
 
-
     int m_iEnemysRemaining;
 
 	std::string line;
     std::string m_strScore;
+	std::string m_strLevelCount;
 	std::string m_strPlayerLives;
 
 private:

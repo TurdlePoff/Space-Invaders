@@ -139,6 +139,9 @@ CGame::Process(float _fDeltaTick)
 			m_pLevel = new CLevel(*m_pLogic);
 			m_pLevel->Initialise(1000, 800);
 			m_pLogic->SetLVLPlayerLives(3);
+			m_pLogic->SetLVLLevelCount(1);
+			m_pLogic->SetLVLPlayerScore(0);
+
 		}
 		else if (m_eGameState == EGameState::INSTRUCTIONS)
 		{
@@ -301,6 +304,7 @@ void CGame::SetNextLevel()
 		m_pLevel = new CLevel(*m_pLogic);
 		m_pLevel->Initialise(1000, 800);
 		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives()+1);
+		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount()+1);
 
 		if (m_pLogic->GetLVLRealEnemyDelay() <= 0.5f)
 		{

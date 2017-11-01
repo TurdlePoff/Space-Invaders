@@ -41,7 +41,6 @@ public:
 	bool Initialise();
 
 	void UpdateFPSText();
-	void DrawFPSText(HDC _hdc, int _iWidth, int _iHeight);
 
 protected:
 

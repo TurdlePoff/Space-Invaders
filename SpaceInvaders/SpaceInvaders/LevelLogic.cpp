@@ -12,6 +12,7 @@ CLevelLogic::CLevelLogic()
 , m_iLVLPlayerScore(0)
 , m_iLVLPlayerLives(3)
 , m_iLVLRealEnemyDelay(1.0f)
+, m_iLVLLevelCount(1)
 {
 
 }
@@ -60,9 +61,9 @@ bool CLevelLogic::GetLVLPlayerInvincibility()
 	return m_fLVLPlayerInvincibility;
 }
 
-void CLevelLogic::IncreaseLVLPlayerScore(int _i)
+void CLevelLogic::SetLVLPlayerScore(int _i)
 {
-	m_iLVLPlayerScore += _i;
+	m_iLVLPlayerScore = _i;
 }
 
 int CLevelLogic::GetLVLPlayerScore()
@@ -78,6 +79,16 @@ void CLevelLogic::SetLVLPlayerLives(int _i)
 int CLevelLogic::GetLVLPlayerLives()
 {
 	return m_iLVLPlayerLives;
+}
+
+void CLevelLogic::SetLVLLevelCount(int _i)
+{
+	m_iLVLLevelCount = _i;
+}
+
+int CLevelLogic::GetLVLLevelCount()
+{
+	return m_iLVLLevelCount;
 }
 
 void CLevelLogic::EndLevel(std::vector<CEnemy*> _e)
@@ -123,12 +134,12 @@ float CLevelLogic::GetLVLEnemyShipSpeed()
 	return m_fLVLEnemyShipSpeed;
 }
 
-void CLevelLogic::SetLVLShipRandTime(float _f)
+void CLevelLogic::SetLVLShipRandTime(int _i)
 {
-	m_iShipRandTime = _f;
+	m_iShipRandTime = _i;
 }
 
-float CLevelLogic::GetLVLShipRandTime()
+int CLevelLogic::GetLVLShipRandTime()
 {
 	return m_iShipRandTime;
 }

@@ -39,8 +39,8 @@ public:
 
 	void SetLVLEnemyShipSpeed(float _f);
 	float GetLVLEnemyShipSpeed();
-	void SetLVLShipRandTime(float _f);
-	float GetLVLShipRandTime();
+	void SetLVLShipRandTime(int _f);
+	int GetLVLShipRandTime();
 
 	void SetLVLPlayerBulletSpeed(float _f);
 	float GetLVLPlayerBulletSpeed();
@@ -49,10 +49,13 @@ public:
 	void SetLVLPlayerInvincibility(bool _b);
 	bool GetLVLPlayerInvincibility();
 
-	void IncreaseLVLPlayerScore(int _i);
+	void SetLVLPlayerScore(int _i);
 	int GetLVLPlayerScore();
 	void SetLVLPlayerLives(int _i);
 	int GetLVLPlayerLives();
+
+	void SetLVLLevelCount(int _i);
+	int GetLVLLevelCount();
 
 	void EndLevel(std::vector<CEnemy*> _e);
 
@@ -72,6 +75,7 @@ protected:
 	int m_iLVLPlayerScore;
 	int m_iLVLPlayerLives;
 
+	int m_iLVLLevelCount;
 
 private:
 	CLevelLogic(const CLevelLogic& _kr);
