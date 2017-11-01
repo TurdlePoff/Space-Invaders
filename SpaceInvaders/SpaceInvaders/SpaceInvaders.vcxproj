@@ -188,6 +188,8 @@
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
     <Image Include="..\Sprites\instructions.bmp" />
+    <Image Include="..\Sprites\lvlComplete.bmp" />
+    <Image Include="..\Sprites\lvlCompleteMask.bmp" />
     <Image Include="..\Sprites\mainmenu.bmp" />
     <Image Include="..\Sprites\spritesSheet.bmp" />
     <Image Include="..\Sprites\spritesSheetMask.bmp" />

@@ -66,6 +66,13 @@ public:
 	static void SetPaused(bool _b);
 	static bool GetPaused();
 
+	static bool m_bLevelComplete;
+
+	static void SetLevelComplete(bool _b);
+	static bool GetLevelComplete();
+
+	void SetNextLevel();
+	bool n_bReadyForNextLevel;
 protected:
 
 private:
@@ -80,13 +87,16 @@ public:
 protected:
     CClock* m_pClock;
 	static CLevel* m_pLevel;
+	CLevelLogic* m_pLogic;
 	CBackGround* m_pMenu;
 	CBackGround* m_pInstructions;
-
+	CBackGround* m_pLevelComplete;
 	CPlayer* m_pMenuNavigator;
-
     CBackBuffer* m_pBackBuffer;
 	
+	clock_t m_cBeginLevelBreak;
+	clock_t m_cEndLevelBreak;
+
     //Application data
     HINSTANCE m_hApplicationInstance;
     HWND m_hMainWindow;

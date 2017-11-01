@@ -9,6 +9,9 @@ CLevelLogic::CLevelLogic()
 , m_fLVLPlayerInvincibility(false)
 , m_fLVLEnemyShipSpeed(2.0f)
 , m_iShipRandTime(0)
+, m_iLVLPlayerScore(0)
+, m_iLVLPlayerLives(3)
+, m_iLVLRealEnemyDelay(1.0f)
 {
 
 }
@@ -57,6 +60,39 @@ bool CLevelLogic::GetLVLPlayerInvincibility()
 	return m_fLVLPlayerInvincibility;
 }
 
+void CLevelLogic::IncreaseLVLPlayerScore(int _i)
+{
+	m_iLVLPlayerScore += _i;
+}
+
+int CLevelLogic::GetLVLPlayerScore()
+{
+	return m_iLVLPlayerScore;
+}
+
+void CLevelLogic::SetLVLPlayerLives(int _i)
+{
+	m_iLVLPlayerLives = _i;
+}
+
+int CLevelLogic::GetLVLPlayerLives()
+{
+	return m_iLVLPlayerLives;
+}
+
+void CLevelLogic::EndLevel(std::vector<CEnemy*> _e)
+{
+	while (_e.size() > 0)
+	{
+		CEnemy* pEnemy = _e[_e.size() - 1];
+
+		_e.pop_back();
+
+		delete pEnemy;
+		pEnemy = 0;
+	}
+}
+
 void CLevelLogic::SetLVLEnemyMoveDelay(float _f)
 {
 	m_fLVLEnemyMoveDelay = _f;
@@ -65,6 +101,16 @@ void CLevelLogic::SetLVLEnemyMoveDelay(float _f)
 float CLevelLogic::GetLVLEnemyMoveDelay()
 {
 	return m_fLVLEnemyMoveDelay;
+}
+
+void CLevelLogic::SetLVLRealEnemyDelay(float _f)
+{
+	m_iLVLRealEnemyDelay = _f;
+}
+
+float CLevelLogic::GetLVLRealEnemyDelay()
+{
+	return m_iLVLRealEnemyDelay;
 }
 
 void CLevelLogic::SetLVLEnemyShipSpeed(float _f)
@@ -96,3 +142,4 @@ float CLevelLogic::GetLVLEnemyShootingDelay()
 {
 	return m_fLVLEnemyShootingDelay;
 }
+

@@ -40,7 +40,7 @@ class CLevel
 {
     // Member Functions
 public:
-    CLevel();
+	CLevel(CLevelLogic& _logic);
     virtual ~CLevel();
 
     virtual bool Initialise(int _iWidth, int _iHeight);

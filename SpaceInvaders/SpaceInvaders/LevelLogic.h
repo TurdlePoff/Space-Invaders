@@ -18,10 +18,11 @@
 #if !defined(__LEVELLOGIC_H__)
 #define __LEVELLOGIC_H__
 
+#include "enemy.h"
+#include <vector>
+
 class CLevelLogic
 {
-	
-
 public:
 	CLevelLogic();
 	~CLevelLogic();
@@ -32,6 +33,9 @@ public:
 	float GetLVLEnemyBulletSpeed();
 	void SetLVLEnemyMoveDelay(float _f);
 	float GetLVLEnemyMoveDelay();
+
+	void SetLVLRealEnemyDelay(float _f);
+	float GetLVLRealEnemyDelay();
 
 	void SetLVLEnemyShipSpeed(float _f);
 	float GetLVLEnemyShipSpeed();
@@ -45,10 +49,18 @@ public:
 	void SetLVLPlayerInvincibility(bool _b);
 	bool GetLVLPlayerInvincibility();
 
+	void IncreaseLVLPlayerScore(int _i);
+	int GetLVLPlayerScore();
+	void SetLVLPlayerLives(int _i);
+	int GetLVLPlayerLives();
+
+	void EndLevel(std::vector<CEnemy*> _e);
+
 protected:
 	float m_fLVLEnemyShootingDelay;
 	float m_fLVLEnemyBulletVelocity;
 	float m_fLVLEnemyMoveDelay;
+	float m_iLVLRealEnemyDelay;
 
 	float m_fLVLEnemyShipSpeed;
 	int m_iShipRandTime;
@@ -56,6 +68,10 @@ protected:
 	float m_fLVLPlayerBulletVelocity;
 	float m_fLVLPlayerSpeed;
 	bool m_fLVLPlayerInvincibility;
+
+	int m_iLVLPlayerScore;
+	int m_iLVLPlayerLives;
+
 
 private:
 	CLevelLogic(const CLevelLogic& _kr);

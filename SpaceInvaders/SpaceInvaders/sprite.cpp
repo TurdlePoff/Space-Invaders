@@ -51,6 +51,12 @@ CSprite::CSprite(ESprite _eType)
 			m_iH = 800;
 			break;
 		}
+		case ESprite::LVLCOMP:
+		{
+			m_iW = 350;
+			m_iH = 96;
+			break;
+		}
 		case ESprite::BULLET:
 		{
 			m_iFramePositionH = 256;
@@ -182,7 +188,12 @@ CSprite::Initialise()
 		iBackground = IDB_INSTRUCTIONS;
 		iMask = IDB_BACKGROUNDMASK;
 	}
-	else 
+	else if (m_eSpriteType == ESprite::LVLCOMP)
+	{
+		iBackground = IDB_LVLCOMP;
+		iMask = IDB_LVLCOMPMASK;
+	}
+	else
 	{
 		iBackground = IDB_SS;
 		iMask = IDB_SSMASK;
@@ -196,7 +207,8 @@ CSprite::Initialise()
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
-	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU || m_eSpriteType == ESprite::INSTRUCTIONS)
+	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU 
+		|| m_eSpriteType == ESprite::INSTRUCTIONS || m_eSpriteType == ESprite::LVLCOMP)
 	{
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;

@@ -62,9 +62,6 @@ public:
 	int GetPlayerLives();
 	void SetPlayerLives(int _i);
 
-	float GetPlayerSpeed();
-	void SetPlayerLivesSpeed(float _i);
-
 	void SetMenuSwitch(EMenuSelector _mItem);
 	EMenuSelector GetMenuSwitch();
 	void SwitchMenuItem(EGameState _state);

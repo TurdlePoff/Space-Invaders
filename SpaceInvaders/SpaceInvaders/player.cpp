@@ -117,16 +117,6 @@ void CPlayer::SetPlayerLives(int _i)
 	m_iPlayerLives = _i;
 }
 
-float CPlayer::GetPlayerSpeed()
-{
-	return m_iPlayerSpeed;
-}
-
-void CPlayer::SetPlayerLivesSpeed(float _f)
-{
-	m_iPlayerSpeed = _f;
-}
-
 void CPlayer::SetMenuSwitch(EMenuSelector _mItem)
 {
 	m_eMenuItem = _mItem;

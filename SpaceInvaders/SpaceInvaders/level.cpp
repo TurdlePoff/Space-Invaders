@@ -36,7 +36,7 @@
 
 //#define CHEAT_BOUNCE_ON_BACK_WALL
 
-CLevel::CLevel()
+CLevel::CLevel(CLevelLogic& _logic)
 	: m_iEnemysRemaining(0)
 	, m_pPlayer(0)
 	, m_pEnemyShip(0)
@@ -52,12 +52,22 @@ CLevel::CLevel()
 	, m_cEndShipMove(0)
 	, m_iRandShipDirection(1)
 {
-	m_pLevelLogic = new CLevelLogic();
+	m_pLevelLogic = &_logic;
 	m_cEndShipMove = clock();
-
+	m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLRealEnemyDelay());
 	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
 }
+
+//CLevel::CLevel()
+//{
+//	/*m_pLevelLogic = new CLevelLogic();
+//	m_cEndShipMove = clock();
+//
+//	m_cEndEnemyMove = clock();
+//	srand((unsigned)time(NULL));*/
+//}
+
 
 CLevel::~CLevel()
 {
@@ -327,7 +337,8 @@ CLevel::ProcessBulletEnemyCollision()
 						m_vecEnemies[i - 11]->SetCanShoot(true);
 					}
 					//TODO: SET SPRITE DEAD ANIMATION
-					m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
+					m_pLevelLogic->IncreaseLVLPlayerScore(m_vecEnemies[i]->GetEnemyPoints());
+					//m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
 					delete m_vecPlayerBullets[j];
 					m_vecPlayerBullets[j] = 0;
@@ -349,8 +360,8 @@ CLevel::ProcessBulletEnemyCollision()
 		if (m_pEnemyShip != nullptr && m_vecPlayerBullets[j]->IsCollidingWith(*m_pEnemyShip))
 		{
 			m_pEnemyShip->SetHit(true);
-
-			m_pPlayer->IncreasePlayerScore(m_pEnemyShip->GetEnemyPoints());
+			m_pLevelLogic->IncreaseLVLPlayerScore(m_pEnemyShip->GetEnemyPoints());
+			//m_pPlayer->IncreasePlayerScore(m_pEnemyShip->GetEnemyPoints());
 
 			delete m_vecPlayerBullets[j];
 			m_vecPlayerBullets[j] = 0;
@@ -379,9 +390,9 @@ CLevel::ProcessBulletPlayerCollision()
 
 			if (!m_pLevelLogic->GetLVLPlayerInvincibility())
 			{
-				m_pPlayer->SetPlayerLives(m_pPlayer->GetPlayerLives() - 1);
+				m_pLevelLogic->SetLVLPlayerLives(m_pLevelLogic->GetLVLPlayerLives() - 1);//m_pPlayer->GetPlayerLives() - 1);
 
-				if (m_pPlayer->GetPlayerLives() == 0)
+				if (m_pLevelLogic->GetLVLPlayerLives() == 0)
 				{
 					CGame::GetInstance().GameOverLost();
 				}
@@ -470,7 +481,6 @@ CLevel::EnemyMovement(float _fDeltaTick)
 			if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 990.0f)
 				|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
 			{
-				
 				wall = true;
 			}
 
@@ -490,6 +500,8 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	if (wall)
 	{
 		wall = false;
+		m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLEnemyMoveDelay() - 0.025f);
+
 		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
 		{
 			m_vecEnemies[i]->SetY(m_vecEnemies[i]->GetY() + 50); //Increment level down by 50
@@ -581,14 +593,14 @@ CLevel::DrawScore()
 	SetTextColor(hdc, RGB(27, 233, 56));
 	line = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
 	m_strScore = "SCORE: ";
-	m_strScore += ToString(m_pPlayer->GetPlayerScore());
+	m_strScore += ToString(m_pLevelLogic->GetLVLPlayerScore());//m_pPlayer->GetPlayerScore());
 	TextOutA(hdc, kiX, kiY, m_strScore.c_str(), static_cast<int>(m_strScore.size()));
 
 	SetTextColor(hdc, RGB(27, 233, 56));
 	TextOutA(hdc, 0, m_iHeight - 135, line.c_str(), static_cast<int>(line.size()));
 
 	m_strPlayerLives = "Player Lives: ";
-	m_strPlayerLives += ToString(m_pPlayer->GetPlayerLives());
+	m_strPlayerLives += ToString(m_pLevelLogic->GetLVLPlayerLives());
 	if (m_pLevelLogic->GetLVLPlayerInvincibility())
 	{
 		m_strPlayerLives += "                                                                     YOU ARE CURRENTLY INVINCIBLE";
@@ -600,35 +612,8 @@ void
 CLevel::DrawFPS()
 {
 	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-	//HFONT font = CreateFont(
-	//	0,	 //Height
-	//	0,  //Width
-	//	0,	 //Rotation
-	//	0,	 //Orientation
-	//	FW_EXTRALIGHT, //Weight
-	//	false, //Italic
-	//	false, //Underline
-	//	false, //Crossed out
-	//	DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-	//	DEFAULT_QUALITY, DEFAULT_PITCH, L"Arial");
-
-	//SelectObject(hdc, font);
 
 	SetTextColor(hdc, RGB(27, 233, 56));
 	m_fpsCounter->DrawFPSText(hdc, m_iWidth - 30, m_iHeight - 80);
-
-	//HFONT font2 = CreateFont(
-	//	40,	 //Height
-	//	15,  //Width
-	//	0,	 //Rotation
-	//	0,	 //Orientation
-	//	FW_EXTRALIGHT, //Weight
-	//	false, //Italic
-	//	false, //Underline
-	//	false, //Crossed out
-	//	DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-	//	DEFAULT_QUALITY, DEFAULT_PITCH, L"Arial");
-	//SelectObject(hdc, font2);
-
 }
 

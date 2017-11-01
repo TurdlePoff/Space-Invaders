@@ -14,7 +14,7 @@
 
 // Library Includes
 #include <windows.h>
-#include <iostream>
+
 // Local Includes
 #include "utils.h"
 #include "BackBuffer.h"
@@ -28,7 +28,9 @@
 CGame* CGame::s_pGame = 0;
 CLevel* CGame::m_pLevel = 0;
 EGameState CGame::m_eGameState = (EGameState::MENU);
+
 bool CGame::m_bIsPaused = false;
+bool CGame::m_bLevelComplete = false;
 
 // Implementation
 CGame::CGame()
@@ -36,8 +38,11 @@ CGame::CGame()
 , m_hApplicationInstance(0)
 , m_hMainWindow(0)
 , m_pBackBuffer(0)
+, n_bReadyForNextLevel(false)
+, m_cBeginLevelBreak(0)
+, m_cEndLevelBreak(0)
 {
-
+	m_pLogic = new CLevelLogic();
 }
 
 CGame::~CGame()
@@ -81,6 +86,11 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 		VALIDATE(m_pInstructions->Initialise(ESprite::INSTRUCTIONS));
 		m_pInstructions->SetX((float)1000 / 2);
 		m_pInstructions->SetY((float)750 / 2);
+
+		m_pLevelComplete = new CBackGround();
+		VALIDATE(m_pLevelComplete->Initialise(ESprite::LVLCOMP));
+		m_pLevelComplete->SetX((float)1000 / 2);
+		m_pLevelComplete->SetY((float)750 / 2);
 	}
 
 	ShowCursor(true);
@@ -105,7 +115,12 @@ CGame::Draw()
 	else if (m_eGameState == EGameState::GAME)
 	{
 		m_pLevel->Draw();
+		if (n_bReadyForNextLevel)
+		{
+			m_pLevelComplete->Draw();
+		}
 	}
+
     m_pBackBuffer->Present();
 }
 
@@ -121,8 +136,9 @@ CGame::Process(float _fDeltaTick)
 		m_pMenuNavigator->SwitchMenuItem(m_eGameState);
 		if (m_eGameState == EGameState::GAME)
 		{
-			m_pLevel = new CLevel();
+			m_pLevel = new CLevel(*m_pLogic);
 			m_pLevel->Initialise(1000, 800);
+			m_pLogic->SetLVLPlayerLives(3);
 		}
 		else if (m_eGameState == EGameState::INSTRUCTIONS)
 		{
@@ -145,6 +161,23 @@ CGame::Process(float _fDeltaTick)
 	else if (m_eGameState == EGameState::GAME)
 	{
 		m_pLevel->Process(_fDeltaTick);
+		
+		if (GetLevelComplete())
+		{
+			m_pLevelComplete->Process(_fDeltaTick);
+
+			SetLevelComplete(false);
+			m_cBeginLevelBreak = clock();
+			n_bReadyForNextLevel = true;
+		}
+
+		double elapsed_secs = double(m_cEndLevelBreak - m_cBeginLevelBreak) / CLOCKS_PER_SEC;
+
+		if (elapsed_secs > 3.0f && n_bReadyForNextLevel)
+		{
+			SetNextLevel();
+		}
+		m_cEndLevelBreak = clock();
 	}
 }
 
@@ -162,7 +195,6 @@ CGame::ExecuteOneFrame()
 
 		Sleep(1);
 	}
-    
 }
 
 CGame&
@@ -230,22 +262,56 @@ CGame::GetWindow()
 void
 CGame::GameOverWon()
 {
-	MessageBox(m_hMainWindow, L"Winner!", L"Game Over", MB_OK);
-	PostQuitMessage(0);
+	//enemypoints for each level = 990
+	if (!n_bReadyForNextLevel)
+	{
+		SetLevelComplete(true);
+	}
+	//MessageBox(m_hMainWindow, L"Winner!", L"Game Over", MB_OK);
+	//PostQuitMessage(0);
 }
 
 void
 CGame::GameOverLost()
 {
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
+	m_pLogic->SetLVLRealEnemyDelay(1.0f);
+
 	//PostQuitMessage(0);
-	std::cin.clear();
 	SetGameState(EGameState::MENU);
 }
 
-//void CGame::UpdateLevel(float pSpeed, float pBSpeed, bool pInv, float eSpeed, float eBSpeed, float eMSpeed)
-//{
-//	CLevel& level = GetLevelInstance();
-//	level.SetLVLPlayerBulletSpeed(pBSpeed);
-//}
+void CGame::SetLevelComplete(bool _b)
+{
+	m_bLevelComplete = _b;
+}
 
+bool CGame::GetLevelComplete()
+{
+	return m_bLevelComplete;
+}
+
+void CGame::SetNextLevel()
+{
+	if (n_bReadyForNextLevel)
+	{
+		delete m_pLevel;
+		m_pLevel = 0;
+
+		m_pLevel = new CLevel(*m_pLogic);
+		m_pLevel->Initialise(1000, 800);
+		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives()+1);
+
+		if (m_pLogic->GetLVLRealEnemyDelay() <= 0.5f)
+		{
+			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.02f);
+		}
+		else
+		{
+			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.2f);
+		}
+		m_pLogic->SetLVLEnemyMoveDelay(m_pLogic->GetLVLRealEnemyDelay());
+
+		n_bReadyForNextLevel = false;
+	}
+}

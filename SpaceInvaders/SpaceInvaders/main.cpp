@@ -127,6 +127,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 						g_rLevel.GetLevelController().SetLVLEnemyShipSpeed(ReadFromEditBox(_hwnd, IDC_ESHIPSPD));
 
 						g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
+						//g_rLevel.GetLevelController().EndLevel((IsDlgButtonChecked(g_hDebugWindow, IDC_PENDLVL) == 1) ? true : false);
 
 						ShowWindow(_hwnd, SW_HIDE);
 						g_rGame.SetPaused(false);
@@ -137,6 +138,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 				case IDCANCEL:
 				{
 					ShowWindow(_hwnd, SW_HIDE);
+					g_rGame.SetPaused(false);
 					return TRUE;
 					break;
 				}
@@ -146,6 +148,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 					{
 						g_rGame.SetGameState(EGameState::MENU);
 						ShowWindow(_hwnd, SW_HIDE);
+						g_rGame.SetPaused(false);
 					}
 					return TRUE;
 					break;
