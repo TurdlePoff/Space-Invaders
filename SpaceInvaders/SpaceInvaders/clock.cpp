@@ -8,8 +8,8 @@
 //
 // File Name	: "Clock.cpp"
 // Description	: Implemention file for Clock
-// Author		: Vivian Ngo
-// Mail			: vivian.ngo7572@mediadesign.school.nz
+// Author		: Author of BreakOut code 
+// Changes		: by Vivian Ngo
 //
 
 // Library Includes
@@ -17,26 +17,23 @@
 
 // Local Includes
 #include "Clock.h"
-// Static Variables
-
-// Static Function Prototypes
 
 // Implementation
-
 CClock::CClock()
 : m_fTimeElapsed(0.0f)
 , m_fDeltaTime(0.0f)
 , m_fLastTime(0.0f)
 , m_fCurrentTime(0.0f)
 {
-
 }
 
 CClock::~CClock()
 {
-
 }
 
+/************
+* Initialise: Initialises elements needed for clock
+*************/
 bool
 CClock::Initialise()
 {
@@ -51,6 +48,9 @@ CClock::Initialise()
 	return (true);
 }
 
+/************
+* Process: Processes counters
+*************/
 void
 CClock::Process()
 {
@@ -77,6 +77,9 @@ CClock::Process()
 	m_fTimeElapsed += m_fDeltaTime;
 }
 
+/************
+* GetDeltaTick: Getter for DeltaTick
+*************/
 float
 CClock::GetDeltaTick()
 {

@@ -4,30 +4,21 @@
 // Auckland
 // New Zealand
 //
-// (c) 2016 Media Design School.
+// (c) 2016 Media Design School
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "enemy.cpp"
+// Description	: Implementation file for Enemy
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 
-// Library Includes
-
-// Local Includes
-//TODO: inclResource
 //#include "resource.h"
 #include "utils.h"
 
 // This Include
 #include "enemy.h"
 
-// Static Variables
-
-// Static Function Prototypes
-
 // Implementation
-
 CEnemy::CEnemy()
 : m_bHit(false)
 , m_fVelocityX(0.0f)
@@ -54,28 +45,30 @@ CEnemy::Initialise(ESprite _spriteType)
 {
 	SetSpriteType(_spriteType);
     VALIDATE(CEntity::Initialise(_spriteType));
-	int pointArray[5] = {10, 20, 30, 50, 100};
+	int pointArray[6] = {10, 20, 30, 50, 100, 300};
 
+	//Set points depending on which enemy is being created
 	switch(_spriteType)
 	{
-		case ESprite::ENEMYTOP: //smol squid
+		case ESprite::ENEMYTOP: //Squido
 		{
 			m_iPoints = 30;
 			break;
 		}
-		case ESprite::ENEMYMED: //smol squid
+		case ESprite::ENEMYMED: //Buggo
 		{
 			m_iPoints = 20;
 			break;
 		}
-		case ESprite::ENEMYBOT: //smol squid
+		case ESprite::ENEMYBOT: //Octomonsto
 		{
 			m_iPoints = 10;
 			break;
 		}
-		case ESprite::ENEMYSHIP: //smol squid
+		case ESprite::ENEMYSHIP: //Nyooms
 		{
-			m_iPoints = pointArray[rand() % 4 + 0];
+			//Create enemy ship with random point value
+			m_iPoints = pointArray[rand() % 7];
 			break;
 		}
 	}
@@ -83,6 +76,9 @@ CEnemy::Initialise(ESprite _spriteType)
     return (true);
 }
 
+/************
+* Draw: Calls draw from within entity
+*************/
 void
 CEnemy::Draw()
 {
@@ -92,6 +88,9 @@ CEnemy::Draw()
     }
 }
 
+/************
+* Process: Calls process from within entity if enemy is not hit and moves position of enemy with velocities
+*************/
 void
 CEnemy::Process(float _fDeltaTick)
 {

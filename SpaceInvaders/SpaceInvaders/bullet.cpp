@@ -65,7 +65,7 @@ CBullet::Draw()
 }
 
 /************
-* Process: Calls process from within entity amd sets velocities to start where the bullet position is
+* Process: Calls process from within entity and moves position of enemy with velocities
 *************/
 void
 CBullet::Process(float _fDeltaTick)
@@ -98,6 +98,7 @@ CBullet::GetVelocityY() const
 
 /************
 * SetVelocityX: Setter for velocityX
+* @parameter: _fX - velocity of X
 *************/
 void 
 CBullet::SetVelocityX(float _fX)
@@ -107,6 +108,7 @@ CBullet::SetVelocityX(float _fX)
 
 /************
 * SetVelocityY: Setter for velocityY
+* @parameter: _fY - velocity of Y
 *************/
 void 
 CBullet::SetVelocityY(float _fY)

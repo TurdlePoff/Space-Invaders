@@ -6,10 +6,10 @@
 //
 // (c) 2016 Media Design School
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "enemy.h"
+// Description	: Decalaration file for Enemy
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 
 #pragma once
@@ -31,15 +31,6 @@
 
 class CEnemy : public CEntity
 {
-	// Member Variables
-public:
-
-protected:
-	bool m_bHit;
-
-private:
-
-    // Member Functions
 public:
     CEnemy();
     virtual ~CEnemy();
@@ -65,6 +56,7 @@ public:
 	int GetEnemyPoints();
 
 protected:
+	bool m_bHit;
 	float m_fVelocityX;
 	float m_fVelocityY;
 
