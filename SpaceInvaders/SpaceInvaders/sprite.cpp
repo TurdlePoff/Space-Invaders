@@ -46,6 +46,7 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::MAINMENU:
 		case ESprite::BACKGROUND:
 		case ESprite::INSTRUCTIONS:
+		case ESprite::HIGHSCORES:
 		{
 			m_iW = 1000;
 			m_iH = 800;
@@ -53,6 +54,7 @@ CSprite::CSprite(ESprite _eType)
 		}
 		case ESprite::LVLCOMP:
 		{
+			m_iFramePositionW = 0;
 			m_iW = 350;
 			m_iH = 96;
 			break;
@@ -193,6 +195,11 @@ CSprite::Initialise()
 		iBackground = IDB_LVLCOMP;
 		iMask = IDB_LVLCOMPMASK;
 	}
+	else if (m_eSpriteType == ESprite::HIGHSCORES)
+	{
+		iBackground = IDB_HIGHSCORES;
+		iMask = IDB_BACKGROUNDMASK;
+	}
 	else
 	{
 		iBackground = IDB_SS;
@@ -208,7 +215,8 @@ CSprite::Initialise()
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
 	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU 
-		|| m_eSpriteType == ESprite::INSTRUCTIONS || m_eSpriteType == ESprite::LVLCOMP)
+		|| m_eSpriteType == ESprite::INSTRUCTIONS || m_eSpriteType == ESprite::LVLCOMP
+		|| m_eSpriteType == ESprite::HIGHSCORES)
 	{
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;

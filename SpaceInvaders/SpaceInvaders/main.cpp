@@ -111,6 +111,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 	{
 		case WM_COMMAND:
 		{
+
 			switch (LOWORD(_wparam))
 			{
 				case IDOK:
@@ -123,11 +124,9 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 
 						g_rLevel.GetLevelController().SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
 						g_rLevel.GetLevelController().SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
-						//ESHIPSPD
 						g_rLevel.GetLevelController().SetLVLEnemyShipSpeed(ReadFromEditBox(_hwnd, IDC_ESHIPSPD));
 
 						g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
-						//g_rLevel.GetLevelController().EndLevel((IsDlgButtonChecked(g_hDebugWindow, IDC_PENDLVL) == 1) ? true : false);
 
 						ShowWindow(_hwnd, SW_HIDE);
 						g_rGame.SetPaused(false);
@@ -161,6 +160,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 		case WM_CLOSE:
 		{
 			ShowWindow(_hwnd, SW_HIDE);
+			g_rGame.SetPaused(false);
 			return TRUE;
 			break;
 		}

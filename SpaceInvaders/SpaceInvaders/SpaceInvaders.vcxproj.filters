@@ -136,6 +136,8 @@
     <Image Include="..\Sprites\lvlComplete.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\sprites\bitmap1.bmp" />
+    <Image Include="..\Sprites\highscores.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvaders.rc">

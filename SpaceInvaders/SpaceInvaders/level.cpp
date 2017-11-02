@@ -500,7 +500,18 @@ CLevel::EnemyMovement(float _fDeltaTick)
 	if (wall)
 	{
 		wall = false;
-		m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLEnemyMoveDelay() - 0.025f);
+		if (m_pLevelLogic->GetLVLEnemyMoveDelay() >= 0.4f)
+		{
+			m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLEnemyMoveDelay() - 0.1f);
+		}
+		else if (m_pLevelLogic->GetLVLEnemyMoveDelay() >= 0.2f)
+		{
+			m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLEnemyMoveDelay() - 0.05f);
+		}
+		else if (m_pLevelLogic->GetLVLEnemyMoveDelay() >= 0.04f)
+		{
+			m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLEnemyMoveDelay() - 0.02f);
+		}
 
 		for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
 		{
@@ -540,9 +551,8 @@ void CLevel::ProcessEnemyShip()
 			m_pEnemyShip = new CEnemy();
 			m_pEnemyShip->Initialise(ESprite::ENEMYSHIP);
 		
-			//Generate a random number between 0 + 5
+			//Generate a random number for 0 and 1
 			m_iRandShipDirection = rand() % 2;
-
 
 			if (m_iRandShipDirection == 1)
 			{

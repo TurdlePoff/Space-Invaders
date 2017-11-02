@@ -90,6 +90,7 @@ protected:
 	CLevelLogic* m_pLogic;
 	CBackGround* m_pMenu;
 	CBackGround* m_pInstructions;
+	CBackGround* m_pHighScores;
 	CBackGround* m_pLevelComplete;
 	CPlayer* m_pMenuNavigator;
     CBackBuffer* m_pBackBuffer;

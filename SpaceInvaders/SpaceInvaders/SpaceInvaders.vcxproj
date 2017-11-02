@@ -187,6 +187,8 @@
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
+    <Image Include="..\sprites\bitmap1.bmp" />
+    <Image Include="..\Sprites\highscores.bmp" />
     <Image Include="..\Sprites\instructions.bmp" />
     <Image Include="..\Sprites\lvlComplete.bmp" />
     <Image Include="..\Sprites\lvlCompleteMask.bmp" />

@@ -34,7 +34,7 @@
 
 enum EMenuSelector
 {
-	STARTMENU, INSTMENU, EXITMENU
+	STARTMENU, INSTMENU, HSCOREMENU, EXITMENU
 };
 
 class CPlayer : public CEntity

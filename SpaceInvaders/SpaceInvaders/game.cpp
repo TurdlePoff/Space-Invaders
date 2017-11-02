@@ -80,13 +80,18 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 		m_pMenuNavigator = new CPlayer();
 		VALIDATE(m_pMenuNavigator->Initialise());
 		m_pMenuNavigator->SetX(1000 / 2 - 155);
-		m_pMenuNavigator->SetY(750 / 2 - 25);
+		m_pMenuNavigator->SetY(750 / 2 - 105);
 
 		m_pInstructions = new CBackGround();
 		VALIDATE(m_pInstructions->Initialise(ESprite::INSTRUCTIONS));
 		m_pInstructions->SetX((float)1000 / 2);
 		m_pInstructions->SetY((float)750 / 2);
 
+		m_pHighScores = new CBackGround();
+		VALIDATE(m_pHighScores->Initialise(ESprite::HIGHSCORES));
+		m_pHighScores->SetX((float)1000 / 2);
+		m_pHighScores->SetY((float)750 / 2);
+		
 		m_pLevelComplete = new CBackGround();
 		VALIDATE(m_pLevelComplete->Initialise(ESprite::LVLCOMP));
 		m_pLevelComplete->SetX((float)1000 / 2);
@@ -111,6 +116,10 @@ CGame::Draw()
 	else if (m_eGameState == EGameState::INSTRUCTIONS)
 	{
 		m_pInstructions->Draw();
+	}
+	else if (m_eGameState == EGameState::HIGHSCORES)
+	{
+		m_pHighScores->Draw();
 	}
 	else if (m_eGameState == EGameState::GAME)
 	{
@@ -147,19 +156,18 @@ CGame::Process(float _fDeltaTick)
 		{
 			m_pInstructions->Process(_fDeltaTick);
 		}
+		else if (m_eGameState == EGameState::HIGHSCORES)
+		{
+			m_pHighScores->Process(_fDeltaTick);
+		}
 	}
-	else if (m_eGameState == EGameState::INSTRUCTIONS)
+	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES)
 	{
 		Sleep(200);
 		if (GetAsyncKeyState(VK_RETURN))
 		{
 			SetGameState(EGameState::MENU);
 		}
-		else
-		{
-			m_pInstructions->Process(_fDeltaTick);
-		}
-
 	}
 	else if (m_eGameState == EGameState::GAME)
 	{

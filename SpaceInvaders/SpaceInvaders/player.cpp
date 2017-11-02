@@ -123,17 +123,22 @@ void CPlayer::SetMenuSwitch(EMenuSelector _mItem)
 	if (m_eMenuItem == STARTMENU)
 	{
 		SetX(1000 / 2 - 155);
-		SetY(750 / 2 - 25);
+		SetY(750 / 2 - 105);
 	}
 	else if (m_eMenuItem == INSTMENU)
 	{
-		SetX(1000 / 2 - 275);
-		SetY(750 / 2 + 75);
+		SetX(1000 / 2 - 280);
+		SetY(750 / 2 - 5);
+	}
+	else if (m_eMenuItem == HSCOREMENU)
+	{
+		SetX(1000 / 2 - 260);
+		SetY(750 / 2 + 100);
 	}
 	else if (m_eMenuItem == EXITMENU)
 	{
 		SetX(1000 / 2 - 130);
-		SetY(750 / 2 + 180);
+		SetY(750 / 2 + 200);
 	}
 }
 
@@ -157,6 +162,10 @@ void CPlayer::SwitchMenuItem(EGameState _state)
 			{
 				CGame::SetGameState(EGameState::INSTRUCTIONS);
 			}
+			else if (GetMenuSwitch() == HSCOREMENU)
+			{
+				CGame::SetGameState(EGameState::HIGHSCORES);
+			}
 			else 
 			{
 				PostQuitMessage(0);
@@ -168,9 +177,13 @@ void CPlayer::SwitchMenuItem(EGameState _state)
 			{
 				SetMenuSwitch(STARTMENU);
 			}
-			else if (GetMenuSwitch() == EXITMENU)
+			else if (GetMenuSwitch() == HSCOREMENU)
 			{
 				SetMenuSwitch(INSTMENU);
+			}
+			else if (GetMenuSwitch() == EXITMENU)
+			{
+				SetMenuSwitch(HSCOREMENU);
 			}
 		}
 		else if (GetAsyncKeyState(VK_DOWN))
@@ -180,6 +193,10 @@ void CPlayer::SwitchMenuItem(EGameState _state)
 				SetMenuSwitch(INSTMENU);
 			}
 			else if (GetMenuSwitch() == INSTMENU)
+			{
+				SetMenuSwitch(HSCOREMENU);
+			}
+			else if (GetMenuSwitch() == HSCOREMENU)
 			{
 				SetMenuSwitch(EXITMENU);
 			}
