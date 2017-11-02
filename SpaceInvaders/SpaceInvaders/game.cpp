@@ -28,7 +28,6 @@
 CGame* CGame::s_pGame = 0;
 CLevel* CGame::m_pLevel = 0;
 EGameState CGame::m_eGameState = (EGameState::MENU);
-
 bool CGame::m_bIsPaused = false;
 bool CGame::m_bLevelComplete = false;
 
@@ -50,6 +49,21 @@ CGame::~CGame()
 	delete m_pLevel;
 	m_pLevel = 0;
 
+	delete m_pMenu;
+	m_pMenu = 0;
+
+	delete m_pMenuNavigator;
+	m_pMenuNavigator = 0;
+
+	delete m_pInstructions;
+	m_pInstructions = 0;
+
+	delete m_pHighScores;
+	m_pHighScores = 0;
+
+	delete m_pLevelComplete;
+	m_pLevelComplete = 0;
+
     delete m_pBackBuffer;
     m_pBackBuffer = 0;
 
@@ -57,6 +71,9 @@ CGame::~CGame()
     m_pClock = 0;
 }
 
+/************
+* Initialise: Initialises elements that are needed throughout the game
+*************/
 bool
 CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 {
@@ -70,6 +87,7 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
 
+	//Initialise all menu and background items
 	if (m_eGameState == EGameState::MENU)
 	{
 		m_pMenu = new CBackGround();
@@ -103,6 +121,9 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     return (true);
 }
 
+/************
+* Draw: Game Draw function draws elements of the current state onto the screen
+*************/
 void
 CGame::Draw()
 {
@@ -133,6 +154,10 @@ CGame::Draw()
     m_pBackBuffer->Present();
 }
 
+/************
+* Process: Game Processer that deals with elements of the current state should be 
+  processed within the game application
+*************/
 void
 CGame::Process(float _fDeltaTick)
 {
@@ -232,11 +257,21 @@ CGame::DestroyInstance()
     s_pGame = 0;
 }
 
-void CGame::SetGameState(EGameState _state)
+
+/************
+* SetGameState: Sets a game state 
+* States: MENU, GAME, INSTRUCTIONS, HIGHSCORES
+*************/
+void 
+CGame::SetGameState(EGameState _state)
 {
 	m_eGameState = _state;
 }
 
+/************
+* GetGameState: Getter for game state
+* States: MENU, GAME, INSTRUCTIONS, HIGHSCORES
+*************/
 EGameState CGame::GetGameState()
 {
 	return m_eGameState;
@@ -270,39 +305,53 @@ CGame::GetWindow()
     return (m_hMainWindow);
 }
 
+/************
+* GameOverWon: Set level as complete which leads to the next level being created
+*************/
 void
 CGame::GameOverWon()
 {
-	//enemypoints for each level = 990
+	//total enemypoints for each level = 990
 	if (!n_bReadyForNextLevel)
 	{
 		SetLevelComplete(true);
 	}
-	//MessageBox(m_hMainWindow, L"Winner!", L"Game Over", MB_OK);
-	//PostQuitMessage(0);
 }
 
+/************
+* SetLevelComplete: Setter for marking a level as complete or incomplete
+*************/
 void
 CGame::GameOverLost()
 {
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
-	m_pLogic->SetLVLRealEnemyDelay(1.0f);
 
-	//PostQuitMessage(0);
 	SetGameState(EGameState::MENU);
 }
 
-void CGame::SetLevelComplete(bool _b)
+/************
+* SetLevelComplete: Setter for marking a level as complete or incomplete
+*************/
+void 
+CGame::SetLevelComplete(bool _b)
 {
 	m_bLevelComplete = _b;
 }
 
-bool CGame::GetLevelComplete()
+/************
+* GetLevelComplete: returns true if level is complete
+*************/
+bool 
+CGame::GetLevelComplete()
 {
 	return m_bLevelComplete;
 }
 
-void CGame::SetNextLevel()
+/************
+* SetNextLevel: Deletes current level and recreates another one with new statistics
+*************/
+void 
+CGame::SetNextLevel()
 {
 	if (n_bReadyForNextLevel)
 	{
@@ -311,9 +360,8 @@ void CGame::SetNextLevel()
 
 		m_pLevel = new CLevel(*m_pLogic);
 		m_pLevel->Initialise(1000, 800);
-		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives()+1);
-		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount()+1);
 
+		//Decrease the movement delay of enemies after each level
 		if (m_pLogic->GetLVLRealEnemyDelay() <= 0.5f)
 		{
 			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.02f);
@@ -322,7 +370,17 @@ void CGame::SetNextLevel()
 		{
 			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.2f);
 		}
+		//If enemy movement delay code was changed within the debug window, reset to the real speed for the nxt level
 		m_pLogic->SetLVLEnemyMoveDelay(m_pLogic->GetLVLRealEnemyDelay());
+
+		//Increase enemy bullet speed after each level 
+		m_pLogic->SetLVLEnemyBulletSpeed(m_pLogic->GetLVLEnemyBulletSpeed() + 0.5f);
+
+		//Increase player life count by 1 if level is won
+		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives() + 1);
+
+		//Increase level count
+		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount() + 1);
 
 		n_bReadyForNextLevel = false;
 	}

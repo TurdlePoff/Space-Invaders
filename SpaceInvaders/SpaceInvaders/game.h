@@ -42,14 +42,30 @@ public:
 
     void Draw();
     void Process(float _fDeltaTick);
-
     void ExecuteOneFrame();
+
 	void GameOverWon();
 	void GameOverLost();
 
-    CBackBuffer* GetBackBuffer();
-    HINSTANCE GetAppInstance();
-    HWND GetWindow();
+	//static elements
+	static void SetGameState(EGameState _state);
+	static EGameState GetGameState();
+	static EGameState m_eGameState;
+
+	static bool m_bIsPaused;
+	static void SetPaused(bool _b);
+	static bool GetPaused();
+
+	static bool m_bLevelComplete;
+	static void SetLevelComplete(bool _b);
+	static bool GetLevelComplete();
+
+	void SetNextLevel();
+	bool n_bReadyForNextLevel;
+
+	CBackBuffer* GetBackBuffer();
+	HINSTANCE GetAppInstance();
+	HWND GetWindow();
 
     // Singleton Methods
 	static CLevel& GetLevelInstance();
@@ -57,35 +73,9 @@ public:
     static CGame& GetInstance();
     static void DestroyInstance();
 
-	static void SetGameState(EGameState _state);
-	static EGameState GetGameState();
-	static EGameState m_eGameState;
-
-	static bool m_bIsPaused;
-
-	static void SetPaused(bool _b);
-	static bool GetPaused();
-
-	static bool m_bLevelComplete;
-
-	static void SetLevelComplete(bool _b);
-	static bool GetLevelComplete();
-
-	void SetNextLevel();
-	bool n_bReadyForNextLevel;
 protected:
-
-private:
-    CGame();
-    CGame(const CGame& _kr);
-    CGame& operator= (const CGame& _kr);
-
-
-    // Member Variables
-public:
-
-protected:
-    CClock* m_pClock;
+	//Elements needed for the game
+	CClock* m_pClock;
 	static CLevel* m_pLevel;
 	CLevelLogic* m_pLogic;
 	CBackGround* m_pMenu;
@@ -93,19 +83,22 @@ protected:
 	CBackGround* m_pHighScores;
 	CBackGround* m_pLevelComplete;
 	CPlayer* m_pMenuNavigator;
-    CBackBuffer* m_pBackBuffer;
-	
+	CBackBuffer* m_pBackBuffer;
+
 	clock_t m_cBeginLevelBreak;
 	clock_t m_cEndLevelBreak;
 
-    //Application data
-    HINSTANCE m_hApplicationInstance;
-    HWND m_hMainWindow;
+	//Application data
+	HINSTANCE m_hApplicationInstance;
+	HWND m_hMainWindow;
 
-    // Singleton Instance
-    static CGame* s_pGame;
+	// Singleton Instance
+	static CGame* s_pGame;
 
 private:
+    CGame();
+    CGame(const CGame& _kr);
+    CGame& operator= (const CGame& _kr);
 
 };
 

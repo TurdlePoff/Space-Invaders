@@ -66,7 +66,6 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 			{
 			case VK_ESCAPE:
 			{
-				//g_rLevel.SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 				if (g_rGame.GetGameState() == EGameState::GAME)
 				{
 					WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, (g_rLevel.GetLevelController().GetLVLPlayerMovementSpeed()));
@@ -74,6 +73,7 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 					WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLevelController().GetLVLEnemyMoveDelay());
 					WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLevelController().GetLVLEnemyBulletSpeed());
 					WriteToEditBox(g_hDebugWindow, IDC_ESHIPSPD, g_rLevel.GetLevelController().GetLVLEnemyShipSpeed());
+					WriteToEditBox(g_hDebugWindow, IDC_EBULDELAY, g_rLevel.GetLevelController().GetLVLEnemyShootingDelay());
 
 					ShowWindow(g_hDebugWindow, SW_NORMAL);
 					g_rGame.SetPaused(true);
@@ -121,12 +121,14 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 					{
 						g_rLevel.GetLevelController().SetLVLPlayerMovementSpeed(ReadFromEditBox(_hwnd, IDC_PMOVESPD));
 						g_rLevel.GetLevelController().SetLVLPlayerBulletSpeed(ReadFromEditBox(_hwnd, IDC_PBULSPD));
+						g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
 
 						g_rLevel.GetLevelController().SetLVLEnemyMoveDelay(ReadFromEditBox(_hwnd, IDC_EMOVEDELAY));
 						g_rLevel.GetLevelController().SetLVLEnemyBulletSpeed(ReadFromEditBox(_hwnd, IDC_EBULSPD));
 						g_rLevel.GetLevelController().SetLVLEnemyShipSpeed(ReadFromEditBox(_hwnd, IDC_ESHIPSPD));
+						g_rLevel.GetLevelController().SetLVLEnemyShootingDelay(ReadFromEditBox(_hwnd, IDC_EBULDELAY));
 
-						g_rLevel.GetLevelController().SetLVLPlayerInvincibility((IsDlgButtonChecked(g_hDebugWindow, IDC_PINV) == 1) ? true : false);
+						//GetLVLEnemyShootingDelay
 
 						ShowWindow(_hwnd, SW_HIDE);
 						g_rGame.SetPaused(false);
