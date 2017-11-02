@@ -41,13 +41,15 @@ CGame::CGame()
 , m_cBeginLevelBreak(0)
 , m_cEndLevelBreak(0)
 {
-	m_pLogic = new CLevelLogic();
 }
 
 CGame::~CGame()
 {
 	delete m_pLevel;
 	m_pLevel = 0;
+
+	delete m_pLogic;
+	m_pLogic = 0;
 
 	delete m_pMenu;
 	m_pMenu = 0;
@@ -87,34 +89,32 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
 
-	//Initialise all menu and background items
-	if (m_eGameState == EGameState::MENU)
-	{
-		m_pMenu = new CBackGround();
-		VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
-		m_pMenu->SetX((float)1000 / 2);
-		m_pMenu->SetY((float)750 / 2);
+	m_pMenu = new CBackGround();
+	VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
+	m_pMenu->SetX((float)1000 / 2);
+	m_pMenu->SetY((float)750 / 2);
 
-		m_pMenuNavigator = new CPlayer();
-		VALIDATE(m_pMenuNavigator->Initialise());
-		m_pMenuNavigator->SetX(1000 / 2 - 155);
-		m_pMenuNavigator->SetY(750 / 2 - 105);
+	m_pMenuNavigator = new CPlayer();
+	VALIDATE(m_pMenuNavigator->Initialise());
+	m_pMenuNavigator->SetX(1000 / 2 - 155);
+	m_pMenuNavigator->SetY(750 / 2 - 105);
 
-		m_pInstructions = new CBackGround();
-		VALIDATE(m_pInstructions->Initialise(ESprite::INSTRUCTIONS));
-		m_pInstructions->SetX((float)1000 / 2);
-		m_pInstructions->SetY((float)750 / 2);
+	m_pInstructions = new CBackGround();
+	VALIDATE(m_pInstructions->Initialise(ESprite::INSTRUCTIONS));
+	m_pInstructions->SetX((float)1000 / 2);
+	m_pInstructions->SetY((float)750 / 2);
 
-		m_pHighScores = new CBackGround();
-		VALIDATE(m_pHighScores->Initialise(ESprite::HIGHSCORES));
-		m_pHighScores->SetX((float)1000 / 2);
-		m_pHighScores->SetY((float)750 / 2);
+	m_pHighScores = new CBackGround();
+	VALIDATE(m_pHighScores->Initialise(ESprite::HIGHSCORES));
+	m_pHighScores->SetX((float)1000 / 2);
+	m_pHighScores->SetY((float)750 / 2);
 		
-		m_pLevelComplete = new CBackGround();
-		VALIDATE(m_pLevelComplete->Initialise(ESprite::LVLCOMP));
-		m_pLevelComplete->SetX((float)1000 / 2);
-		m_pLevelComplete->SetY((float)750 / 2);
-	}
+	m_pLevelComplete = new CBackGround();
+	VALIDATE(m_pLevelComplete->Initialise(ESprite::LVLCOMP));
+	m_pLevelComplete->SetX((float)1000 / 2);
+	m_pLevelComplete->SetY((float)750 / 2);
+
+	m_pLogic = new CLevelLogic();
 
 	ShowCursor(true);
 
@@ -162,43 +162,46 @@ void
 CGame::Process(float _fDeltaTick)
 {
     // Process all the game’s logic here.
-	//Load a new sprite.
-	if (m_eGameState == EGameState::MENU)
+	if (m_eGameState == EGameState::MENU) //If the game is in the menu state
 	{
-		m_pMenu->Process(_fDeltaTick);
-		m_pMenuNavigator->Process(_fDeltaTick);
-		m_pMenuNavigator->SwitchMenuItem(m_eGameState);
-		if (m_eGameState == EGameState::GAME)
+		m_pMenu->Process(_fDeltaTick);					 // Process the menu screen
+		m_pMenuNavigator->Process(_fDeltaTick);			 // Process player navigation
+		m_pMenuNavigator->SwitchMenuItem(m_eGameState);  // Allow player to navigate through options.
+		if (m_eGameState == EGameState::GAME)			 //If player selects game mode
 		{
-			m_pLevel = new CLevel(*m_pLogic);
-			m_pLevel->Initialise(1000, 800);
-			m_pLogic->SetLVLPlayerLives(3);
-			m_pLogic->SetLVLLevelCount(1);
-			m_pLogic->SetLVLPlayerScore(0);
+			if (m_pLogic != nullptr)					 //If level logic exists, reset and initialise as player is starting a new game
+			{
+				delete m_pLogic;
+				m_pLogic = 0;
 
+				m_pLogic = new CLevelLogic();
+			}
+			m_pLevel = new CLevel(*m_pLogic);			 //Create new level
+			m_pLevel->Initialise(1000, 800);
 		}
-		else if (m_eGameState == EGameState::INSTRUCTIONS)
+		else if (m_eGameState == EGameState::INSTRUCTIONS)	//If player selects instructions mode
 		{
-			m_pInstructions->Process(_fDeltaTick);
+			m_pInstructions->Process(_fDeltaTick);			//Display instructions screen
 		}
-		else if (m_eGameState == EGameState::HIGHSCORES)
+		else if (m_eGameState == EGameState::HIGHSCORES)	//If player selects highscore mode
 		{
-			m_pHighScores->Process(_fDeltaTick);
+			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
+			//TODO: Display high scores here
 		}
 	}
-	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES)
+	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES) 	//if current gamestate is instructions/highscores
 	{
-		Sleep(200);
+		Sleep(200); //Delay button press time
 		if (GetAsyncKeyState(VK_RETURN))
 		{
-			SetGameState(EGameState::MENU);
+			SetGameState(EGameState::MENU);					//Return to main menu on ENTER press
 		}
 	}
-	else if (m_eGameState == EGameState::GAME)
+	else if (m_eGameState == EGameState::GAME)				//if current gamestate is in game
 	{
-		m_pLevel->Process(_fDeltaTick);
+		m_pLevel->Process(_fDeltaTick);						//Process the current level
 		
-		if (GetLevelComplete())
+		if (GetLevelComplete())								//Check if the level is complete
 		{
 			m_pLevelComplete->Process(_fDeltaTick);
 
@@ -207,7 +210,8 @@ CGame::Process(float _fDeltaTick)
 			n_bReadyForNextLevel = true;
 		}
 
-		double elapsed_secs = double(m_cEndLevelBreak - m_cBeginLevelBreak) / CLOCKS_PER_SEC;
+		//Set a delay before the next level starts
+		double elapsed_secs = double(m_cEndLevelBreak - m_cBeginLevelBreak) / CLOCKS_PER_SEC; 
 
 		if (elapsed_secs > 3.0f && n_bReadyForNextLevel)
 		{
@@ -312,6 +316,7 @@ void
 CGame::GameOverWon()
 {
 	//total enemypoints for each level = 990
+	//Set level as complete if all enemies are dead
 	if (!n_bReadyForNextLevel)
 	{
 		SetLevelComplete(true);
@@ -361,8 +366,20 @@ CGame::SetNextLevel()
 		m_pLevel = new CLevel(*m_pLogic);
 		m_pLevel->Initialise(1000, 800);
 
-		//Decrease the movement delay of enemies after each level
-		if (m_pLogic->GetLVLRealEnemyDelay() <= 0.5f)
+
+		//Reinitialise level stats in new level/Increase difficulty
+		m_pLogic->SetLVLEnemyBulletSpeed(m_pLogic->GetLVLEnemyBulletSpeed() + 0.2f);	//Increase enemy bullet speed after each level 
+
+		if (m_pLogic->GetLVLEnemyShootingDelay() >= 0.5f)
+		{
+			m_pLogic->SetLVLEnemyShootingDelay(m_pLogic->GetLVLEnemyShootingDelay() - 0.2f);
+		}
+		else
+		{
+			m_pLogic->SetLVLEnemyShootingDelay(m_pLogic->GetLVLEnemyShootingDelay() - 0.02f);
+		}
+
+		if (m_pLogic->GetLVLRealEnemyDelay() <= 0.5f)	//Decrease the movement delay of enemies after each level
 		{
 			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.02f);
 		}
@@ -370,17 +387,13 @@ CGame::SetNextLevel()
 		{
 			m_pLogic->SetLVLRealEnemyDelay(m_pLogic->GetLVLRealEnemyDelay() - 0.2f);
 		}
-		//If enemy movement delay code was changed within the debug window, reset to the real speed for the nxt level
-		m_pLogic->SetLVLEnemyMoveDelay(m_pLogic->GetLVLRealEnemyDelay());
 
-		//Increase enemy bullet speed after each level 
-		m_pLogic->SetLVLEnemyBulletSpeed(m_pLogic->GetLVLEnemyBulletSpeed() + 0.5f);
+		m_pLogic->SetLVLEnemyMoveDelay(m_pLogic->GetLVLRealEnemyDelay());	//reset enemy movement speed to the real speed for the nxt level
+		m_pLogic->SetLVLEnemyShipSpeed(m_pLogic->GetLVLEnemyShipSpeed() + 0.02f);
 
-		//Increase player life count by 1 if level is won
-		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives() + 1);
+		m_pLogic->SetLVLPlayerLives(m_pLogic->GetLVLPlayerLives() + 1);		//Increase player life count by 1 if level is won
 
-		//Increase level count
-		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount() + 1);
+		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount() + 1);		//Increase level count
 
 		n_bReadyForNextLevel = false;
 	}

@@ -114,8 +114,6 @@ CLevel::~CLevel()
 
 /********
 * Initialise: Initialise function for CLevel
-*
-* parameter
 *********/
 bool
 CLevel::Initialise(int _iWidth, int _iHeight)
@@ -146,6 +144,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	int iCurrentX = kiStartX;
 	int iCurrentY = kiStartX;
 
+	//Set different sprites depending on each level of initialisation
 	for (int i = 0; i < kiNumEnemys; ++i)
 	{
 		CEnemy* pEnemy = new CEnemy();
@@ -166,27 +165,28 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 
 			if (i >= 44)
 			{
-				pEnemy->SetCanShoot(true);
+				pEnemy->SetCanShoot(true); //Only allow enemies at the latest level to shoot (when an enemy infront has been shot, the enemy behind can start shooting)
 			}
 		}
 
+		//Set up enemy settings
 		pEnemy->SetX(static_cast<float>(iCurrentX));
 		pEnemy->SetY(static_cast<float>(iCurrentY));
 		pEnemy->SetVelocityX(20.0f);
 		pEnemy->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
 		iCurrentX += static_cast<int>(pEnemy->GetWidth()) + kiGap;
 
-		if (iCurrentX > 730)
+		if (iCurrentX > 730) //Set up enemy positions
 		{
 			iCurrentX = kiStartX;
 			iCurrentY += 50;
 		}
 
-		m_vecEnemies.push_back(pEnemy);
+		m_vecEnemies.push_back(pEnemy); //Add enemy to vector
 	}
 
 
-	SetEnemysRemaining(kiNumEnemys);
+	SetEnemysRemaining(kiNumEnemys); //Set number of enemies remaining in level
 
 	m_fpsCounter = new CFPSCounter();
 	VALIDATE(m_fpsCounter->Initialise());
@@ -194,6 +194,9 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	return (true);
 }
 
+/********
+* Draw: Draw function for CLevel
+*********/
 void
 CLevel::Draw()
 {
@@ -201,66 +204,68 @@ CLevel::Draw()
 
 	m_pPlayer->Draw();
 
-	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i) //Draw all enemies in vector
 	{
 		m_vecEnemies[i]->Draw();
 	}
 
-	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
+	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j) //Draw all player bullets
 	{
 		m_vecPlayerBullets[j]->Draw();
 	}
 
-	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j) //Draw all enemy bullets
 	{
 		m_vecEnemyBullets[j]->Draw();
 	}
 	
-	if (m_pEnemyShip != nullptr)
+	if (m_pEnemyShip != nullptr) //If the enemy ship exists, draw.
 	{
 		m_pEnemyShip->Draw();
 	}
 
+	//Draw UI
 	DrawScore();
 	DrawLevelCount();
 }
 
+/********
+* Process: Process function for CLevel
+*********/
 void
 CLevel::Process(float _fDeltaTick)
 {
 
 	m_pBackground->Process(_fDeltaTick);
 	m_pPlayer->Process(_fDeltaTick);
-	ProcessPlayerMovement();
-	EnemyMovement(_fDeltaTick);
-	ProcessEnemyShip();
 
-	if (m_pEnemyShip != nullptr)
+	if (m_pEnemyShip != nullptr) //Process ship if it exists
 	{
 		m_pEnemyShip->Process(_fDeltaTick);
 	}
-	////TODO: bullet/ball code
 
-	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting())
+	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting()) //Call shooting for player
 	{
-		FireBullet(true, m_pLevelLogic->GetLVLPlayerBulletSpeed()); //isPlayer = true (player)
+		FireBullet(true, m_pLevelLogic->GetLVLPlayerBulletSpeed());
 		m_pPlayer->SetIsShooting(true);
 	}
 
-	
+	FireBullet(false, m_pLevelLogic->GetLVLEnemyBulletSpeed()); //Call shooting for enemies
 
-	FireBullet(false, m_pLevelLogic->GetLVLEnemyBulletSpeed()); //isPlayer = true (player)
-
-	for (unsigned int i = 0; i < m_vecPlayerBullets.size(); ++i)
+	for (unsigned int i = 0; i < m_vecPlayerBullets.size(); ++i) //Process all player bullets
 	{
 		m_vecPlayerBullets[i]->Process(_fDeltaTick);
 	}
 
-	for (unsigned int i = 0; i < m_vecEnemyBullets.size(); ++i)
+	for (unsigned int i = 0; i < m_vecEnemyBullets.size(); ++i) //Process all enemy bullets
 	{
 		m_vecEnemyBullets[i]->Process(_fDeltaTick);
 	}
 
+	//Process all game logic
+	ProcessPlayerMovement();
+	EnemyMovement(_fDeltaTick);
+	ProcessEnemyShip();
 	ProcessBulletEnemyCollision();
 	ProcessBulletPlayerCollision();
 	ProcessCheckForWin();
@@ -269,17 +274,27 @@ CLevel::Process(float _fDeltaTick)
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
+/********
+* GetLevelController: Gets the level logic for the level
+*********/
 CLevelLogic & CLevel::GetLevelController()
 {
 	return *m_pLevelLogic;
 }
 
+/********
+* FireBullet: Allows player or enemies to fire bullets.
+*			: Players may only shoot once their bullet is dead.
+*			: Enemies that shoot are randomly picked and enemy shooting has a delayed speed
+* @parameter: isPlayer - true is player, false is enemy
+* @parameter: bulletSpeed - bullet speed of entity
+*********/
 void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 {
 	const float fBulletVelX = 0.0f;
 	float fBulletVelY = -bulletSpeed;
 
-	if (isPlayer)
+	if (isPlayer) //If player
 	{
 		m_pBullet = new CBullet();
 
@@ -288,15 +303,17 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 		m_pBullet->SetY(m_pPlayer->GetY() - 20.0f);
 		m_vecPlayerBullets.push_back(m_pBullet);
 	}
-	else
+	else //If enemy
 	{
 		m_cEndBullet = clock();
+		//Check that time since the last bullet is bigger than the specified delay time
 		double elapsed_secs = double(m_cEndBullet - m_cBeginBullet) / CLOCKS_PER_SEC;
 		if (elapsed_secs > m_pLevelLogic->GetLVLEnemyShootingDelay() || elapsed_secs < 0.0f)
 		{
-			int randEnemy = rand() % (55 + 0);
+			int randEnemy = rand() % (55 + 0); //choose random enemy
 
-			if (m_vecEnemies[randEnemy]->GetCanShoot() && !m_vecEnemies[randEnemy]->IsHit())
+			//Note: Made it so enemies that sit behind other enemies are not able to shoot
+			if (m_vecEnemies[randEnemy]->GetCanShoot() && !m_vecEnemies[randEnemy]->IsHit()) //If enemy is not dead and is able to shoot
 			{
 				m_pBullet = new CBullet();
 
@@ -311,12 +328,19 @@ void CLevel::FireBullet(bool isPlayer, float bulletSpeed)
 	}
 }
 
+/********
+* GetPlayer: Getter for the player 
+*********/
 CPlayer*
 CLevel::GetPlayer() const
 {
 	return (m_pPlayer);
 }
 
+/********
+* ProcessBulletEnemyCollision: Detects bullet-enemy collision and deletes bullet 
+*							   and enemy on collision while increasin player score
+*********/
 void
 CLevel::ProcessBulletEnemyCollision()
 {
@@ -338,30 +362,28 @@ CLevel::ProcessBulletEnemyCollision()
 					}
 					//TODO: SET SPRITE DEAD ANIMATION
 					m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore()+m_vecEnemies[i]->GetEnemyPoints());
-					//m_pPlayer->IncreasePlayerScore(m_vecEnemies[i]->GetEnemyPoints());
 
+					//Destroy player bullet
 					delete m_vecPlayerBullets[j];
 					m_vecPlayerBullets[j] = 0;
 
 					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
 					m_pPlayer->SetIsShooting(false);
 
-					if (m_vecEnemies[i]->GetSpriteType() != ESprite::ENEMYSHIP)
-					{
-						SetEnemysRemaining(GetEnemysRemaining() - 1);
-					}
+					//Decrease enemy count
+					SetEnemysRemaining(GetEnemysRemaining() - 1);
 				}				
 			}
 		}
 	}
 
+	//Detects playerbullet-enemyShip collision and add to player score
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
 		if (m_pEnemyShip != nullptr && m_vecPlayerBullets[j]->IsCollidingWith(*m_pEnemyShip))
 		{
 			m_pEnemyShip->SetHit(true);
 			m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore() + m_pEnemyShip->GetEnemyPoints());
-			//m_pPlayer->IncreasePlayerScore(m_pEnemyShip->GetEnemyPoints());
 
 			delete m_vecPlayerBullets[j];
 			m_vecPlayerBullets[j] = 0;
@@ -373,7 +395,9 @@ CLevel::ProcessBulletEnemyCollision()
 	
 }
 
-
+/********
+* ProcessBulletPlayerCollision: Detects if enemy bullets hit player. If they do, remove player life and delete bullet
+*********/
 void
 CLevel::ProcessBulletPlayerCollision()
 {
@@ -388,6 +412,7 @@ CLevel::ProcessBulletPlayerCollision()
 			m_vecEnemyBullets[j] = 0;
 			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 
+			//If the player is not invincible, remove player life
 			if (!m_pLevelLogic->GetLVLPlayerInvincibility())
 			{
 				m_pLevelLogic->SetLVLPlayerLives(m_pLevelLogic->GetLVLPlayerLives() - 1);//m_pPlayer->GetPlayerLives() - 1);
@@ -401,6 +426,9 @@ CLevel::ProcessBulletPlayerCollision()
 	}
 }
 
+/********
+* ProcessCheckForWin: Check if player has won
+*********/
 void
 CLevel::ProcessCheckForWin()
 {
@@ -412,12 +440,17 @@ CLevel::ProcessCheckForWin()
 		}
 	}
 
+	//Set level complete
 	CGame::GetInstance().GameOverWon();
 }
 
+/********
+* ProcessBulletBounds: Detects if bullets are outside of the screen. If so, delete.
+*********/
 void
 CLevel::ProcessBulletBounds()
 {
+	//Player bullets
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
 	{
 		if (m_vecPlayerBullets[j]->GetY() < 0)
@@ -429,6 +462,7 @@ CLevel::ProcessBulletBounds()
 		}
 	}
 
+	//Enemy bullets
 	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
 	{
 		if (m_vecEnemyBullets[j]->GetY() > m_iHeight - 135)
@@ -440,20 +474,25 @@ CLevel::ProcessBulletBounds()
 	}
 }
 
-void 
+/********
+* ProcessPlayerMovement: Processes player movement
+*********/
+void
 CLevel::ProcessPlayerMovement()
 {
 	float fHalfPlayerW = m_pPlayer->GetWidth()/2.0f; //->GetSpriteType()->GetWidth() / 2.0f;
 
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) //If RIGHT key pressed, move player right
 	{
 		m_pPlayer->SetX(m_pPlayer->GetX() + m_pLevelLogic->GetLVLPlayerMovementSpeed());
 	}
-	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) //If LEFT key pressed, move player left
 	{
 		m_pPlayer->SetX(m_pPlayer->GetX() - m_pLevelLogic->GetLVLPlayerMovementSpeed());
 	}
-	if (m_pPlayer->GetX() - fHalfPlayerW <= 0)
+
+	//If player is out of boundary set player at side of screen
+	if (m_pPlayer->GetX() - fHalfPlayerW <= 0) 
 	{
 		m_pPlayer->SetX(fHalfPlayerW);
 	}
@@ -463,12 +502,16 @@ CLevel::ProcessPlayerMovement()
 	}
 }
 
+/********
+* EnemyMovement: Processes enemy movement and detects if it reaches a wall or the bottom of the level
+*********/
 void
 CLevel::EnemyMovement(float _fDeltaTick)
 {
 	bool wall = false;
 	bool lose = false;
-
+	
+	//Set a move delay for the enemies
 	double elapsed_secs = double(m_cEndEnemyMove - m_cBeginEnemyMove) / CLOCKS_PER_SEC;
 	if (elapsed_secs > m_pLevelLogic->GetLVLEnemyMoveDelay() || elapsed_secs < 0.0f)
 	{
@@ -478,18 +521,18 @@ CLevel::EnemyMovement(float _fDeltaTick)
 		{
 			m_vecEnemies[i]->Process(_fDeltaTick);
 
-			if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 990.0f)
+			if ((m_vecEnemies[i]->GetX() + (m_vecEnemies[i]->GetWidth() / 2) >= 990.0f) //If enemy reaches wall, set bool as true
 				|| (m_vecEnemies[i]->GetX() - (m_vecEnemies[i]->GetWidth() / 2) <= 0.0f))
 			{
 				wall = true;
 			}
 
-			if (m_vecEnemies[i]->IsHit() == false) //if alive
+			if (m_vecEnemies[i]->IsHit() == false) //if enemy is alive
 			{
 				if (m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= (m_pPlayer->GetY() + (m_pPlayer->GetHeight() / 2))
-					|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 650.0f) //700 = lose line
+					|| m_vecEnemies[i]->GetY() + (m_vecEnemies[i]->GetHeight() / 2) >= 650.0f) //650.0f = lose line
 				{
-					lose = true;
+					lose = true; //Set player loss
 				}
 			}
 		}
@@ -497,7 +540,7 @@ CLevel::EnemyMovement(float _fDeltaTick)
 
 	m_cEndEnemyMove = clock();
 
-	if (wall)
+	if (wall) //If player reaches wall, increase speed (decrease movement delay)
 	{
 		wall = false;
 		if (m_pLevelLogic->GetLVLEnemyMoveDelay() >= 0.4f)
@@ -521,45 +564,56 @@ CLevel::EnemyMovement(float _fDeltaTick)
 		}
 	}
 
-	if (lose)
+	if (lose) //Set the game as lost if enemies reach the bottom of the level.
 	{
 		CGame::GetInstance().GameOverLost();
 	}
 }
 
+/********
+* GetEnemysRemaining: Get the remaining enemies within the level
+*********/
 int
 CLevel::GetEnemysRemaining() const
 {
 	return (m_iEnemysRemaining);
 }
 
+/********
+* SetEnemysRemaining: Set the remaining enemies within the level
+*********/
 void
 CLevel::SetEnemysRemaining(int _i)
 {
 	m_iEnemysRemaining = _i;
 }
 
+/********
+* ProcessEnemyShip: Process the enemy ship that appears at the top of the screen.
+*					Appears at a random time and random side. Enemy ship also has random points.
+*********/
 void CLevel::ProcessEnemyShip()
 {
+	//Make sure ship appears at random time
 	double elapsed_secs = double(m_cEndShipMove - m_cBeginShipMove) / CLOCKS_PER_SEC;
 	if (elapsed_secs > m_pLevelLogic->GetLVLShipRandTime() || elapsed_secs < 0.0f)
 	{
 		m_cBeginShipMove = clock();
 
-		if (m_pEnemyShip == nullptr)
+		if (m_pEnemyShip == nullptr) //If ship doesnt exist and random time is reached
 		{
 			m_pEnemyShip = new CEnemy();
 			m_pEnemyShip->Initialise(ESprite::ENEMYSHIP);
 		
-			//Generate a random number for 0 and 1
+			//Generate a random number for 0 and 1 for the side of the screen the ship will appear
 			m_iRandShipDirection = rand() % 2;
 
-			if (m_iRandShipDirection == 1)
+			if (m_iRandShipDirection == 1) //If num is 1, make ship appear on the left
 			{
 				m_pEnemyShip->SetX(-10);
 				m_pEnemyShip->SetVelocityX(m_pLevelLogic->GetLVLEnemyShipSpeed());
 			}
-			else
+			else //Make ship appear on the right
 			{
 				m_pEnemyShip->SetX(1000);
 				m_pEnemyShip->SetVelocityX(m_pLevelLogic->GetLVLEnemyShipSpeed()*-1);
@@ -568,11 +622,11 @@ void CLevel::ProcessEnemyShip()
 			m_pEnemyShip->SetHit(false);
 			m_pEnemyShip->Process(1);
 		}
-		else
+		else //If ship DOES exist
 		{
 			if (m_iRandShipDirection == 1)
 			{
-				if ((m_pEnemyShip->GetX() + (m_pEnemyShip->GetWidth() / 2) >= 1000.0f)) //|| (m_pEnemyShip->GetX() - (m_pEnemyShip->GetWidth() / 2) <= 0.0f)
+				if ((m_pEnemyShip->GetX() + (m_pEnemyShip->GetWidth() / 2) >= 1000.0f)) //Delete ship when it gets to the right
 				{
 					delete m_pEnemyShip;
 					m_pEnemyShip = 0;
@@ -580,19 +634,22 @@ void CLevel::ProcessEnemyShip()
 			}
 			else
 			{
-				if (m_pEnemyShip->GetX() - (m_pEnemyShip->GetWidth() / 2) <= 0.0f)
+				if (m_pEnemyShip->GetX() - (m_pEnemyShip->GetWidth() / 2) <= 0.0f) //Delete ship when it gets to the left
 				{
 					delete m_pEnemyShip;
 					m_pEnemyShip = 0;
 				}
 			}
+			//Set new random ship spawn time
 			m_pLevelLogic->SetLVLShipRandTime((rand() % (20 - 7 + 1)) + 2);
 		}
 	}
 	m_cEndShipMove = clock();
 }
 
-
+/********
+* DrawScore: Draw the player's score, lives and invincibility message
+*********/
 void
 CLevel::DrawScore()
 {
@@ -619,6 +676,9 @@ CLevel::DrawScore()
 
 }
 
+/********
+* DrawLevelCount: Draw the current games level count
+*********/
 void
 CLevel::DrawLevelCount()
 {

@@ -8,7 +8,8 @@
 // (c) 2016 Media Design School
 //
 // File Name	: "levellogic.h"
-// Description	: Decalaration file for levelogic
+// Description	: Decalaration file for levelogic. 
+//				: Class used to control the game variables that need to be shared across levels.
 // Author		: Vivian Ngo
 // Mail			: vivian.ngo7572@mediadesign.school.nz
 //
@@ -56,8 +57,6 @@ public:
 
 	void SetLVLLevelCount(int _i);
 	int GetLVLLevelCount();
-
-	void EndLevel(std::vector<CEnemy*> _e);
 
 protected:
 	float m_fLVLEnemyShootingDelay;
