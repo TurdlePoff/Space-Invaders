@@ -28,34 +28,30 @@
 // This Include
 #include "Level.h"
 
-// Static Variables
-
-// Static Function Prototypes
-
-// Implementation
-
-//#define CHEAT_BOUNCE_ON_BACK_WALL
-
 CLevel::CLevel(CLevelLogic& _logic)
-	: m_iEnemysRemaining(0)
-	, m_pPlayer(0)
-	, m_pEnemyShip(0)
-	, m_iWidth(0)
-	, m_iHeight(0)
-	, m_fpsCounter(0)
-	, m_cBeginBullet(0)
-	, m_cEndBullet(0)
-	, m_cBeginEnemyMove(0)
-	, m_cEndEnemyMove(0)
-	, m_pLevelLogic(0)
-	, m_cBeginShipMove(0)
-	, m_cEndShipMove(0)
-	, m_iRandShipDirection(1)
+//Predefine level properties
+: m_pEnemyShip(0)
+, m_pPlayer(0)
+, m_iWidth(0)
+, m_iHeight(0)
+, m_fpsCounter(0)
+, m_pLevelLogic(0)
+, m_iEnemysRemaining(0)
+, m_iRandShipDirection(1)
+//Predefine clocks
+, m_cBeginBullet(0)
+, m_cEndBullet(0)
+, m_cBeginEnemyMove(0)
+, m_cEndEnemyMove(0)
+, m_cBeginShipMove(0)
+, m_cEndShipMove(0)
+, m_cEndPlayerDead(0)
+, m_cBeginPlayerDead(0)
+, m_cBeginEnemyDead(0)
+, m_cEndEnemyDead(0)
 {
 	m_pLevelLogic = &_logic;
-	m_cEndShipMove = clock();
 	m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLRealEnemyDelay());
-	m_cEndEnemyMove = clock();
 	srand((unsigned)time(NULL));
 }
 
@@ -67,7 +63,6 @@ CLevel::CLevel(CLevelLogic& _logic)
 //	m_cEndEnemyMove = clock();
 //	srand((unsigned)time(NULL));*/
 //}
-
 
 CLevel::~CLevel()
 {
@@ -120,7 +115,6 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 {
 	m_iWidth = _iWidth;
 	m_iHeight = _iHeight;
-
 
 	//Background initialisation
 	m_pBackground = new CBackGround();
@@ -182,6 +176,7 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 			iCurrentY += 50;
 		}
 
+		pEnemy->SwitchOnAnimation(true); //Switch on animation for enemies
 		m_vecEnemies.push_back(pEnemy); //Add enemy to vector
 	}
 
@@ -268,9 +263,13 @@ CLevel::Process(float _fDeltaTick)
 	ProcessEnemyShip();
 	ProcessBulletEnemyCollision();
 	ProcessBulletPlayerCollision();
+	if (!m_pPlayer->GetIsPlayerAlive())
+	{
+		ProcessPlayerDead();
+	}
+	//ProcessEnemyDeadAnim();
 	ProcessCheckForWin();
 	ProcessBulletBounds();
-	
 	m_fpsCounter->CountFramesPerSecond(_fDeltaTick);
 }
 
@@ -354,7 +353,10 @@ CLevel::ProcessBulletEnemyCollision()
 				if (m_vecPlayerBullets[j]->IsCollidingWith(*m_vecEnemies[i]))
 				{
 					//Hide enemy, erase bullet, decrease enemy count
+					
 					m_vecEnemies[i]->SetHit(true);
+					//m_vecEnemies[i]->SetShot(true);
+
 					//TODO: SET SPRITE DEAD ANIMATION
 					if (i > 11)
 					{
@@ -396,34 +398,77 @@ CLevel::ProcessBulletEnemyCollision()
 }
 
 /********
+* ProcessEnemyDead: Keeps enemy as dead sprite for 1 second. Player is invincible for 1 second.
+*********/
+//void
+//CLevel::ProcessEnemyDeadAnim()
+//{
+//	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
+//	{
+//		if (m_vecEnemies[i]->IsShot())
+//		{
+//			m_vecEnemies[i]->SetDead(true);
+//			m_vecEnemies[i]->SetHit(true);
+//
+//			m_cBeginEnemyMove = clock();
+//		}
+//	}
+//	m_cEndPlayerDead = clock();
+//
+//}
+
+/********
 * ProcessBulletPlayerCollision: Detects if enemy bullets hit player. If they do, remove player life and delete bullet
 *********/
 void
 CLevel::ProcessBulletPlayerCollision()
 {
-	for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+	if (m_pPlayer->GetIsPlayerAlive())
 	{
-		//If enemy bullet collides with player entity
-		if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pPlayer))
+		for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
 		{
-			//Hide enemy, erase bullet, decrease enemy count
-			m_pPlayer->SetPlayerAlive(false);
-			delete m_vecEnemyBullets[j];
-			m_vecEnemyBullets[j] = 0;
-			m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
-
-			//If the player is not invincible, remove player life
-			if (!m_pLevelLogic->GetLVLPlayerInvincibility())
+			//If enemy bullet collides with player entity
+			if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pPlayer))
 			{
-				m_pLevelLogic->SetLVLPlayerLives(m_pLevelLogic->GetLVLPlayerLives() - 1);//m_pPlayer->GetPlayerLives() - 1);
+				delete m_vecEnemyBullets[j];
+				m_vecEnemyBullets[j] = 0;
+				m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
 
-				if (m_pLevelLogic->GetLVLPlayerLives() == 0)
+				//If the player is not invincible, remove player life
+				if (!m_pLevelLogic->GetLVLPlayerInvincibility())
 				{
-					CGame::GetInstance().GameOverLost();
+					//Hide enemy, erase bullet, decrease enemy count
+					m_pPlayer->SetPlayerAlive(false);
+					m_cBeginPlayerDead = clock();
+					m_pPlayer->SwitchDead(true);
+					m_cEndPlayerDead = clock();
+					//Remove life
+					m_pLevelLogic->SetLVLPlayerLives(m_pLevelLogic->GetLVLPlayerLives() - 1);//m_pPlayer->GetPlayerLives() - 1);
+
+					if (m_pLevelLogic->GetLVLPlayerLives() == 0)
+					{
+						CGame::GetInstance().GameOverLost();
+					}
 				}
 			}
 		}
 	}
+
+}
+
+/********
+* ProcessPlayerDead: Keeps player as dead sprite for 1 second. Player is invincible for 1 second.
+*********/
+void CLevel::ProcessPlayerDead()
+{
+	//Set a move delay player dead
+	double elapsed_secs = double(m_cEndPlayerDead - m_cBeginPlayerDead) / CLOCKS_PER_SEC;
+	if (elapsed_secs > 1.0f || elapsed_secs < 0.0f)
+	{
+		m_pPlayer->SwitchDead(false);
+		m_pPlayer->SetPlayerAlive(true);
+	}
+	m_cEndPlayerDead = clock();
 }
 
 /********
@@ -480,6 +525,7 @@ CLevel::ProcessBulletBounds()
 void
 CLevel::ProcessPlayerMovement()
 {
+	
 	float fHalfPlayerW = m_pPlayer->GetWidth()/2.0f; //->GetSpriteType()->GetWidth() / 2.0f;
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) //If RIGHT key pressed, move player right
@@ -641,7 +687,8 @@ void CLevel::ProcessEnemyShip()
 				}
 			}
 			//Set new random ship spawn time
-			m_pLevelLogic->SetLVLShipRandTime((rand() % (20 - 7 + 1)) + 2);
+			int randShipTime = (rand() % (20 - 7 + 1)) + 2;
+			m_pLevelLogic->SetLVLShipRandTime(randShipTime);
 		}
 	}
 	m_cEndShipMove = clock();

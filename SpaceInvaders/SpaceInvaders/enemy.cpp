@@ -25,6 +25,7 @@ CEnemy::CEnemy()
 , m_fVelocityY(0.0f)
 , m_bCanShoot(false)
 , m_bIsDead(false)
+, m_bIsShot(false)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -46,7 +47,7 @@ CEnemy::Initialise(ESprite _spriteType)
 	SetSpriteType(_spriteType);
     VALIDATE(CEntity::Initialise(_spriteType));
 	int pointArray[6] = {10, 20, 30, 50, 100, 300};
-
+	int randTime = (rand() % (7));
 	//Set points depending on which enemy is being created
 	switch(_spriteType)
 	{
@@ -68,7 +69,7 @@ CEnemy::Initialise(ESprite _spriteType)
 		case ESprite::ENEMYSHIP: //Nyooms
 		{
 			//Create enemy ship with random point value
-			m_iPoints = pointArray[rand() % 7];
+			m_iPoints = pointArray[randTime];
 			break;
 		}
 	}
@@ -145,6 +146,16 @@ void CEnemy::SetDead(bool _b)
 bool CEnemy::IsDead() const
 {
 	return m_bIsDead;
+}
+
+void CEnemy::SetShot(bool _b)
+{
+	m_bIsShot = _b;
+}
+
+bool CEnemy::IsShot() const
+{
+	return m_bIsShot;
 }
 
 void

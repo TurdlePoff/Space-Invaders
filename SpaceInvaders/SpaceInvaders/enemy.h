@@ -51,6 +51,9 @@ public:
 	void SetDead(bool _b);
 	bool IsDead() const;
 
+	void SetShot(bool _b);
+	bool IsShot() const;
+
     void SetHit(bool _b);
     bool IsHit() const;
 	int GetEnemyPoints();
@@ -65,6 +68,7 @@ private:
     CEnemy& operator= (const CEnemy& _kr);
 	int m_iPoints;
 	bool m_bCanShoot;
+	bool m_bIsShot;
 	bool m_bIsDead;
 
 };

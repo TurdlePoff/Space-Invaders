@@ -30,18 +30,22 @@
 HDC CSprite::s_hSharedSpriteDC = 0;
 int CSprite::s_iRefCount = 0;
 
-// Static Function Prototypes
-
-// Implementation
-
+/************
+* CLevelLogic Constructor
+*************/
 CSprite::CSprite(ESprite _eType)
 : m_eSpriteType(_eType)
 , m_iFramePositionW(8)
 , m_iFramePositionH(0) //The Y position where the sprite is located on the sprite sheet
+, m_iFrameToMoveW(0)
+, m_bFrameSwitched(false)
+, m_bDeadSwitched(false)
+, m_isActivated(false)
 , m_iX(0)
 , m_iY(0)
+, m_widthGap(8)
 {
-	switch (_eType)
+	switch (_eType) //Initialise a specific sprite's specifications depending on which one the player chooses
 	{
 		case ESprite::MAINMENU:
 		case ESprite::BACKGROUND:
@@ -69,6 +73,7 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::PLAYER:
 		{
 			m_iFramePositionH = 8;
+			m_iFrameToMoveW = 68;
 			m_iW = 52;
 			m_iH = 32;
 			break;
@@ -84,6 +89,7 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::ENEMYMED:
 		{
 			m_iFramePositionH = 48;
+			m_iFrameToMoveW = 112;
 			m_iW = 44;
 			m_iH = 32;
 			break;
@@ -99,6 +105,7 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::ENEMYBOT:
 		{
 			m_iFramePositionH = 88;
+			m_iFrameToMoveW = 104;
 			m_iW = 48;
 			m_iH = 32;
 			break;
@@ -114,6 +121,7 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::ENEMYTOP:
 		{
 			m_iFramePositionH = 128;
+			m_iFrameToMoveW = 88;
 			m_iW = 32;
 			m_iH = 32;
 			break;
@@ -141,6 +149,7 @@ CSprite::CSprite(ESprite _eType)
 			break;
 		}
 	}
+	//m_iFrameToMoveW = m_iFramePositionW;
     ++s_iRefCount;
 }
 
@@ -148,6 +157,9 @@ CSprite::CSprite()
 {
 }
 
+/************
+* CLevelLogic Destructor
+*************/
 CSprite::~CSprite()
 {
 	DeleteObject(m_hSprite);
@@ -162,6 +174,10 @@ CSprite::~CSprite()
 	}
 }
 
+/************
+* Initialise: Initialises a sprite depending on which one is selected to be created
+* @return true
+*************/
 bool
 CSprite::Initialise()
 {
@@ -172,41 +188,42 @@ CSprite::Initialise()
 		s_hSharedSpriteDC = CreateCompatibleDC(NULL);
 	}
 
-	int iBackground = 0;
+	int iSprite = 0;
 	int iMask = 0;
 
+	//Set resources for game items
 	if (m_eSpriteType == ESprite::BACKGROUND)
 	{
-		iBackground = IDB_BACKGROUND;
+		iSprite = IDB_BACKGROUND;
 		iMask = IDB_BACKGROUNDMASK;
 	}
 	else if (m_eSpriteType == ESprite::MAINMENU)
 	{
-		iBackground = IDB_MAINMENU;
+		iSprite = IDB_MAINMENU;
 		iMask = IDB_BACKGROUNDMASK;
 	}
 	else if (m_eSpriteType == ESprite::INSTRUCTIONS)
 	{
-		iBackground = IDB_INSTRUCTIONS;
+		iSprite = IDB_INSTRUCTIONS;
 		iMask = IDB_BACKGROUNDMASK;
 	}
 	else if (m_eSpriteType == ESprite::LVLCOMP)
 	{
-		iBackground = IDB_LVLCOMP;
+		iSprite = IDB_LVLCOMP;
 		iMask = IDB_LVLCOMPMASK;
 	}
 	else if (m_eSpriteType == ESprite::HIGHSCORES)
 	{
-		iBackground = IDB_HIGHSCORES;
+		iSprite = IDB_HIGHSCORES;
 		iMask = IDB_BACKGROUNDMASK;
 	}
 	else
 	{
-		iBackground = IDB_SS;
+		iSprite = IDB_SS;
 		iMask = IDB_SSMASK;
 	}
 
-	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(iBackground));
+	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(iSprite));
 	VALIDATE(m_hSprite);
 	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(iMask));
 	VALIDATE(m_hMask);
@@ -214,6 +231,7 @@ CSprite::Initialise()
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
 	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
+	//If the sprite is one of the following specified types, set the sprite widths and heights to the actual sprite w and h
 	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU 
 		|| m_eSpriteType == ESprite::INSTRUCTIONS || m_eSpriteType == ESprite::LVLCOMP
 		|| m_eSpriteType == ESprite::HIGHSCORES)
@@ -224,6 +242,9 @@ CSprite::Initialise()
     return (true);
 }
 
+/************
+* Draw: Draws a sprite
+*************/
 void
 CSprite::Draw()
 {
@@ -247,48 +268,89 @@ CSprite::Draw()
     SelectObject(s_hSharedSpriteDC, hOldObj);
 }
 
+/************
+* Processes: Processes a sprite
+*************/ //-----------------------------------------------------------------
 void
 CSprite::Process(float _fDeltaTick)
 {
-	//Sprite doesnt have anything to process but AnimatedSprite does.
+	//If animating
+	if (GetIsAnimationActivated())
+	{
+		NormalAnimation(_fDeltaTick);
+	}
+
+	if (m_eSpriteType == ESprite::PLAYER)
+	{
+		DeadAnimation(_fDeltaTick);
+	}
 }
 
+/************
+* GetWidth: Get width of a sprite
+* @return: m_iW - width of sprite
+*************/
 int
 CSprite::GetWidth() const
 {
     return m_iW;
 }
 
+/************
+* GetHeight: Get height of a sprite
+* @return: m_iH - height of sprite
+*************/
 int
 CSprite::GetHeight() const
 {
     return m_iH;
 }
 
+/************
+* GetX: Get X position of a sprite
+* @return: m_iX - x position of sprite
+*************/
 int 
 CSprite::GetX() const
 {
     return (m_iX);
 }
 
+/************
+* GetY: Get Y position of a sprite
+* @return: m_iY - y position of sprite
+*************/
 int 
 CSprite::GetY() const
 {
     return (m_iY);
 }
 
+/************
+* SetX: SetX position of a sprite
+* @parameter: _i - x pos of sprite
+*************/
 void 
 CSprite::SetX(int _i)
 {
     m_iX = _i;
 }
 
+/************
+* SetY: SetY position of a sprite
+* @parameter: _i - Y pos of sprite
+*************/
 void 
 CSprite::SetY(int _i)
 {
     m_iY = _i;
 }
 
+/************
+* TranslateRelative: TranslateRelative position of a sprite
+* @parameter: _iX - X translate pos
+* @parameter: _iY - Y translate pos
+*************/
 void 
 CSprite::TranslateRelative(int _iX, int _iY)
 {
@@ -296,9 +358,90 @@ CSprite::TranslateRelative(int _iX, int _iY)
     m_iY += _iY;
 }
 
+/************
+* TranslateAbsolute: TranslateAbsolute position of a sprite
+* @parameter: _iX - X translate pos
+* @parameter: _iY - Y translate pos
+*************/
 void 
 CSprite::TranslateAbsolute(int _iX, int _iY)
 {
     m_iX = _iX;
     m_iY = _iY;
+}
+
+/************
+* ActivateAnimation: Activates current sprites animation
+* @parameter: _b - animation 
+*************/
+void CSprite::ActivateAnimation(bool _b)
+{
+	m_isActivated = _b;
+}
+
+/************
+* GetIsAnimationActivated: Gets if animation is activated
+* @return: m_isActivated
+*************/
+bool CSprite::GetIsAnimationActivated()
+{
+	return m_isActivated;
+}
+
+/************
+* NormalAnimation: Activates normal animation
+*************/
+void CSprite::NormalAnimation(float _fDeltaTick)
+{
+	if (m_bFrameSwitched)
+	{
+		m_bFrameSwitched = false;
+		m_iFramePositionW -= m_iW + m_widthGap;
+	}
+	else
+	{
+		m_bFrameSwitched = true;
+		m_iFramePositionW += m_iW + m_widthGap;
+	}
+}
+
+/************
+* ActivateDead: Activates dead sprite animation
+* @parameter: _b - animation
+*************/
+void CSprite::ActivateDeadAnimation(bool _b)
+{
+	m_bDeadSwitched = _b;
+}
+
+bool CSprite::GetIsDead()
+{
+	return m_bDeadSwitched;
+}
+
+/************
+* DeadAnimation: Activates dead sprite animation
+*************/
+void CSprite::DeadAnimation(float _fDeltaTick)
+{
+	if (GetIsDead())
+	{
+		if (m_eSpriteType == ESprite::PLAYER)
+		{
+			m_iFramePositionW = m_iW + m_widthGap + m_widthGap;
+		}
+		else if (m_eSpriteType == ESprite::ENEMYBOT 
+				|| m_eSpriteType == ESprite::ENEMYMED
+				|| m_eSpriteType == ESprite::ENEMYTOP)
+		{
+			m_iFramePositionW += m_iW + m_iW + m_widthGap + m_widthGap + m_widthGap;
+		}
+	}
+	else
+	{
+		if (m_eSpriteType == ESprite::PLAYER)
+		{
+			m_iFramePositionW = m_widthGap;
+		}
+	}
 }

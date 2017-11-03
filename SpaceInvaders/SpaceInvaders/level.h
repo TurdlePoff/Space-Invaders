@@ -22,12 +22,6 @@
 #include <string>
 #include <ctime>
 
-// Local Includes
-
-// Types
-
-// Constants
-
 // Prototypes
 class CBullet;
 class CPlayer;
@@ -44,37 +38,31 @@ public:
     virtual ~CLevel();
 
     virtual bool Initialise(int _iWidth, int _iHeight);
-
     virtual void Draw();
     virtual void Process(float _fDeltaTick);
 
 	CLevelLogic& GetLevelController();
 
 protected:
+	CPlayer* GetPlayer() const;
+
     void ProcessBulletEnemyCollision();
 	void ProcessBulletPlayerCollision();
-
-    void ProcessCheckForWin();
-
     void ProcessBulletBounds();
-
 	void FireBullet(bool isPlayer, float bulletSpeed);
-
-    void DrawScore();
-	void DrawFPS();
-	void DrawLevelCount();
 
 	void ProcessPlayerMovement();
 	void EnemyMovement(float _fDeltaTick);
-
-    void SetEnemysRemaining(int _i);
-
 	void ProcessEnemyShip();
-
-	CPlayer* GetPlayer() const;
-
+	void SetEnemysRemaining(int _i);
 	int GetEnemysRemaining() const;
+	void ProcessCheckForWin();
+	void DrawScore();
+	void DrawLevelCount();
 
+	void ProcessPlayerDead();
+	void ProcessEnemyDead();
+	void ProcessEnemyDeadAnim();
 private:
     CLevel(const CLevel& _kr);
     CLevel& operator= (const CLevel& _kr);
@@ -102,6 +90,13 @@ protected:
 
 	clock_t m_cBeginShipMove;
 	clock_t m_cEndShipMove;
+
+	clock_t m_cBeginPlayerDead;
+	clock_t m_cEndPlayerDead;
+
+	clock_t m_cBeginEnemyDead;
+	clock_t m_cEndEnemyDead;
+
 	int m_iRandShipDirection;
 
 	CFPSCounter* m_fpsCounter;

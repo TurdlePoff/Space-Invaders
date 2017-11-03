@@ -18,10 +18,10 @@
 // Library Includes
 #include "windows.h"
 #include <vector>
+#include <ctime>
 
 // Local Includes
 #include "EEnums.h"
-
 // Types
 
 // Constants
@@ -36,7 +36,6 @@ public:
     ~CSprite();
 
 	bool Initialise();
-
     void Draw();
     void Process(float _fDeltaTick);
 
@@ -51,45 +50,50 @@ public:
     void TranslateRelative(int _iX, int _iY);
     void TranslateAbsolute(int _iX, int _iY);
 
-	void AccessSprite();
+	void ActivateAnimation(bool _b);
+	bool GetIsAnimationActivated();
+
+	void ActivateDeadAnimation(bool _b);
+	bool GetIsDead();
+
+	void NormalAnimation(float _fDeltaTick);
+	void DeadAnimation(float _fDeltaTick);
 
 protected:
-
-private:
-    CSprite(const CSprite& _kr);
-    CSprite& operator= (const CSprite& _kr);
-
-    // Member Variables
-public:
-
-protected:
-    //Center handle
-    int m_iX;
-    int m_iY;
+	//Center handle
+	int m_iX;
+	int m_iY;
 	int m_iW;
 	int m_iH;
 	int m_iFramePositionW;
 	int m_iFramePositionH;
+	int m_iFrameToMoveW;
+	int m_widthGap;
 
 	ESprite m_eSpriteType;
 
-    HBITMAP m_hSprite;
-    HBITMAP m_hMask;
+	HBITMAP m_hSprite;
+	HBITMAP m_hMask;
 
-    BITMAP m_bitmapSprite;
-    BITMAP m_bitmapMask;
+	BITMAP m_bitmapSprite;
+	BITMAP m_bitmapMask;
 
-    static HDC s_hSharedSpriteDC;
-    static int s_iRefCount;
+	clock_t m_cBeginSpriteMove;
+	clock_t m_cEndSpriteMove;
+
+	static HDC s_hSharedSpriteDC;
+	static int s_iRefCount;
 
 	std::vector<int> c_spriteContainer;
 	int m_numOfFrames;
-	bool m_paused;
+	bool m_isActivated;
 	bool m_loop;
-	bool m_animating;
+	bool m_bFrameSwitched;
+	bool m_bDeadSwitched;
 
 private:
-
+    CSprite(const CSprite& _kr);
+    CSprite& operator= (const CSprite& _kr);
 };
 
 #endif    // __SPRITE_H__

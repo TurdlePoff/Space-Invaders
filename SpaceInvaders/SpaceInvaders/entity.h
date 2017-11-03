@@ -4,13 +4,14 @@
 // Auckland
 // New Zealand
 //
-// (c) 2016 Media Design School
+// (c) 2016 Media Design School.
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "entity.h"
+// Description	: Declaration file for entity
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
+
 
 #pragma once
 
@@ -51,13 +52,13 @@ public:
 	float GetHeight() const;
 	float GetWidth() const;
 
-
 	bool IsCollidingWith(CEntity& e);
 	ESprite GetSpriteType();
 	void SetSpriteType(ESprite m_eSpriteType);
-
-	void SetSpritePic(ESprite m_eSpriteType);
-
+	//void SetSpritePic(ESprite m_eSpriteType);
+	void SwitchOnAnimation(bool _b);
+	void SwitchDead(bool _b);
+	bool GetIsDead();
 
 protected:
 	CSprite* m_pSprite;

@@ -1,5 +1,22 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) 2016 Media Design School.
+//
+// File Name	: "LevelLogic.cpp"
+// Description	: Implementation file for LevelLogic
+// Author		: Vivian Ngo
+// Mail			: vivian.ngo7572@mediadesign.school.nz
+//
+
 #include "LevelLogic.h"
 
+/************
+* CLevelLogic Constructor
+*************/
 CLevelLogic::CLevelLogic()
 //Enemy predefininitions
 : m_fLVLEnemyBulletVelocity(1.0f)
@@ -13,12 +30,15 @@ CLevelLogic::CLevelLogic()
 , m_fLVLPlayerInvincibility(false)
 , m_iLVLPlayerScore(0)
 , m_iLVLPlayerLives(3)
-//Misc
+//Misc predefinitions
 , m_iShipRandTime(0)
 , m_iLVLLevelCount(1)
 {
 }
 
+/************
+* ~CLevelLogic Destructor
+*************/
 CLevelLogic::~CLevelLogic()
 {
 }

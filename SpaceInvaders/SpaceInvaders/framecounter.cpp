@@ -4,47 +4,40 @@
 // Auckland
 // New Zealand
 //
-// (c) 2016 Media Design School.
+// (c) 2016 Media Design School
 //
-// File Name	: 
-// Description	: 
-// Author		: Your Name
-// Mail			: your.name@mediadesign.school.nz
+// File Name	: "framecounter.cpp"
+// Description	: Implementation file for framecounter
+// Author		: Author of BreakOut. Modified by Vivian Ngo.
+// Mail			: vivian.ngo7572@mediadesign.school.nz
 //
-
-// Library Includes
-
-// Local Includes
 
 // This Include
 #include "framecounter.h"
 
-// Static Variables
-
-// Static Function Prototypes
-
-
 CFPSCounter::CFPSCounter()
-	:m_fTimeElapsed(0.0f)
-	, m_iFrameCount(0)
-	, m_fFrameRate(0)
+:m_fTimeElapsed(0.0f)
+, m_iFrameCount(0)
+, m_fFrameRate(0)
 {
-
 }
 
 CFPSCounter::~CFPSCounter()
 {
-
 }
 
-
+/********************
+* Initialise: Initialises FPSCounter
+*********************/
 bool
 CFPSCounter::Initialise()
 {
 	return (true);
 }
 
-
+/********************
+* CountFramesPerSecond: Counts the number of frames every second
+*********************/
 void 
 CFPSCounter::CountFramesPerSecond(float _fDeltaTime)
 {
@@ -61,6 +54,9 @@ CFPSCounter::CountFramesPerSecond(float _fDeltaTime)
 	UpdateFPSText();
 }
 
+/********************
+* UpdateFPSText: Updates the FPS text
+*********************/
 void CFPSCounter::UpdateFPSText()
 {
 	m_strFPS = L"FPS: ";

@@ -12,8 +12,6 @@
 // Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 
-//Library Includes
-
 //Local Includes
 #include "game.h"
 #include "resource.h"
@@ -21,6 +19,8 @@
 #include <windows.h>
 
 #define WINDOW_CLASS_NAME L"BSENGGFRAMEWORK"
+
+//global variables
 HWND g_hDebugWindow;
 CGame& g_rGame = CGame::GetInstance();
 
@@ -56,7 +56,8 @@ void WriteToEditBox(HWND _hDlg, int _iResourceID, float _fValue)
 LRESULT CALLBACK
 WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 {
-	CLevel& g_rLevel = CGame::GetLevelInstance();
+	//level controller variables
+	CLevel& m_rLevel = CGame::GetLevelInstance();
 
     switch (_uiMsg)
     {
@@ -64,19 +65,20 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 		{
 			switch (_wParam)
 			{
-			case VK_ESCAPE:
+			case VK_ESCAPE: //When player presses ESC button
 			{
-				if (g_rGame.GetGameState() == EGameState::GAME)
+				if (g_rGame.GetGameState() == EGameState::GAME) //If the game state is in GAME mode
 				{
-					WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, (g_rLevel.GetLevelController().GetLVLPlayerMovementSpeed()));
-					WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, g_rLevel.GetLevelController().GetLVLPlayerBulletSpeed());
-					WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, g_rLevel.GetLevelController().GetLVLEnemyMoveDelay());
-					WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, g_rLevel.GetLevelController().GetLVLEnemyBulletSpeed());
-					WriteToEditBox(g_hDebugWindow, IDC_ESHIPSPD, g_rLevel.GetLevelController().GetLVLEnemyShipSpeed());
-					WriteToEditBox(g_hDebugWindow, IDC_EBULDELAY, g_rLevel.GetLevelController().GetLVLEnemyShootingDelay());
+					//Write all the current game variables into the dialog box
+					WriteToEditBox(g_hDebugWindow, IDC_PMOVESPD, (m_rLevel.GetLevelController().GetLVLPlayerMovementSpeed()));
+					WriteToEditBox(g_hDebugWindow, IDC_PBULSPD, m_rLevel.GetLevelController().GetLVLPlayerBulletSpeed());
+					WriteToEditBox(g_hDebugWindow, IDC_EMOVESPD, m_rLevel.GetLevelController().GetLVLEnemyMoveDelay());
+					WriteToEditBox(g_hDebugWindow, IDC_EBULSPD, m_rLevel.GetLevelController().GetLVLEnemyBulletSpeed());
+					WriteToEditBox(g_hDebugWindow, IDC_ESHIPSPD, m_rLevel.GetLevelController().GetLVLEnemyShipSpeed());
+					WriteToEditBox(g_hDebugWindow, IDC_EBULDELAY, m_rLevel.GetLevelController().GetLVLEnemyShootingDelay());
 
 					ShowWindow(g_hDebugWindow, SW_NORMAL);
-					g_rGame.SetPaused(true);
+					g_rGame.SetPaused(true); //Pause the game when dialog box is open
 				}
 				break;
 			}
@@ -131,7 +133,7 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 						//GetLVLEnemyShootingDelay
 
 						ShowWindow(_hwnd, SW_HIDE);
-						g_rGame.SetPaused(false);
+						g_rGame.SetPaused(false); //Unpause the game when dialog box is closed
 					}
 					return TRUE;
 					break;
@@ -139,17 +141,17 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 				case IDCANCEL:
 				{
 					ShowWindow(_hwnd, SW_HIDE);
-					g_rGame.SetPaused(false);
+					g_rGame.SetPaused(false);  //Unpause the game when user cancels dialog changes
 					return TRUE;
 					break;
 				}
-				case IDC_RETURN:
+				case IDC_RETURN: //When player clicks the main menu button in the dialog box, return to main menu
 				{
-					if (g_rGame.GetGameState() == EGameState::GAME)
+					if (g_rGame.GetGameState() == EGameState::GAME) //If game mode is in GAME
 					{
-						g_rGame.SetGameState(EGameState::MENU);
-						ShowWindow(_hwnd, SW_HIDE);
-						g_rGame.SetPaused(false);
+						g_rGame.SetGameState(EGameState::MENU); // Set gamestate to menu /switch to menu screen
+						ShowWindow(_hwnd, SW_HIDE); 
+						g_rGame.SetPaused(false); //Unpause the game and close dialog box when user returns to main menu
 					}
 					return TRUE;
 					break;
@@ -159,9 +161,9 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 			}
 			break;
 		}
-		case WM_CLOSE:
+		case WM_CLOSE: //if user exits the dialog through the X button
 		{
-			ShowWindow(_hwnd, SW_HIDE);
+			ShowWindow(_hwnd, SW_HIDE); //hide dialog box and unpause
 			g_rGame.SetPaused(false);
 			return TRUE;
 			break;
@@ -223,15 +225,13 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
 
-	/*const int kiWidth = 800;
-	const int kiHeight = 1000;*/
-
     const int kiWidth = 1000;
     const int kiHeight = 800;
 
     HWND hwnd = CreateAndRegisterWindow(_hInstance, kiWidth, kiHeight, L"Vivian - Space Invaders");
-	g_hDebugWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_DEBUGWINDOW), hwnd, DebugDlgProc);
 
+	//Initialise debug window
+	g_hDebugWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_DEBUGWINDOW), hwnd, DebugDlgProc);
 
     if (!g_rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
     {
@@ -248,7 +248,7 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
         }
         else
         {
-			g_rGame.ExecuteOneFrame(); //HEREEEEEEEEEEEE is where the game stuff gets called
+			g_rGame.ExecuteOneFrame(); //HEREEEEEEEEEEEE is where the game stuff gets executed
         }
     }
 
