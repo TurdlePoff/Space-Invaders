@@ -170,6 +170,17 @@ int CLevelLogic::GetLVLLevelCount()
 }
 
 /************
+* HighScores: Displays the highscores onto the screen
+*************/
+void CLevelLogic::HighScores()
+{
+	std::string scoreText;
+	
+	std::ifstream inputFile("..//Sprites/scores.txt");
+
+}
+
+/************
 * SetLVLEnemyMoveDelay: Sets enemy movement DELAY in seconds
 * @parameter: _f
 *************/

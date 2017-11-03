@@ -19,7 +19,7 @@
 #if !defined(__LEVELLOGIC_H__)
 #define __LEVELLOGIC_H__
 
-#include "enemy.h"
+#include <fstream>
 
 class CLevelLogic
 {
@@ -58,6 +58,8 @@ public:
 	int GetLVLPlayerLives();
 	void SetLVLLevelCount(int _i);
 	int GetLVLLevelCount();
+
+	void HighScores();
 
 protected:
 
