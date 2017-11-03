@@ -13,6 +13,8 @@
 //
 
 #include "LevelLogic.h"
+#include <iostream>
+#include <fstream>
 
 /************
 * CLevelLogic Constructor
@@ -33,6 +35,7 @@ CLevelLogic::CLevelLogic()
 //Misc predefinitions
 , m_iShipRandTime(0)
 , m_iLVLLevelCount(1)
+, hs()
 {
 }
 
@@ -133,6 +136,32 @@ int CLevelLogic::GetLVLPlayerScore()
 	return m_iLVLPlayerScore;
 }
 
+//void CLevelLogic::AddLVLHighScoreValue(int _i)
+//{
+//	//ToString(_i);
+///*
+//
+//	std::ifstream myFile("..\\Sprites\\scores.txt");
+//	if (myFile.is_open())
+//	{
+//		while (!myFile.eof())
+//		{
+//			std::getline(myFile, m_sHighScoreText);
+//
+//		}
+//	}*/
+//}
+
+void CLevelLogic::SetLVLHighScoreName(std::string _s)
+{
+	hs.SetScore(_s, GetLVLPlayerScore());
+}
+
+std::string CLevelLogic::GetLVLHighScores()
+{
+	return m_sHighScoreText;
+}
+
 /************
 * SetLVLPlayerLives: Sets player lives
 * @parameter: _i
@@ -172,11 +201,8 @@ int CLevelLogic::GetLVLLevelCount()
 /************
 * HighScores: Displays the highscores onto the screen
 *************/
-void CLevelLogic::HighScores()
-{
-	std::string scoreText;
-	
-	std::ifstream inputFile("..//Sprites/scores.txt");
+void CLevelLogic::DisplayHighScores()
+{	
 
 }
 

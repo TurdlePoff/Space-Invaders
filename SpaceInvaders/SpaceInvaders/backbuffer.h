@@ -18,13 +18,6 @@
 // Library Includes
 #include <Windows.h>
 
-// Local Includes
-
-// Types
-
-// Constants
-
-// Prototypes
 class CBackBuffer
 {
     // Member Functions
