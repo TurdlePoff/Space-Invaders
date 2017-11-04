@@ -14,3 +14,9 @@ Dead Enemy: 52w x 28h
 
 Front gap: 4
 Mid gaps: 8
+
+
+Bunkers
+16wx11h
+
+72w next bunker

@@ -29,12 +29,12 @@ CHighScores::~CHighScores()
 
 void CHighScores::SetScore(std::string pName, int pScore)
 {
-	std::sort(customers.begin(), customers.end(), &scoreSorter);
+	/*std::sort(customers.begin(), customers.end(), &scoreSorter);
 	if (m_vTop5Scores[4].score < pScore)
 	{
 		m_vTop5Scores[4] = { pName, pScore };
 	}
-	std::sort(m_vTop5Scores, m_vTop5Scores + 5);
+	std::sort(m_vTop5Scores, m_vTop5Scores + 5);*/
 }
 
 HScores& CHighScores::GetScores()

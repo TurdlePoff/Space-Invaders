@@ -24,6 +24,10 @@
 #include "utils.h"
 #include "LevelLogic.h"
 #include "EEnums.h"
+#include "BackBuffer.h"
+#include "background.h"
+#include "barricade.h"
+#include "player.h"
 
 // Types
 
@@ -82,6 +86,7 @@ protected:
 	CBackGround* m_pInstructions;
 	CBackGround* m_pHighScores;
 	CBackGround* m_pLevelComplete;
+
 	CPlayer* m_pMenuNavigator;
 	CBackBuffer* m_pBackBuffer;
 

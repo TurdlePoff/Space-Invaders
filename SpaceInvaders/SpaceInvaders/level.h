@@ -29,6 +29,7 @@ class CEnemy;
 class CFPSCounter;
 class CBackGround;
 class CLevelLogic;
+class CBarricade;
 
 class CLevel
 {
@@ -81,6 +82,8 @@ protected:
     std::vector<CEnemy*> m_vecEnemies;
 	std::vector<CBullet*> m_vecEnemyBullets;
 	std::vector<CBullet*> m_vecPlayerBullets;
+	std::vector<CBarricade*> m_vecBarricades;
+
 
 	clock_t m_cBeginBullet;
 	clock_t m_cEndBullet;

@@ -17,9 +17,6 @@
 
 // Local Includes
 #include "utils.h"
-#include "BackBuffer.h"
-#include "background.h"
-#include "player.h"
 
 // This Include
 #include "Game.h"
@@ -41,6 +38,7 @@ CGame::CGame()
 , m_cBeginLevelBreak(0)
 , m_cEndLevelBreak(0)
 {
+
 }
 
 CGame::~CGame()
@@ -178,6 +176,9 @@ CGame::Process(float _fDeltaTick)
 			}
 			m_pLevel = new CLevel(*m_pLogic);			 //Create new level
 			m_pLevel->Initialise(1000, 800);
+
+
+
 		}
 		else if (m_eGameState == EGameState::INSTRUCTIONS)	//If player selects instructions mode
 		{

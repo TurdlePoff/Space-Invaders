@@ -43,6 +43,9 @@
     <ClCompile Include="HighScores.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Barricade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backbuffer.h">
@@ -93,6 +96,9 @@
     <ClInclude Include="HighScores.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Barricade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -139,7 +145,15 @@
     <Image Include="..\Sprites\highscores.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\sprites\bitmap1.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\spritesSheetMask2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\spritesSheetMask3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvaders.rc">

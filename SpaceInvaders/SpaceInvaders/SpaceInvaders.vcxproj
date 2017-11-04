@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="backbuffer.cpp" />
     <ClCompile Include="background.cpp" />
+    <ClCompile Include="Barricade.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="clock.cpp" />
     <ClCompile Include="enemy.cpp" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="backbuffer.h" />
     <ClInclude Include="background.h" />
+    <ClInclude Include="Barricade.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="clock.h" />
     <ClInclude Include="enemy.h" />
@@ -187,7 +189,6 @@
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
-    <Image Include="..\sprites\bitmap1.bmp" />
     <Image Include="..\Sprites\highscores.bmp" />
     <Image Include="..\Sprites\instructions.bmp" />
     <Image Include="..\Sprites\lvlComplete.bmp" />
@@ -195,6 +196,9 @@
     <Image Include="..\Sprites\mainmenu.bmp" />
     <Image Include="..\Sprites\spritesSheet.bmp" />
     <Image Include="..\Sprites\spritesSheetMask.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask2.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask3.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask4.bmp" />
     <Image Include="Sprites\spritesSheet.bmp" />
     <Image Include="Sprites\spritesSheetMask.bmp" />
   </ItemGroup>

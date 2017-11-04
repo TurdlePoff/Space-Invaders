@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-#include <vld.h>
+//#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -133,6 +133,35 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pPlayer->SetY((float)m_iHeight - 150.0f);
 	m_pPlayer->SetPlayerAlive(true);
 
+	const int kiNumBarricades = 16;
+	const int kiBarStartX = 200;
+	const int kiBarStartY = 525;
+
+	int iCurrentBarX = kiBarStartX;
+	int iCurrentBarY = kiBarStartY;
+	int kiBarGap = 16;
+
+	for (int i = 1; i <= kiNumBarricades; ++i)
+	{
+		CBarricade* m_pBarricade = new CBarricade();
+		VALIDATE(m_pBarricade->Initialise(static_cast<ESprite>(i)));
+
+		//Set up enemy settings
+		m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
+		m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
+		m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+		iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
+
+		if (iCurrentBarX > 248) //Set up enemy positions
+		{
+			iCurrentBarX = kiBarStartX;
+			iCurrentBarY += 11;
+		}
+
+		m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
+	}
+
+
 	//Enemy initialisation
 	const int kiNumEnemys = 55;
 	const int kiStartX = 90;
@@ -207,6 +236,11 @@ CLevel::Draw()
 		m_vecEnemies[i]->Draw();
 	}
 
+	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
+	{
+		m_vecBarricades[i]->Draw();
+	}
+
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j) //Draw all player bullets
 	{
 		m_vecPlayerBullets[j]->Draw();
@@ -240,6 +274,11 @@ CLevel::Process(float _fDeltaTick)
 	if (m_pEnemyShip != nullptr) //Process ship if it exists
 	{
 		m_pEnemyShip->Process(_fDeltaTick);
+	}
+	
+	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
+	{
+		m_vecBarricades[i]->Process(_fDeltaTick);
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting()) //Call shooting for player

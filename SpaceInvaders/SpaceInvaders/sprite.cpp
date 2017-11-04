@@ -44,6 +44,7 @@ CSprite::CSprite(ESprite _eType)
 , m_iX(0)
 , m_iY(0)
 , m_widthGap(8)
+, m_iBarricadeMask(IDB_SSMASK)
 {
 	switch (_eType) //Initialise a specific sprite's specifications depending on which one the player chooses
 	{
@@ -141,15 +142,139 @@ CSprite::CSprite(ESprite _eType)
 			m_iH = 28;
 			break;
 		}
-		case ESprite::BARRICADE:
+		//TOP BARRICADES
+		case ESprite::BAR1:
 		{
 			m_iFramePositionH = 204;
-			m_iW = 44;
-			m_iH = 32;
+			m_iFramePositionW = 8;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR2:
+		{
+			m_iFramePositionH = 204;
+			m_iFramePositionW = 24;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR3:
+		{
+			m_iFramePositionH = 204;
+			m_iFramePositionW = 40;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR4:
+		{
+			m_iFramePositionH = 204;
+			m_iFramePositionW = 56;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		//SECOND ROW BARRICADES
+		case ESprite::BAR5:
+		{
+			m_iFramePositionH = 215;
+			m_iFramePositionW = 8;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR6:
+		{
+			m_iFramePositionH = 215;
+			m_iFramePositionW = 24;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR7:
+		{
+			m_iFramePositionH = 215;
+			m_iFramePositionW = 40;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR8:
+		{
+			m_iFramePositionH = 215;
+			m_iFramePositionW = 56;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		//THIRD ROW BARRICADES
+		case ESprite::BAR9:
+		{
+			m_iFramePositionH = 226;
+			m_iFramePositionW = 8;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR10:
+		{
+			m_iFramePositionH = 226;
+			m_iFramePositionW = 24;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR11:
+		{
+			m_iFramePositionH = 226;
+			m_iFramePositionW = 40;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR12:
+		{
+			m_iFramePositionH = 226;
+			m_iFramePositionW = 56;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		//FOURTH ROW BARRICADES
+		case ESprite::BAR13:
+		{
+			m_iFramePositionH = 237;
+			m_iFramePositionW = 8;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR14:
+		{
+			m_iFramePositionH = 237;
+			m_iFramePositionW = 24;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR15:
+		{
+			m_iFramePositionH = 237;
+			m_iFramePositionW = 40;
+			m_iW = 16;
+			m_iH = 11;
+			break;
+		}
+		case ESprite::BAR16:
+		{
+			m_iFramePositionH = 237;
+			m_iFramePositionW = 56;
+			m_iW = 16;
+			m_iH = 11;
 			break;
 		}
 	}
-	//m_iFrameToMoveW = m_iFramePositionW;
     ++s_iRefCount;
 }
 
@@ -220,25 +345,31 @@ CSprite::Initialise()
 	else
 	{
 		iSprite = IDB_SS;
-		iMask = IDB_SSMASK;
+		iMask = m_iBarricadeMask;//IDB_SSMASK;
 	}
 
 	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(iSprite));
 	VALIDATE(m_hSprite);
-	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(iMask));
-	VALIDATE(m_hMask);
-
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
-	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
 	//If the sprite is one of the following specified types, set the sprite widths and heights to the actual sprite w and h
 	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU 
 		|| m_eSpriteType == ESprite::INSTRUCTIONS || m_eSpriteType == ESprite::LVLCOMP
 		|| m_eSpriteType == ESprite::HIGHSCORES)
 	{
+		m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(iMask));
+		VALIDATE(m_hMask);
+		GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
+
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;
 	}
+	else
+	{
+		m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(m_iBarricadeMask));
+		GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
+	}
+
     return (true);
 }
 
@@ -444,4 +575,9 @@ void CSprite::DeadAnimation(float _fDeltaTick)
 			m_iFramePositionW = m_widthGap;
 		}
 	}
+}
+
+void CSprite::SetBarricadeMask()
+{
+
 }

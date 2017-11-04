@@ -16,13 +16,32 @@
 #if !defined(__EENUMS_H__)
 #define __EENUMS_H__
 
+
+
 enum class ESprite
 {
+	//BARRICADE PIECES
+	BAR1 = 1,
+	BAR2,
+	BAR3,
+	BAR4,
+	BAR5,
+	BAR6,
+	BAR7,
+	BAR8,
+	BAR9,
+	BAR10,
+	BAR11,
+	BAR12,
+	BAR13,
+	BAR14,
+	BAR15,
+	BAR16,
+	//OtherSprites
 	ENEMYTOP,
 	ENEMYMED,
 	ENEMYBOT,
 	ENEMYSHIP,
-	BARRICADE,
 	BULLET,
 	PLAYER,
 	DEADPLAYER,
@@ -33,9 +52,17 @@ enum class ESprite
 	MAINMENU,
 	INSTRUCTIONS,
 	HIGHSCORES,
-	LVLCOMP
+	LVLCOMP,
 };
 
+enum class EBarState
+{
+	BARUNTOUCHED, //NOT HIT
+	HIT1, //HIT ONCE
+	HIT2, //HIT TWICE
+	HIT3, //FINAL CHANCE
+	BARDEAD	//SET HIT = FALSE
+};
 
 enum class EGameState
 {

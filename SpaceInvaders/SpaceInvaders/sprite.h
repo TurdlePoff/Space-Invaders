@@ -59,6 +59,8 @@ public:
 	void NormalAnimation(float _fDeltaTick);
 	void DeadAnimation(float _fDeltaTick);
 
+	void SetBarricadeMask();
+
 protected:
 	//Center handle
 	int m_iX;
@@ -90,6 +92,7 @@ protected:
 	bool m_loop;
 	bool m_bFrameSwitched;
 	bool m_bDeadSwitched;
+	int m_iBarricadeMask;
 
 private:
     CSprite(const CSprite& _kr);
