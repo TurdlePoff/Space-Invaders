@@ -249,7 +249,6 @@ CLevel::Draw()
 void
 CLevel::Process(float _fDeltaTick)
 {
-
 	m_pBackground->Process(_fDeltaTick);
 	m_pPlayer->Process(_fDeltaTick);
 
