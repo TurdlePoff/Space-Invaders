@@ -46,6 +46,10 @@ CGame::~CGame()
 	delete m_pLevel;
 	m_pLevel = 0;
 
+
+	
+	
+
 	delete m_pLogic;
 	m_pLogic = 0;
 
@@ -69,6 +73,7 @@ CGame::~CGame()
 
     delete m_pClock;
     m_pClock = 0;
+
 }
 
 /************
@@ -113,7 +118,6 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 	m_pLevelComplete->SetY((float)750 / 2);
 
 	m_pLogic = new CLevelLogic();
-
 	ShowCursor(true);
 
     return (true);
@@ -173,12 +177,12 @@ CGame::Process(float _fDeltaTick)
 				m_pLogic = 0;
 
 				m_pLogic = new CLevelLogic();
+				CreateBarricades();
+
 			}
 			m_pLevel = new CLevel(*m_pLogic);			 //Create new level
 			m_pLevel->Initialise(1000, 800);
-
-
-
+			
 		}
 		else if (m_eGameState == EGameState::INSTRUCTIONS)	//If player selects instructions mode
 		{
@@ -333,6 +337,53 @@ CGame::GameOverLost()
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 
 	SetGameState(EGameState::MENU);
+}
+
+void CGame::CreateBarricades()
+{
+	const int kiNumBarricades = 14;
+	int kiBarStartX = 200;
+	const int kiBarStartY = 525;
+
+	int iCurrentBarX = kiBarStartX;
+	int iCurrentBarY = kiBarStartY;
+	int kiBarGap = 248;
+
+	if (m_pLogic->GetLVLBarricades().size() == 0)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			for (int i = 1; i <= kiNumBarricades; ++i)
+			{
+				CBarricade* m_pBarricade = new CBarricade();
+				m_pBarricade->Initialise(static_cast<ESprite>(i));
+
+				//Set up enemy settings
+				if (i == 14)
+				{
+					iCurrentBarX += 32;
+				}
+				m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
+				m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
+				m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+				iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
+
+				m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+										  //m_vecBarricades[i]->GetSpriteInstance();
+				if (iCurrentBarX > kiBarGap) //Set up enemy positions
+				{
+					iCurrentBarX = kiBarStartX;
+					iCurrentBarY += 11;
+				}
+				m_pLogic->m_LVLVecBarricades.push_back(m_pBarricade);
+				//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
+			}
+			kiBarStartX += 190;
+			iCurrentBarX = kiBarStartX;
+			iCurrentBarY = kiBarStartY;
+			kiBarGap += 190;
+		}
+	}
 }
 
 /************

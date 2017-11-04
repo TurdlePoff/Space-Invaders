@@ -51,6 +51,8 @@ public:
 	void GameOverWon();
 	void GameOverLost();
 
+	void CreateBarricades();
+
 	//static elements
 	static void SetGameState(EGameState _state);
 	static EGameState GetGameState();

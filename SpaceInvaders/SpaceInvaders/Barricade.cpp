@@ -36,15 +36,18 @@ bool CBarricade::Initialise(ESprite _spriteType)
 
 void CBarricade::Draw()
 {
+	if (!IsBarDead())
+	{
 		CEntity::Draw();
+	}
 }
 
 void CBarricade::Process(float _fDeltaTick)
 {
-	/*if (!IsBarDead())
-	{*/
+	if (!IsBarDead())
+	{
 		CEntity::Process(_fDeltaTick);
-	//}
+	}
 }
 
 void CBarricade::SetBarState(EBarState _e)
