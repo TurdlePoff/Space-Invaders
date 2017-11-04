@@ -115,11 +115,6 @@ ESprite CEntity::GetSpriteType()
 void CEntity::SetSpriteType(ESprite _e)
 {
 	m_eSpriteType = _e;
-	if (m_pSprite != NULL)
-	{
-		/*delete m_pSprite;
-		m_pSprite = 0;*/
-	}
 	m_pSprite = new CSprite(m_eSpriteType);
 	m_pSprite->Initialise();
 }

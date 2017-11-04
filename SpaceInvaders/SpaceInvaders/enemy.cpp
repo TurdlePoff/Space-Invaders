@@ -44,7 +44,6 @@ CEnemy::~CEnemy()
 bool
 CEnemy::Initialise(ESprite _spriteType)
 {
-	SetSpriteType(_spriteType);
     VALIDATE(CEntity::Initialise(_spriteType));
 	int pointArray[6] = {10, 20, 30, 50, 100, 300};
 	int randTime = (rand() % (7));

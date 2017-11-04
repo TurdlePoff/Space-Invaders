@@ -21,7 +21,7 @@
 #define WINDOW_CLASS_NAME L"BSENGGFRAMEWORK"
 
 //global variables
-HWND g_hDebugWindow;
+HWND g_hDebugWindow, g_hScoreNameWindow;
 CGame& g_rGame = CGame::GetInstance();
 
 template<typename T>
@@ -102,6 +102,7 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
     return (DefWindowProc(_hwnd, _uiMsg, _wParam, _lParam));
 }
 
+//GET STUFF FROM DLG
 LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 	UINT _msg,
 	WPARAM _wparam,
@@ -174,6 +175,54 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 	return FALSE;
 }
 
+
+//GET STUFF FROM NAME DLG
+LRESULT CALLBACK NameDlgProc(HWND _hwnd,
+	UINT _msg,
+	WPARAM _wparam,
+	LPARAM _lparam)
+{
+	CLevel& g_rLevel = CGame::GetLevelInstance();
+
+	switch (_msg)
+	{
+	case WM_COMMAND:
+	{
+		switch (LOWORD(_wparam))
+		{
+		case IDOK:
+		{
+			//level stuff
+			//Check if player has lost instead of state OR send player to instructions 
+			if (g_rGame.GetGameState() == EGameState::GAME)
+			{
+				//g_rLevel.GetLevelController().S(ReadFromEditBox(_hwnd, IDC_EDITNAME));
+				
+				ShowWindow(_hwnd, SW_HIDE);
+				g_rGame.SetPaused(false); //Unpause the game when dialog box is closed
+			}
+			return TRUE;
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	//case WM_CLOSE: //if user exits the dialog through the X button
+	//{
+	//	ShowWindow(_hwnd, SW_HIDE); //hide dialog box and unpause
+	//	g_rGame.SetPaused(false);
+	//	return TRUE;
+	//	break;
+	//}
+	default:
+		break;
+	}
+	return FALSE;
+}
+
+
 HWND 
 CreateAndRegisterWindow(HINSTANCE _hInstance, int _iWidth, int _iHeight, LPCWSTR _pcTitle)
 {
@@ -232,7 +281,7 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
 
 	//Initialise debug window
 	g_hDebugWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_DEBUGWINDOW), hwnd, DebugDlgProc);
-
+	g_hScoreNameWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_NAMEBOX), hwnd, NameDlgProc);
     if (!g_rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
     {
         // Failed

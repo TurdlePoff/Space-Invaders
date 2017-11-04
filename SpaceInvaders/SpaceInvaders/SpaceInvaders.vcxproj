@@ -148,7 +148,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="backbuffer.cpp" />
     <ClCompile Include="background.cpp" />
     <ClCompile Include="bullet.cpp" />
@@ -157,6 +156,7 @@
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="framecounter.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="HighScores.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="LevelLogic.cpp" />
     <ClCompile Include="main.cpp" />
@@ -164,7 +164,6 @@
     <ClCompile Include="sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="backbuffer.h" />
     <ClInclude Include="background.h" />
     <ClInclude Include="bullet.h" />
@@ -174,6 +173,7 @@
     <ClInclude Include="EEnums.h" />
     <ClInclude Include="framecounter.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="HighScores.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="LevelLogic.h" />
     <ClInclude Include="player.h" />
@@ -187,6 +187,7 @@
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
     <Image Include="..\Sprites\backgroundMask.bmp" />
+    <Image Include="..\sprites\bitmap1.bmp" />
     <Image Include="..\Sprites\highscores.bmp" />
     <Image Include="..\Sprites\instructions.bmp" />
     <Image Include="..\Sprites\lvlComplete.bmp" />

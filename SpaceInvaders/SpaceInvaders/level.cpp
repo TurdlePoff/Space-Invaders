@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-//#include <vld.h>
+#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -78,6 +78,9 @@ CLevel::~CLevel()
 
 	delete m_pPlayer;
 	m_pPlayer = 0;
+
+	delete m_pEnemyShip;
+	m_pEnemyShip = 0;
 
 	while (m_vecPlayerBullets.size() > 0)
 	{

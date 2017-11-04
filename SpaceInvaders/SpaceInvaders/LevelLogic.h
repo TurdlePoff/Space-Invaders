@@ -18,8 +18,8 @@
 
 #if !defined(__LEVELLOGIC_H__)
 #define __LEVELLOGIC_H__
-
-#include "enemy.h"
+#include <string>
+#include "HighScores.h"
 
 class CLevelLogic
 {
@@ -54,10 +54,17 @@ public:
 	//Level UI Getters and Setters
 	void SetLVLPlayerScore(int _i);
 	int GetLVLPlayerScore();
+	
+
 	void SetLVLPlayerLives(int _i);
 	int GetLVLPlayerLives();
 	void SetLVLLevelCount(int _i);
 	int GetLVLLevelCount();
+
+	void DisplayHighScores();
+	void SetLVLHighScoreName(std::string _s);
+
+	std::string GetLVLHighScores();
 
 protected:
 
@@ -78,6 +85,9 @@ protected:
 	int m_iLVLPlayerScore;
 	int m_iLVLPlayerLives;
 	int m_iLVLLevelCount;
+	std::string m_sHighScoreText;
+
+	CHighScores hs;
 
 private:
 	CLevelLogic(const CLevelLogic& _kr);
