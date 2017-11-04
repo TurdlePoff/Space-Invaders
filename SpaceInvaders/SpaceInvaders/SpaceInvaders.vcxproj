@@ -200,7 +200,6 @@
     <Image Include="..\Sprites\spritesSheetMask3.bmp" />
     <Image Include="..\Sprites\spritesSheetMask4.bmp" />
     <Image Include="Sprites\spritesSheet.bmp" />
-    <Image Include="Sprites\spritesSheetMask.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

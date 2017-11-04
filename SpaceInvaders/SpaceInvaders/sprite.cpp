@@ -253,22 +253,6 @@ CSprite::CSprite(ESprite _eType)
 		case ESprite::BAR14:
 		{
 			m_iFramePositionH = 237;
-			m_iFramePositionW = 24;
-			m_iW = 16;
-			m_iH = 11;
-			break;
-		}
-		case ESprite::BAR15:
-		{
-			m_iFramePositionH = 237;
-			m_iFramePositionW = 40;
-			m_iW = 16;
-			m_iH = 11;
-			break;
-		}
-		case ESprite::BAR16:
-		{
-			m_iFramePositionH = 237;
 			m_iFramePositionW = 56;
 			m_iW = 16;
 			m_iH = 11;
@@ -345,12 +329,14 @@ CSprite::Initialise()
 	else
 	{
 		iSprite = IDB_SS;
-		iMask = m_iBarricadeMask;//IDB_SSMASK;
+		iMask = IDB_SSMASK;//IDB_SSMASK;
 	}
 
 	m_hSprite = LoadBitmap(hInstance, MAKEINTRESOURCE(iSprite));
 	VALIDATE(m_hSprite);
 	GetObject(m_hSprite, sizeof(BITMAP), &m_bitmapSprite);
+	m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(iMask));
+	GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 
 	//If the sprite is one of the following specified types, set the sprite widths and heights to the actual sprite w and h
 	if (m_eSpriteType == ESprite::BACKGROUND || m_eSpriteType == ESprite::MAINMENU 
@@ -363,11 +349,6 @@ CSprite::Initialise()
 
 		m_iW = m_bitmapSprite.bmWidth;
 		m_iH = m_bitmapSprite.bmHeight;
-	}
-	else
-	{
-		m_hMask = LoadBitmap(hInstance, MAKEINTRESOURCE(m_iBarricadeMask));
-		GetObject(m_hMask, sizeof(BITMAP), &m_bitmapMask);
 	}
 
     return (true);
@@ -577,7 +558,7 @@ void CSprite::DeadAnimation(float _fDeltaTick)
 	}
 }
 
-void CSprite::SetBarricadeMask()
+void CSprite::ChangeBarricade()
 {
-
+	m_iFramePositionW += 72;
 }

@@ -16,8 +16,10 @@
 #include "utils.h"
 
 CBarricade::CBarricade()
-: m_eBarState(EBarState::BARUNTOUCHED)
+: m_eBarState(EBarState::HIT1)
+, m_bHit(false)
 {
+	
 }
 
 
@@ -34,24 +36,20 @@ bool CBarricade::Initialise(ESprite _spriteType)
 
 void CBarricade::Draw()
 {
-	if (!IsBarDead())
-	{
 		CEntity::Draw();
-	}
 }
 
 void CBarricade::Process(float _fDeltaTick)
 {
-	if (!IsBarDead())
-	{
+	/*if (!IsBarDead())
+	{*/
 		CEntity::Process(_fDeltaTick);
-	}
+	//}
 }
 
 void CBarricade::SetBarState(EBarState _e)
 {
 	m_eBarState = _e;
-	
 }
 
 EBarState CBarricade::GetBarState() const
@@ -66,4 +64,16 @@ bool CBarricade::IsBarDead() const
 		return true;
 	}
 	return false;
+}
+
+void
+CBarricade::SetHit(bool _b)
+{
+	m_bHit = _b;
+}
+
+bool
+CBarricade::IsHit() const
+{
+	return (m_bHit);
 }

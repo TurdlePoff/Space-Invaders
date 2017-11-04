@@ -115,9 +115,6 @@
     <Image Include="Sprites\spritesSheet.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Sprites\spritesSheetMask.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="..\Sprites\background.bmp">
       <Filter>Resource Files</Filter>
     </Image>

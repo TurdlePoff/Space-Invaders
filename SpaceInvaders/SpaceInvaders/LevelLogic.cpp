@@ -198,6 +198,11 @@ int CLevelLogic::GetLVLLevelCount()
 	return m_iLVLLevelCount;
 }
 
+std::vector<CBarricade*> CLevelLogic::GetLVLBarricades()
+{
+	return m_LVLVecBarricades;
+}
+
 /************
 * HighScores: Displays the highscores onto the screen
 *************/
@@ -295,4 +300,5 @@ float CLevelLogic::GetLVLEnemyShootingDelay()
 {
 	return m_fLVLEnemyShootingDelay;
 }
+
 

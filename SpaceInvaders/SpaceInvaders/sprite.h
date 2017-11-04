@@ -59,7 +59,7 @@ public:
 	void NormalAnimation(float _fDeltaTick);
 	void DeadAnimation(float _fDeltaTick);
 
-	void SetBarricadeMask();
+	void ChangeBarricade();
 
 protected:
 	//Center handle

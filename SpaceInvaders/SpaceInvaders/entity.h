@@ -22,6 +22,7 @@
 
 // Local Includes
 #include "EEnums.h"
+#include "sprite.h"
 // Types
 
 // Constants
@@ -59,6 +60,8 @@ public:
 	void SwitchOnAnimation(bool _b);
 	void SwitchDead(bool _b);
 	bool GetIsDead();
+
+	void ChangeBarricadeSprite();
 
 protected:
 	CSprite* m_pSprite;

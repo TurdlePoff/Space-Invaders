@@ -35,8 +35,6 @@ enum class ESprite
 	BAR12,
 	BAR13,
 	BAR14,
-	BAR15,
-	BAR16,
 	//OtherSprites
 	ENEMYTOP,
 	ENEMYMED,
@@ -57,7 +55,7 @@ enum class ESprite
 
 enum class EBarState
 {
-	BARUNTOUCHED, //NOT HIT
+	BARUNTOUCHED = 0, //NOT HIT
 	HIT1, //HIT ONCE
 	HIT2, //HIT TWICE
 	HIT3, //FINAL CHANCE

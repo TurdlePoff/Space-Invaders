@@ -19,6 +19,8 @@
 #if !defined(__LEVELLOGIC_H__)
 #define __LEVELLOGIC_H__
 #include <string>
+#include <vector>
+#include "Barricade.h"
 #include "HighScores.h"
 
 class CLevelLogic
@@ -61,10 +63,13 @@ public:
 	void SetLVLLevelCount(int _i);
 	int GetLVLLevelCount();
 
+	std::vector<CBarricade*> GetLVLBarricades();
+
 	void DisplayHighScores();
 	void SetLVLHighScoreName(std::string _s);
 
 	std::string GetLVLHighScores();
+	std::vector<CBarricade*> m_LVLVecBarricades;
 
 protected:
 

@@ -66,7 +66,6 @@ CEntity::Process(float _fDeltaTick)
 {
     m_pSprite->SetX(static_cast<int>(m_fX));
     m_pSprite->SetY(static_cast<int>(m_fY));
-
     m_pSprite->Process(_fDeltaTick);
 }
 
@@ -116,7 +115,6 @@ void CEntity::SetSpriteType(ESprite _e)
 {
 	m_eSpriteType = _e;
 	m_pSprite = new CSprite(m_eSpriteType);
-	m_pSprite->Initialise();
 }
 
 /************
@@ -135,6 +133,11 @@ void CEntity::SwitchDead(bool _b)
 bool CEntity::GetIsDead()
 {
 	return m_pSprite->GetIsDead();
+}
+
+void CEntity::ChangeBarricadeSprite()
+{
+	m_pSprite->ChangeBarricade();
 }
 
 /************

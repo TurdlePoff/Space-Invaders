@@ -30,10 +30,14 @@ public:
 	EBarState GetBarState() const;
 	bool IsBarDead() const;
 
+	void SetHit(bool _b);
+	bool IsHit() const;
+
 protected:
 
 private:
 	EBarState m_eBarState;
+	bool m_bHit;
 
 };
 

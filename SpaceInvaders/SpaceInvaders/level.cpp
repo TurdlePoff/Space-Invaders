@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-//#include <vld.h>
+#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -47,8 +47,8 @@ CLevel::CLevel(CLevelLogic& _logic)
 , m_cEndShipMove(0)
 , m_cEndPlayerDead(0)
 , m_cBeginPlayerDead(0)
-, m_cBeginEnemyDead(0)
-, m_cEndEnemyDead(0)
+//, m_cBeginEnemyDead(0)
+//, m_cEndEnemyDead(0)
 {
 	m_pLevelLogic = &_logic;
 	m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLRealEnemyDelay());
@@ -76,6 +76,16 @@ CLevel::~CLevel()
 		pEnemy = 0;
 	}
 
+	/*while (m_pLevelLogic->GetLVLBarricades().size() > 0)
+	{
+		CBarricade* m_pBarricade = m_pLevelLogic->GetLVLBarricades()[m_pLevelLogic->GetLVLBarricades().size() - 1];
+
+		m_pLevelLogic->GetLVLBarricades().pop_back();
+
+		delete m_pBarricade;
+		m_pBarricade = 0;
+	}
+*/
 	delete m_pPlayer;
 	m_pPlayer = 0;
 
@@ -133,34 +143,56 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	m_pPlayer->SetY((float)m_iHeight - 150.0f);
 	m_pPlayer->SetPlayerAlive(true);
 
-	const int kiNumBarricades = 16;
-	const int kiBarStartX = 200;
+	const int kiNumBarricades = 14;
+	int kiBarStartX = 200;
 	const int kiBarStartY = 525;
 
 	int iCurrentBarX = kiBarStartX;
 	int iCurrentBarY = kiBarStartY;
-	int kiBarGap = 16;
+	int kiBarGap = 248;
 
-	for (int i = 1; i <= kiNumBarricades; ++i)
-	{
-		CBarricade* m_pBarricade = new CBarricade();
-		VALIDATE(m_pBarricade->Initialise(static_cast<ESprite>(i)));
-
-		//Set up enemy settings
-		m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
-		m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
-		m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
-		iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
-
-		if (iCurrentBarX > 248) //Set up enemy positions
+	/*if (m_pLevelLogic->GetLVLBarricades().size() == 0)
+	{*/
+		for (int j = 0; j < 4; ++j)
 		{
+			for (int i = 1; i <= kiNumBarricades; ++i)
+			{
+				CBarricade* m_pBarricade = new CBarricade();
+				VALIDATE(m_pBarricade->Initialise(static_cast<ESprite>(i)));
+
+				//Set up enemy settings
+				if (i == 14)
+				{
+					iCurrentBarX += 32;
+				}
+				m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
+				m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
+				m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+				iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
+
+				m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+										  //m_vecBarricades[i]->GetSpriteInstance();
+				if (iCurrentBarX > kiBarGap) //Set up enemy positions
+				{
+					iCurrentBarX = kiBarStartX;
+					iCurrentBarY += 11;
+				}
+				m_pLevelLogic->m_LVLVecBarricades.push_back(m_pBarricade);
+				//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
+			}
+			kiBarStartX += 190;
 			iCurrentBarX = kiBarStartX;
-			iCurrentBarY += 11;
+			iCurrentBarY = kiBarStartY;
+			kiBarGap += 190;
 		}
-
-		m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
-	}
-
+	//}
+	/*else
+	{
+		for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
+		{
+			m_vecBarricades.push_back(m_pLevelLogic->GetLVLBarricades()[i]);
+		}
+	}*/
 
 	//Enemy initialisation
 	const int kiNumEnemys = 55;
@@ -236,9 +268,9 @@ CLevel::Draw()
 		m_vecEnemies[i]->Draw();
 	}
 
-	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
+	for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
 	{
-		m_vecBarricades[i]->Draw();
+		m_pLevelLogic->GetLVLBarricades()[i]->Draw();
 	}
 
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j) //Draw all player bullets
@@ -276,9 +308,9 @@ CLevel::Process(float _fDeltaTick)
 		m_pEnemyShip->Process(_fDeltaTick);
 	}
 	
-	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
+	for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
 	{
-		m_vecBarricades[i]->Process(_fDeltaTick);
+		m_pLevelLogic->GetLVLBarricades()[i]->Process(_fDeltaTick);
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting()) //Call shooting for player
@@ -298,7 +330,7 @@ CLevel::Process(float _fDeltaTick)
 	{
 		m_vecEnemyBullets[i]->Process(_fDeltaTick);
 	}
-
+	ProcessBarricadeCollision();
 	//Process all game logic
 	ProcessPlayerMovement();
 	EnemyMovement(_fDeltaTick);
@@ -397,14 +429,12 @@ CLevel::ProcessBulletEnemyCollision()
 					//Hide enemy, erase bullet, decrease enemy count
 					
 					m_vecEnemies[i]->SetHit(true);
-					//m_vecEnemies[i]->SetShot(true);
 
-					//TODO: SET SPRITE DEAD ANIMATION
 					if (i > 11)
 					{
 						m_vecEnemies[i - 11]->SetCanShoot(true);
 					}
-					//TODO: SET SPRITE DEAD ANIMATION
+
 					m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore()+m_vecEnemies[i]->GetEnemyPoints());
 
 					//Destroy player bullet
@@ -428,7 +458,6 @@ CLevel::ProcessBulletEnemyCollision()
 		{
 			m_pEnemyShip->SetHit(true);
 			m_pLevelLogic->SetLVLPlayerScore(m_pLevelLogic->GetLVLPlayerScore() + m_pEnemyShip->GetEnemyPoints());
-
 			delete m_vecPlayerBullets[j];
 			m_vecPlayerBullets[j] = 0;
 
@@ -440,24 +469,74 @@ CLevel::ProcessBulletEnemyCollision()
 }
 
 /********
-* ProcessEnemyDead: Keeps enemy as dead sprite for 1 second. Player is invincible for 1 second.
+* ProcessBarricadeCollision: Detects and processes player/enemy bullet vs barricade collision
 *********/
-//void
-//CLevel::ProcessEnemyDeadAnim()
-//{
-//	for (unsigned int i = 0; i < m_vecEnemies.size(); ++i)
-//	{
-//		if (m_vecEnemies[i]->IsShot())
-//		{
-//			m_vecEnemies[i]->SetDead(true);
-//			m_vecEnemies[i]->SetHit(true);
-//
-//			m_cBeginEnemyMove = clock();
-//		}
-//	}
-//	m_cEndPlayerDead = clock();
-//
-//}
+void
+CLevel::ProcessBarricadeCollision()
+{
+	for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
+	{
+		for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j)
+		{
+			if (!m_pLevelLogic->GetLVLBarricades()[i]->IsHit())
+			{
+				//If bullet collides with barricade entity
+				if (m_vecPlayerBullets[j]->IsCollidingWith(*m_pLevelLogic->GetLVLBarricades()[i]))
+				{
+					m_pLevelLogic->GetLVLBarricades()[i]->ChangeBarricadeSprite();
+					int state = static_cast<int>(m_pLevelLogic->GetLVLBarricades()[i]->GetBarState()) + 1;
+					if (state != 5)
+					{
+						m_pLevelLogic->GetLVLBarricades()[i]->SetBarState(static_cast<EBarState>(state));
+					}
+					else
+					{
+						m_pLevelLogic->GetLVLBarricades()[i]->SetHit(true);
+					}
+
+					//Destroy player bullet
+					delete m_vecPlayerBullets[j];
+					m_vecPlayerBullets[j] = 0;
+
+					m_vecPlayerBullets.erase(m_vecPlayerBullets.begin() + j);
+					m_pPlayer->SetIsShooting(false);
+				}
+			}
+		}
+	}
+
+	for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
+	{
+		for (unsigned int j = 0; j < m_vecEnemyBullets.size(); ++j)
+		{
+			if (!m_pLevelLogic->GetLVLBarricades()[i]->IsHit())
+			{
+				//If bullet collides with barricade entity
+				if (m_vecEnemyBullets[j]->IsCollidingWith(*m_pLevelLogic->GetLVLBarricades()[i]))
+				{
+					//Hide enemy, erase bullet, decrease enemy count
+
+					m_pLevelLogic->GetLVLBarricades()[i]->ChangeBarricadeSprite();
+					int state = static_cast<int>(m_pLevelLogic->GetLVLBarricades()[i]->GetBarState()) + 1;
+					if (state != 5)
+					{
+						m_pLevelLogic->GetLVLBarricades()[i]->SetBarState(static_cast<EBarState>(state));
+					}
+					else
+					{
+						m_pLevelLogic->GetLVLBarricades()[i]->SetHit(true);
+					}
+
+					//Destroy enemy bullet
+					delete m_vecEnemyBullets[j];
+					m_vecEnemyBullets[j] = 0;
+
+					m_vecEnemyBullets.erase(m_vecEnemyBullets.begin() + j);
+				}
+			}
+		}
+	}
+}
 
 /********
 * ProcessBulletPlayerCollision: Detects if enemy bullets hit player. If they do, remove player life and delete bullet
@@ -528,6 +607,10 @@ CLevel::ProcessCheckForWin()
 	}
 
 	//Set level complete
+   	for (unsigned int i = 0; i < m_pLevelLogic->GetLVLBarricades().size(); ++i)
+	{
+		m_pLevelLogic->GetLVLBarricades().push_back(m_pLevelLogic->GetLVLBarricades()[i]);
+	}
 	CGame::GetInstance().GameOverWon();
 }
 

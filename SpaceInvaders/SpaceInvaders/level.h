@@ -60,10 +60,10 @@ protected:
 	void ProcessCheckForWin();
 	void DrawScore();
 	void DrawLevelCount();
+	void ProcessBarricadeCollision();
 
 	void ProcessPlayerDead();
-	void ProcessEnemyDead();
-	void ProcessEnemyDeadAnim();
+
 private:
     CLevel(const CLevel& _kr);
     CLevel& operator= (const CLevel& _kr);
@@ -96,9 +96,9 @@ protected:
 
 	clock_t m_cBeginPlayerDead;
 	clock_t m_cEndPlayerDead;
-
+/*
 	clock_t m_cBeginEnemyDead;
-	clock_t m_cEndEnemyDead;
+	clock_t m_cEndEnemyDead;*/
 
 	int m_iRandShipDirection;
 
