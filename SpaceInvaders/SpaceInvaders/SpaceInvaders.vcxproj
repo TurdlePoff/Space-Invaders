@@ -186,17 +186,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Sprites\background.bmp" />
-    <Image Include="..\Sprites\backgroundMask.bmp" />
     <Image Include="..\Sprites\highscores.bmp" />
     <Image Include="..\Sprites\instructions.bmp" />
     <Image Include="..\Sprites\lvlComplete.bmp" />
     <Image Include="..\Sprites\lvlCompleteMask.bmp" />
     <Image Include="..\Sprites\mainmenu.bmp" />
+    <Image Include="..\Sprites\MainMenuMask.bmp" />
     <Image Include="..\Sprites\spritesSheet.bmp" />
     <Image Include="..\Sprites\spritesSheetMask.bmp" />
-    <Image Include="..\Sprites\spritesSheetMask2.bmp" />
-    <Image Include="..\Sprites\spritesSheetMask3.bmp" />
-    <Image Include="..\Sprites\spritesSheetMask4.bmp" />
     <Image Include="Sprites\spritesSheet.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

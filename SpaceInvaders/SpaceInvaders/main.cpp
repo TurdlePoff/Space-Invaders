@@ -124,8 +124,12 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 			break;
     } 
 
+
 	if (g_rGame.GetGameState() == EGameState::LOST) //If the game state is in GAME mode
 	{
+		//std::string score = std::to_string();(to_string(OurVariable).c_str()
+		WriteToEditBox(g_hScoreNameWindow, IDC_SCORETEXT, m_rLevel.GetLevelController().GetLVLPlayerScore());
+		SendMessage(g_hScoreNameWindow, EM_LIMITTEXT, _lParam, 3);
 		ShowWindow(g_hScoreNameWindow, SW_NORMAL);
 	}
 
@@ -309,7 +313,9 @@ WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdline, int _i
 	//Initialise debug window
 	g_hDebugWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_DEBUGWINDOW), hwnd, DebugDlgProc);
 	g_hScoreNameWindow = CreateDialog(_hInstance, MAKEINTRESOURCE(IDD_NAMEBOX), hwnd, NameDlgProc);
-    if (!g_rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
+    
+	
+	if (!g_rGame.Initialise(_hInstance, hwnd, kiWidth, kiHeight))
     {
         // Failed
         return (0);
