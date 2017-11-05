@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-#include <vld.h>
+//#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -27,6 +27,8 @@
 
 // This Include
 #include "Level.h"
+
+//Static Variables
 std::vector<CBarricade*> CLevel::m_vecBarricades;
 
 CLevel::CLevel(CLevelLogic& _logic)
@@ -54,15 +56,6 @@ CLevel::CLevel(CLevelLogic& _logic)
 	m_pLevelLogic->SetLVLEnemyMoveDelay(m_pLevelLogic->GetLVLRealEnemyDelay());
 	srand((unsigned)time(NULL));
 }
-
-//CLevel::CLevel()
-//{
-//	/*m_pLevelLogic = new CLevelLogic();
-//	m_cEndShipMove = clock();
-//
-//	m_cEndEnemyMove = clock();
-//	srand((unsigned)time(NULL));*/
-//}
 
 CLevel::~CLevel()
 {

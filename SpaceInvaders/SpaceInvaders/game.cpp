@@ -185,6 +185,16 @@ CGame::Process(float _fDeltaTick)
 		m_pMenuNavigator->SwitchMenuItem(m_eGameState);  // Allow player to navigate through options.
 		if (m_eGameState == EGameState::GAME)			 //If player selects game mode
 		{
+			while (m_pLevel->GetBarricades().size() > 0)
+			{
+				CBarricade* pBar = m_pLevel->GetBarricades()[m_pLevel->GetBarricades().size() - 1];
+
+				m_pLevel->GetBarricades().pop_back();
+
+				delete pBar;
+				pBar = 0;
+			}
+
 			if (m_pLogic != nullptr)					 //If level logic exists, reset and initialise as player is starting a new game
 			{
 				delete m_pLogic;
@@ -440,7 +450,7 @@ CGame::DrawHighScores()
 	std::string highScoreNames = " ";
 	std::string highScoreValues = " ";
 
-	int height = 300;
+	int height = 250;
 
 	m_pLogic->ReadHighScores();
 	for (unsigned int i = 0; i < m_pLogic->GetHighScores().size(); ++i)
@@ -450,12 +460,12 @@ CGame::DrawHighScores()
 		TextOutA(hdc, 400, height, highScoreNames.c_str(), static_cast<int>(highScoreNames.size()));
 		height += 20;
 	}
-	height = 300;
+	height = 250;
 	for (unsigned int j = 0; j < m_pLogic->GetHighScores().size(); ++j)
 	{
 		highScoreValues = "";
 		highScoreValues += std::to_string(m_pLogic->GetHighScores()[j].score);
-		TextOutA(hdc, 500, height, highScoreValues.c_str(), static_cast<int>(highScoreValues.size()));
+		TextOutA(hdc, 520, height, highScoreValues.c_str(), static_cast<int>(highScoreValues.size()));
 		height += 20;
 	}
 }

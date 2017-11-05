@@ -49,9 +49,9 @@ float ReadFromEditBox(HWND _hDlg, int _iResourceID)
 
 std::string ReadFromEditBoxToString(HWND _hDlg, int _iResourceID)
 {
-	wchar_t _pcValue[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	ZeroMemory(_pcValue, 10);
-	GetDlgItemText(_hDlg, _iResourceID, _pcValue, 10);
+	wchar_t _pcValue[4] = {0, 0, 0, 0};
+	ZeroMemory(_pcValue, 4);
+	GetDlgItemText(_hDlg, _iResourceID, _pcValue, 4);
 	if (_pcValue[0] == 0)
 	{
 		return "";
