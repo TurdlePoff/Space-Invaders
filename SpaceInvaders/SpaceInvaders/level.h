@@ -61,6 +61,7 @@ protected:
 	void ProcessCheckForWin();
 	void DrawScore();
 	void DrawLevelCount();
+	void DrawHighScores();
 	void ProcessBarricadeCollision();
 	static std::vector<CBarricade*> InitialiseBarricades(std::vector<CBarricade*> _b);
 

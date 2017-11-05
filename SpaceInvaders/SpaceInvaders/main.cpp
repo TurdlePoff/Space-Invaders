@@ -47,6 +47,27 @@ float ReadFromEditBox(HWND _hDlg, int _iResourceID)
 	}
 }
 
+std::string ReadFromEditBoxToString(HWND _hDlg, int _iResourceID)
+{
+	wchar_t _pcValue[10];
+	ZeroMemory(_pcValue, 10);
+	GetDlgItemText(_hDlg, _iResourceID, _pcValue, 10);
+	if (_pcValue[0] == 0)
+	{
+		return "";
+	}
+	else
+	{
+		std::string s = " ";
+		for each(wchar_t& c in _pcValue)
+		{
+			s += c;
+		}
+		
+		return s;
+	}
+}
+
 void WriteToEditBox(HWND _hDlg, int _iResourceID, float _fValue)
 {
 	std::wstring _strValue = ToWideString(_fValue);
@@ -96,8 +117,14 @@ WindowProc(HWND _hwnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
         }
         break;
 
-        default:break;
+        default:
+			break;
     } 
+
+	if (g_rGame.GetGameState() == EGameState::LOST) //If the game state is in GAME mode
+	{
+		ShowWindow(g_hScoreNameWindow, SW_NORMAL);
+	}
 
     return (DefWindowProc(_hwnd, _uiMsg, _wParam, _lParam));
 }
@@ -194,16 +221,18 @@ LRESULT CALLBACK NameDlgProc(HWND _hwnd,
 		{
 			//level stuff
 			//Check if player has lost instead of state OR send player to instructions 
-			if (g_rGame.GetGameState() == EGameState::GAME)
+			if (g_rGame.GetGameState() == EGameState::LOST)
 			{
-				//g_rLevel.GetLevelController().S(ReadFromEditBox(_hwnd, IDC_EDITNAME));
+				g_rLevel.GetLevelController().SetLVLHighScoreName(ReadFromEditBoxToString(_hwnd, IDC_EDITNAME));
 				
-				ShowWindow(_hwnd, SW_HIDE);
 				g_rGame.SetPaused(false); //Unpause the game when dialog box is closed
+				g_rGame.SetGameState(EGameState::HIGHSCORES);
+				ShowWindow(_hwnd, SW_HIDE);
 			}
 			return TRUE;
 			break;
 		}
+		
 		default:
 			break;
 		}

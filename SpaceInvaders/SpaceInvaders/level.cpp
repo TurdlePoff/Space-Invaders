@@ -296,6 +296,7 @@ CLevel::Draw()
 	//Draw UI
 	DrawScore();
 	DrawLevelCount();
+	//DrawHighScores();
 }
 
 /********
@@ -872,3 +873,23 @@ CLevel::DrawLevelCount()
 	SetTextColor(hdc, RGB(27, 233, 56));
 	TextOutA(hdc, m_iWidth - 100, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
 }
+
+//void
+//CLevel::DrawHighScores()
+//{
+//	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
+//
+//	SetBkMode(hdc, TRANSPARENT);
+//	SetTextColor(hdc, RGB(27, 233, 56));
+//	std::string _SCORES = " ";
+//	m_pHighScoreController->ReadHighScores();
+//	for (unsigned int i = 0; i < m_pHighScoreController->GetHighScores().size(); ++i)
+//	{
+//		_SCORES += m_pHighScoreController->GetHighScores()[i].name;
+//		_SCORES += std::to_string(m_pHighScoreController->GetHighScores()[i].score);//m_pPlayer->GetPlayerScore());
+//		_SCORES += "\n";
+//	}
+//
+//	SetTextColor(hdc, RGB(100, 100, 100));
+//	TextOutA(hdc, 600, 500, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
+//}

@@ -90,7 +90,7 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 
     m_pBackBuffer = new CBackBuffer();
     VALIDATE(m_pBackBuffer->Initialise(_hWnd, _iWidth, _iHeight));
-
+	
 	m_pMenu = new CBackGround();
 	VALIDATE(m_pMenu->Initialise(ESprite::MAINMENU));
 	m_pMenu->SetX((float)1000 / 2);
@@ -144,6 +144,8 @@ CGame::Draw()
 	else if (m_eGameState == EGameState::HIGHSCORES)
 	{
 		m_pHighScores->Draw();
+		DrawHighScores();
+
 	}
 	else if (m_eGameState == EGameState::GAME)
 	{
@@ -190,7 +192,7 @@ CGame::Process(float _fDeltaTick)
 		else if (m_eGameState == EGameState::HIGHSCORES)	//If player selects highscore mode
 		{
 			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
-			DrawHighScores();
+
 		}
 	}
 	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES) 	//if current gamestate is instructions/highscores
@@ -222,6 +224,10 @@ CGame::Process(float _fDeltaTick)
 			SetNextLevel();
 		}
 		m_cEndLevelBreak = clock();
+	}
+	else if (m_eGameState == EGameState::LOST)
+	{
+		m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
 	}
 }
 
@@ -333,10 +339,16 @@ CGame::GameOverWon()
 void
 CGame::GameOverLost()
 {
-	m_pHighScoreController->WriteToHighScores({ m_pLogic->GetLVLHighScoreName(), m_pLogic->GetLVLPlayerScore() });
-	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 
-	SetGameState(EGameState::HIGHSCORES);
+	m_pHighScoreController->ReadHighScores();
+	m_pHighScoreController->WriteToHighScores({ m_pLogic->GetLVLHighScoreName(), m_pLogic->GetLVLPlayerScore() });
+	//MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
+	DrawHighScores();
+	SetGameState(EGameState::LOST);
+	DrawHighScores();
+
+	//ShowWindow(g_hScoreNameWindow, SW_NORMAL);
+
 }
 
 
@@ -412,19 +424,24 @@ CGame::SetNextLevel()
 void
 CGame::DrawHighScores()
 {
-	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
-
+	HDC hdc = GetInstance().GetBackBuffer()->GetBFDC();
+	//RECT rc = GetInstance().SetRect(&rc, 0, 0, 300, 300);
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(27, 233, 56));
+
 	std::string _SCORES = " ";
-	for (unsigned int i = 0; i <m_pHighScoreController->GetHighScores().size(); ++i)
+	int height = 300;
+	m_pHighScoreController->ReadHighScores();
+	for (unsigned int i = 0; i < m_pHighScoreController->GetHighScores().size(); ++i)
 	{
+		_SCORES = "";
 		_SCORES += m_pHighScoreController->GetHighScores()[i].name;
-		_SCORES += m_pHighScoreController->GetHighScores()[i].score;//m_pPlayer->GetPlayerScore());
-		_SCORES += "\n";
+		_SCORES += std::to_string(m_pHighScoreController->GetHighScores()[i].score);//m_pPlayer->GetPlayerScore());
+		TextOutA(hdc, 600, height, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
+		height += 20;
 	}
 
-
 	SetTextColor(hdc, RGB(27, 233, 56));
-	TextOutA(hdc, 500, 400, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
+	//DrawText(hdc, _SCORES.c_str(), static_cast<int>(_SCORES.size()), &rc, DT_LEFT | DT_EXTERNALLEADING | DT_WORDBREAK);
+	TextOutA(hdc, 600, 500, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
 }

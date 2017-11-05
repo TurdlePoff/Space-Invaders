@@ -67,6 +67,7 @@ enum class EGameState
 	MENU, 
 	INSTRUCTIONS, 
 	HIGHSCORES, 
+	LOST,
 	GAME
 };
 
