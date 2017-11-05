@@ -13,7 +13,7 @@
 // Mail			: vivian.ngo7572@mediadesign.school.nz
 //
 #include <string>
-
+#include <fstream>
 struct HScores
 {
 	std::string name;
@@ -29,6 +29,7 @@ public:
 
 	void SetScore(std::string pName, int pScore);
 	HScores& GetScores();
+	void ReadHighScores();
 	bool scoreSorter(HScores const& lhs, HScores const& rhs);
 private:
 	HScores m_vTop5Scores[5];

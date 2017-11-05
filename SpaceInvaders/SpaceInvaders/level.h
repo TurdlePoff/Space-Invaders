@@ -62,7 +62,6 @@ protected:
 	void DrawLevelCount();
 	void ProcessBarricadeCollision();
 	static std::vector<CBarricade*> InitialiseBarricades(std::vector<CBarricade*> _b);
-	//void InitialiseBarricades();
 
 	void ProcessPlayerDead();
 
@@ -85,8 +84,6 @@ protected:
 	std::vector<CBullet*> m_vecEnemyBullets;
 	std::vector<CBullet*> m_vecPlayerBullets;
 	static std::vector<CBarricade*> m_vecBarricades;
-	//std::vector<CBarricade*> m_vecBarricades;
-
 
 	clock_t m_cBeginBullet;
 	clock_t m_cEndBullet;
@@ -99,9 +96,6 @@ protected:
 
 	clock_t m_cBeginPlayerDead;
 	clock_t m_cEndPlayerDead;
-/*
-	clock_t m_cBeginEnemyDead;
-	clock_t m_cEndEnemyDead;*/
 
 	int m_iRandShipDirection;
 

@@ -197,12 +197,6 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 		m_vecBarricades = InitialiseBarricades(m_vecBarricades);
 	}
 		
-		/*for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
-	{
-		m_vecBarricades.push_back(m_vecBarricades[i]);
-	}*/
-	
-	//InitialiseBarricades();
 	SetEnemysRemaining(kiNumEnemys); //Set number of enemies remaining in level
 
 	m_fpsCounter = new CFPSCounter();
@@ -211,6 +205,9 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	return (true);
 }
 
+/********
+* InitialiseBarricades:Initialise static barricades
+*********/
 std::vector<CBarricade*> CLevel::InitialiseBarricades(std::vector<CBarricade*> _b)
 {
 	const int kiNumBarricades = 14;
@@ -219,7 +216,7 @@ std::vector<CBarricade*> CLevel::InitialiseBarricades(std::vector<CBarricade*> _
 
 	int iCurrentBarX = kiBarStartX;
 	int iCurrentBarY = kiBarStartY;
-	int kiBarGap = 248;
+	int kiBarGap = 250;
 
 	for (int j = 0; j < 4; ++j)
 	{
@@ -246,7 +243,6 @@ std::vector<CBarricade*> CLevel::InitialiseBarricades(std::vector<CBarricade*> _
 				iCurrentBarY += 11;
 			}
 			_b.push_back(m_pBarricade);
-			//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
 		}
 		kiBarStartX += 190;
 		iCurrentBarX = kiBarStartX;
@@ -256,49 +252,6 @@ std::vector<CBarricade*> CLevel::InitialiseBarricades(std::vector<CBarricade*> _
 	return _b;
 }
 
-//void CLevel::InitialiseBarricades()
-//{
-//	const int kiNumBarricades = 14;
-//	int kiBarStartX = 200;
-//	const int kiBarStartY = 525;
-//
-//	int iCurrentBarX = kiBarStartX;
-//	int iCurrentBarY = kiBarStartY;
-//	int kiBarGap = 248;
-//
-//	for (int j = 0; j < 4; ++j)
-//	{
-//		for (int i = 1; i <= kiNumBarricades; ++i)
-//		{
-//			CBarricade* m_pBarricade = new CBarricade();
-//			m_pBarricade->Initialise(static_cast<ESprite>(i));
-//
-//			//Set up enemy settings
-//			if (i == 14)
-//			{
-//				iCurrentBarX += 32;
-//			}
-//			m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
-//			m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
-//			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
-//			iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
-//
-//			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
-//									  //m_vecBarricades[i]->GetSpriteInstance();
-//			if (iCurrentBarX > kiBarGap) //Set up enemy positions
-//			{
-//				iCurrentBarX = kiBarStartX;
-//				iCurrentBarY += 11;
-//			}
-//			m_vecBarricades.push_back(m_pBarricade);
-//			//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
-//		}
-//		kiBarStartX += 190;
-//		iCurrentBarX = kiBarStartX;
-//		iCurrentBarY = kiBarStartY;
-//		kiBarGap += 190;
-//	}
-//}
 
 /********
 * Draw: Draw function for CLevel
