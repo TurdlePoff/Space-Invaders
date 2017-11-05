@@ -16,6 +16,10 @@
 #include <iostream>
 #include <fstream>
 
+
+
+//std::vector<CBarricade*> CLevelLogic::m_LVLVecBarricades = CLevelLogic::CreateBarricades(m_LVLVecBarricades);
+
 /************
 * CLevelLogic Constructor
 *************/
@@ -37,6 +41,7 @@ CLevelLogic::CLevelLogic()
 , m_iLVLLevelCount(1)
 , hs()
 {
+	//CreateBarricades();
 }
 
 /************
@@ -44,6 +49,17 @@ CLevelLogic::CLevelLogic()
 *************/
 CLevelLogic::~CLevelLogic()
 {
+	while (m_LVLVecBarricades.size() > 0)
+	{
+		CBarricade* m_pBarricade = GetLVLBarricades()[m_LVLVecBarricades.size() - 1];
+
+		m_LVLVecBarricades.pop_back();
+
+		delete m_pBarricade;
+		m_pBarricade = 0;
+	}
+	m_LVLVecBarricades.clear();
+
 }
 
 /************
@@ -302,3 +318,47 @@ float CLevelLogic::GetLVLEnemyShootingDelay()
 }
 
 
+
+void CLevelLogic::CreateBarricades()
+{
+	const int kiNumBarricades = 14;
+	int kiBarStartX = 200;
+	const int kiBarStartY = 525;
+
+	int iCurrentBarX = kiBarStartX;
+	int iCurrentBarY = kiBarStartY;
+	int kiBarGap = 248;
+
+	for (int j = 0; j < 4; ++j)
+	{
+		for (int i = 1; i <= kiNumBarricades; ++i)
+		{
+			CBarricade* m_pBarricade = new CBarricade();
+			m_pBarricade->Initialise(static_cast<ESprite>(i));
+
+			//Set up enemy settings
+			if (i == 14)
+			{
+				iCurrentBarX += 32;
+			}
+			m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
+			m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
+			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+			iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
+
+			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
+										//m_vecBarricades[i]->GetSpriteInstance();
+			if (iCurrentBarX > kiBarGap) //Set up enemy positions
+			{
+				iCurrentBarX = kiBarStartX;
+				iCurrentBarY += 11;
+			}
+			m_LVLVecBarricades.push_back(m_pBarricade);
+			//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
+		}
+		kiBarStartX += 190;
+		iCurrentBarX = kiBarStartX;
+		iCurrentBarY = kiBarStartY;
+		kiBarGap += 190;
+	}
+}

@@ -63,6 +63,7 @@ public:
 	void SetLVLLevelCount(int _i);
 	int GetLVLLevelCount();
 
+	void CreateBarricades();
 	std::vector<CBarricade*> GetLVLBarricades();
 
 	void DisplayHighScores();

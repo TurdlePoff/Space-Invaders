@@ -46,7 +46,7 @@ CEnemy::Initialise(ESprite _spriteType)
 {
     VALIDATE(CEntity::Initialise(_spriteType));
 	int pointArray[6] = {10, 20, 30, 50, 100, 300};
-	int randTime = (rand() % (7));
+	int randPoint = (rand() % (7-1));
 	//Set points depending on which enemy is being created
 	switch(_spriteType)
 	{
@@ -68,7 +68,7 @@ CEnemy::Initialise(ESprite _spriteType)
 		case ESprite::ENEMYSHIP: //Nyooms
 		{
 			//Create enemy ship with random point value
-			m_iPoints = pointArray[randTime];
+			m_iPoints = pointArray[randPoint];
 			break;
 		}
 	}
