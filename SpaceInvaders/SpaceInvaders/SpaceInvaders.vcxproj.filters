@@ -112,6 +112,9 @@
     <Image Include="..\Sprites\background.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\Sprites\backgroundMask.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
     <Image Include="..\Sprites\spritesSheetMask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
@@ -133,7 +136,15 @@
     <Image Include="..\Sprites\highscores.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\Sprites\MainMenuMask.bmp" />
+    <Image Include="..\Sprites\spritesSheetMask4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\spritesSheetMask2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Sprites\spritesSheetMask3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvaders.rc">

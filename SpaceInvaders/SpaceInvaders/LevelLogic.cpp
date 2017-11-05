@@ -311,7 +311,7 @@ void CLevelLogic::WriteToHighScores(HScores _newValue)
 	const int kiMaxScores = 3;
 
 	//Write the score file to scores.txt
-	myFile.open("scores.txt");
+	myFile.open("..\\Sprites\\scores.txt");
 	if (myFile.is_open())
 	{
 		for (int i = 0; i < m_vecHScores.size(); ++i)
@@ -334,7 +334,7 @@ void CLevelLogic::ReadHighScores()
 {
 	m_vecHScores.clear();
 	std::ifstream myFile;
-	myFile.open("scores.txt");
+	myFile.open("..\\Sprites\\scores.txt");
 	std::string strName;
 	std::string strScore;
 	int iScore;
