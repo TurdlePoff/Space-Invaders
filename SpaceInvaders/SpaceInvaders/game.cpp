@@ -240,6 +240,7 @@ CGame::Process(float _fDeltaTick)
 		{
 			while (m_pLevel->GetBarricades().size() > 0)
 			{
+				CBarricade* pBar = m_pLevel->GetBarricades()[m_pLevel->GetBarricades().size() - 1];
 
 				m_pLevel->GetBarricades().pop_back();
 
