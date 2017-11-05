@@ -56,7 +56,7 @@ public:
 	bool IsCollidingWith(CEntity& e);
 	ESprite GetSpriteType();
 	void SetSpriteType(ESprite m_eSpriteType);
-	//void SetSpritePic(ESprite m_eSpriteType);
+
 	void SwitchOnAnimation(bool _b);
 	void SwitchDead(bool _b);
 	bool GetIsDead();

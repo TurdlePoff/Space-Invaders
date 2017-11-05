@@ -49,7 +49,7 @@ float ReadFromEditBox(HWND _hDlg, int _iResourceID)
 
 std::string ReadFromEditBoxToString(HWND _hDlg, int _iResourceID)
 {
-	wchar_t _pcValue[10];
+	wchar_t _pcValue[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	ZeroMemory(_pcValue, 10);
 	GetDlgItemText(_hDlg, _iResourceID, _pcValue, 10);
 	if (_pcValue[0] == 0)
@@ -58,10 +58,13 @@ std::string ReadFromEditBoxToString(HWND _hDlg, int _iResourceID)
 	}
 	else
 	{
-		std::string s = " ";
+		std::string s = "";
 		for each(wchar_t& c in _pcValue)
 		{
-			s += c;
+			if (c != 0)
+			{
+				s += static_cast<char>(c);
+			}
 		}
 		
 		return s;
@@ -189,13 +192,6 @@ LRESULT CALLBACK DebugDlgProc(HWND _hwnd,
 			}
 			break;
 		}
-		case WM_CLOSE: //if user exits the dialog through the X button
-		{
-			ShowWindow(_hwnd, SW_HIDE); //hide dialog box and unpause
-			g_rGame.SetPaused(false);
-			return TRUE;
-			break;
-		}
 	default:
 		break;
 	}
@@ -224,7 +220,9 @@ LRESULT CALLBACK NameDlgProc(HWND _hwnd,
 			if (g_rGame.GetGameState() == EGameState::LOST)
 			{
 				g_rLevel.GetLevelController().SetLVLHighScoreName(ReadFromEditBoxToString(_hwnd, IDC_EDITNAME));
-				
+				g_rLevel.GetLevelController().ReadHighScores();
+				g_rLevel.GetLevelController().WriteToHighScores({ g_rLevel.GetLevelController().GetLVLHighScoreName(), g_rLevel.GetLevelController().GetLVLPlayerScore() });
+
 				g_rGame.SetPaused(false); //Unpause the game when dialog box is closed
 				g_rGame.SetGameState(EGameState::HIGHSCORES);
 				ShowWindow(_hwnd, SW_HIDE);

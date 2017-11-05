@@ -44,6 +44,7 @@ public:
     virtual void Process(float _fDeltaTick);
 
 	CLevelLogic& GetLevelController();
+	std::vector<CBarricade*>& GetBarricades();
 
 protected:
 	CPlayer* GetPlayer() const;
@@ -61,7 +62,6 @@ protected:
 	void ProcessCheckForWin();
 	void DrawScore();
 	void DrawLevelCount();
-	void DrawHighScores();
 	void ProcessBarricadeCollision();
 	static std::vector<CBarricade*> InitialiseBarricades(std::vector<CBarricade*> _b);
 

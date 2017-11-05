@@ -23,12 +23,6 @@
 // Local Includes
 #include "entity.h"
 
-// Types
-
-// Constants
-
-// Prototypes
-
 class CEnemy : public CEntity
 {
 public:

@@ -157,7 +157,6 @@
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="framecounter.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="HighScores.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="LevelLogic.cpp" />
     <ClCompile Include="main.cpp" />
@@ -175,7 +174,6 @@
     <ClInclude Include="EEnums.h" />
     <ClInclude Include="framecounter.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="HighScores.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="LevelLogic.h" />
     <ClInclude Include="player.h" />

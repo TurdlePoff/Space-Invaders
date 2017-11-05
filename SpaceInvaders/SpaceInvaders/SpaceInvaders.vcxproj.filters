@@ -40,9 +40,6 @@
     <ClCompile Include="LevelLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HighScores.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Barricade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,9 +88,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EEnums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HighScores.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Barricade.h">

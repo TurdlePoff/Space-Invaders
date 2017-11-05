@@ -13,7 +13,7 @@
 //
 
 // Library Includes
-//#include <vld.h>
+#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -75,16 +75,6 @@ CLevel::~CLevel()
 		delete pEnemy;
 		pEnemy = 0;
 	}
-
-	/*while (m_vecBarricades.size() > 0)
-	{
-		CBarricade* m_pBarricade = m_vecBarricades[m_vecBarricades.size() - 1];
-
-		m_vecBarricades.pop_back();
-
-		delete m_pBarricade;
-		m_pBarricade = 0;
-	}*/
 	
 	delete m_pPlayer;
 	m_pPlayer = 0;
@@ -205,9 +195,11 @@ CLevel::Initialise(int _iWidth, int _iHeight)
 	return (true);
 }
 
-/********
-* InitialiseBarricades:Initialise static barricades
-*********/
+/************
+* InitialiseBarricades: Create static Barricades throughout a game session
+* @return: _b - static barricade vector
+*************/
+
 std::vector<CBarricade*> CLevel::InitialiseBarricades(std::vector<CBarricade*> _b)
 {
 	const int kiNumBarricades = 14;
@@ -546,6 +538,11 @@ CLevel::ProcessBarricadeCollision()
 			}
 		}
 	}
+}
+
+std::vector<CBarricade*>& CLevel::GetBarricades()
+{
+	return m_vecBarricades;
 }
 
 /********

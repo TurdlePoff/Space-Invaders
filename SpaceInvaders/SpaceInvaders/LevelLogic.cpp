@@ -16,30 +16,25 @@
 #include <iostream>
 #include <fstream>
 
-
-
-//std::vector<CBarricade*> CLevelLogic::m_LVLVecBarricades = CLevelLogic::CreateBarricades(m_LVLVecBarricades);
-
 /************
 * CLevelLogic Constructor
 *************/
 CLevelLogic::CLevelLogic()
 //Enemy predefininitions
-: m_fLVLEnemyBulletVelocity(1.0f)
-, m_fLVLEnemyShootingDelay(2.0f)
-, m_iLVLRealEnemyDelay(1.0f)
-, m_fLVLEnemyMoveDelay(1.0f)
-, m_fLVLEnemyShipSpeed(2.0f)
-//Player predefininitions
-, m_fLVLPlayerBulletVelocity(6.0f)
-, m_fLVLPlayerSpeed(4.0f)
-, m_fLVLPlayerInvincibility(false)
-, m_iLVLPlayerScore(0)
-, m_iLVLPlayerLives(3)
-//Misc predefinitions
-, m_iShipRandTime(0)
-, m_iLVLLevelCount(1)
-, hs()
+	: m_fLVLEnemyBulletVelocity(1.0f)
+	, m_fLVLEnemyShootingDelay(2.0f)
+	, m_iLVLRealEnemyDelay(1.0f)
+	, m_fLVLEnemyMoveDelay(1.0f)
+	, m_fLVLEnemyShipSpeed(2.0f)
+	//Player predefininitions
+	, m_fLVLPlayerBulletVelocity(6.0f)
+	, m_fLVLPlayerSpeed(4.0f)
+	, m_fLVLPlayerInvincibility(false)
+	, m_iLVLPlayerScore(0)
+	, m_iLVLPlayerLives(3)
+	//Misc predefinitions
+	, m_iShipRandTime(0)
+	, m_iLVLLevelCount(1)
 {
 	//CreateBarricades();
 }
@@ -49,9 +44,11 @@ CLevelLogic::CLevelLogic()
 *************/
 CLevelLogic::~CLevelLogic()
 {
+	m_vecHScores.clear();
+
 	while (m_LVLVecBarricades.size() > 0)
 	{
-		CBarricade* m_pBarricade = GetLVLBarricades()[m_LVLVecBarricades.size() - 1];
+		CBarricade* m_pBarricade = m_LVLVecBarricades[m_LVLVecBarricades.size() - 1];
 
 		m_LVLVecBarricades.pop_back();
 
@@ -152,15 +149,6 @@ int CLevelLogic::GetLVLPlayerScore()
 	return m_iLVLPlayerScore;
 }
 
-void CLevelLogic::SetLVLHighScoreName(std::string _s)
-{
-	m_sLVLPlayerName = _s;
-}
-
-std::string CLevelLogic::GetLVLHighScoreName()
-{
-	return m_sLVLPlayerName;
-}
 
 /************
 * SetLVLPlayerLives: Sets player lives
@@ -198,16 +186,11 @@ int CLevelLogic::GetLVLLevelCount()
 	return m_iLVLLevelCount;
 }
 
-std::vector<CBarricade*> CLevelLogic::GetLVLBarricades()
-{
-	return m_LVLVecBarricades;
-}
-
 /************
 * HighScores: Displays the highscores onto the screen
 *************/
 void CLevelLogic::DisplayHighScores()
-{	
+{
 
 }
 
@@ -257,7 +240,7 @@ void CLevelLogic::SetLVLEnemyShipSpeed(float _f)
 }
 
 /************
-* GetLVLEnemyShipSpeed: Gets the speed of the enemy ship 
+* GetLVLEnemyShipSpeed: Gets the speed of the enemy ship
 * @return: m_fLVLEnemyShipSpeed - enemy ship speed
 *************/
 float CLevelLogic::GetLVLEnemyShipSpeed()
@@ -301,48 +284,83 @@ float CLevelLogic::GetLVLEnemyShootingDelay()
 	return m_fLVLEnemyShootingDelay;
 }
 
-
-
-void CLevelLogic::CreateBarricades()
+/************
+* SetLVLHighScoreName: Sets the name of the player
+*************/
+void CLevelLogic::SetLVLHighScoreName(std::string _s)
 {
-	const int kiNumBarricades = 14;
-	int kiBarStartX = 200;
-	const int kiBarStartY = 525;
+	m_sLVLPlayerName = _s;
+}
 
-	int iCurrentBarX = kiBarStartX;
-	int iCurrentBarY = kiBarStartY;
-	int kiBarGap = 248;
+/************
+* GetLVLHighScoreName: Gets the name of the player
+* return m_sLVLPlayerName - player name
+*************/
+std::string CLevelLogic::GetLVLHighScoreName()
+{
+	return m_sLVLPlayerName;
+}
 
-	for (int j = 0; j < 4; ++j)
+/************
+* WriteToHighScores: Writes a highscore to the txt file to store scores across games
+*************/
+void CLevelLogic::WriteToHighScores(HScores _newValue)
+{
+	m_vecHScores.push_back(_newValue);
+	std::ofstream myFile;
+	const int kiMaxScores = 3;
+
+	//Write the score file to scores.txt
+	myFile.open("..\\Sprites\\scores.txt");
+	if (myFile.is_open())
 	{
-		for (int i = 1; i <= kiNumBarricades; ++i)
+		for (int i = 0; i < m_vecHScores.size(); ++i)
 		{
-			CBarricade* m_pBarricade = new CBarricade();
-			m_pBarricade->Initialise(static_cast<ESprite>(i));
-
-			//Set up enemy settings
-			if (i == 14)
+			myFile << m_vecHScores[i].name << "=";
+			myFile << m_vecHScores[i].score;
+			if (i != m_vecHScores.size()-1)
 			{
-				iCurrentBarX += 32;
+				myFile << std::endl;
 			}
-			m_pBarricade->SetX(static_cast<float>(iCurrentBarX));
-			m_pBarricade->SetY(static_cast<float>(iCurrentBarY));
-			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
-			iCurrentBarX += static_cast<int>(m_pBarricade->GetWidth());
-
-			m_pBarricade->Process(1); //need due to timer within enemy movement giving a movement delay therefore giving the impression of a spawn delay
-										//m_vecBarricades[i]->GetSpriteInstance();
-			if (iCurrentBarX > kiBarGap) //Set up enemy positions
-			{
-				iCurrentBarX = kiBarStartX;
-				iCurrentBarY += 11;
-			}
-			m_LVLVecBarricades.push_back(m_pBarricade);
-			//m_vecBarricades.push_back(m_pBarricade); //Add barricade to vector
 		}
-		kiBarStartX += 190;
-		iCurrentBarX = kiBarStartX;
-		iCurrentBarY = kiBarStartY;
-		kiBarGap += 190;
+		myFile.close();
 	}
+}
+
+/************
+* ReadHighScores: Reads all highscores and pushes them to the highscore vector
+*************/
+void CLevelLogic::ReadHighScores()
+{
+	m_vecHScores.clear();
+	std::ifstream myFile;
+	myFile.open("..\\Sprites\\scores.txt");
+	std::string strName;
+	std::string strScore;
+	int iScore;
+	if (myFile.is_open())
+	{
+		std::string strLine;
+		while (!myFile.eof())
+		{
+			std::getline(myFile, strLine);
+			size_t equalsPos = strLine.find('=');
+			strName = strLine.substr(0, equalsPos);
+			iScore = atoi((strLine.substr(equalsPos + 1, strLine.length())).c_str());
+			//Each
+			m_vecHScores.push_back({ strName, iScore });
+		}
+		myFile.close();
+	}
+	//Sort highscores from highest to lowest
+	std::sort(m_vecHScores.begin(), m_vecHScores.end(), highScoreFunctor());
+}
+
+/************
+* GetHighScores: gets the highscore vector
+* @return m_vecHScores - vector of highscores
+*************/
+std::vector<HScores>& CLevelLogic::GetHighScores()
+{
+	return m_vecHScores;
 }

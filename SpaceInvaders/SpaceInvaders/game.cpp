@@ -43,6 +43,16 @@ CGame::CGame()
 
 CGame::~CGame()
 {
+	while (m_pLevel->GetBarricades().size() > 0)
+	{
+		CBarricade* pBar = m_pLevel->GetBarricades()[m_pLevel->GetBarricades().size() - 1];
+
+		m_pLevel->GetBarricades().pop_back();
+
+		delete pBar;
+		pBar = 0;
+	}
+
 	delete m_pLevel;
 	m_pLevel = 0;
 
@@ -51,9 +61,6 @@ CGame::~CGame()
 
 	delete m_pMenu;
 	m_pMenu = 0;
-
-	delete m_pHighScoreController;
-	m_pHighScoreController = 0;
 
 	delete m_pMenuNavigator;
 	m_pMenuNavigator = 0;
@@ -116,8 +123,6 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 	m_pLevelComplete->SetX((float)1000 / 2);
 	m_pLevelComplete->SetY((float)750 / 2);
 
-	m_pHighScoreController = new CHighScores();
-
 	m_pLogic = new CLevelLogic();
 	ShowCursor(true);
 
@@ -155,6 +160,12 @@ CGame::Draw()
 			m_pLevelComplete->Draw();
 		}
 	}
+	else if (m_eGameState == EGameState::LOST)
+	{
+		m_pHighScores->Draw();
+		DrawHighScores();
+
+	}
 
     m_pBackBuffer->Present();
 }
@@ -166,7 +177,7 @@ CGame::Draw()
 void
 CGame::Process(float _fDeltaTick)
 {
-    // Process all the game’s logic here.
+	// Process all the game’s logic here.
 	if (m_eGameState == EGameState::MENU) //If the game is in the menu state
 	{
 		m_pMenu->Process(_fDeltaTick);					 // Process the menu screen
@@ -183,7 +194,7 @@ CGame::Process(float _fDeltaTick)
 			}
 			m_pLevel = new CLevel(*m_pLogic);			 //Create new level
 			m_pLevel->Initialise(1000, 800);
-			
+
 		}
 		else if (m_eGameState == EGameState::INSTRUCTIONS)	//If player selects instructions mode
 		{
@@ -192,10 +203,9 @@ CGame::Process(float _fDeltaTick)
 		else if (m_eGameState == EGameState::HIGHSCORES)	//If player selects highscore mode
 		{
 			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
-
 		}
 	}
-	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES) 	//if current gamestate is instructions/highscores
+	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES || m_eGameState == EGameState::LOST) 	//if current gamestate is instructions/highscores
 	{
 		Sleep(200); //Delay button press time
 		if (GetAsyncKeyState(VK_RETURN))
@@ -206,7 +216,7 @@ CGame::Process(float _fDeltaTick)
 	else if (m_eGameState == EGameState::GAME)				//if current gamestate is in game
 	{
 		m_pLevel->Process(_fDeltaTick);						//Process the current level
-		
+
 		if (GetLevelComplete())								//Check if the level is complete
 		{
 			m_pLevelComplete->Process(_fDeltaTick);
@@ -217,17 +227,17 @@ CGame::Process(float _fDeltaTick)
 		}
 
 		//Set a delay before the next level starts
-		double elapsed_secs = double(m_cEndLevelBreak - m_cBeginLevelBreak) / CLOCKS_PER_SEC; 
+		double elapsed_secs = double(m_cEndLevelBreak - m_cBeginLevelBreak) / CLOCKS_PER_SEC;
 
 		if (elapsed_secs > 3.0f && n_bReadyForNextLevel)
 		{
 			SetNextLevel();
 		}
 		m_cEndLevelBreak = clock();
-	}
-	else if (m_eGameState == EGameState::LOST)
-	{
-		m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
+		if (m_eGameState == EGameState::LOST)
+		{
+			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
+		}
 	}
 }
 
@@ -340,8 +350,6 @@ void
 CGame::GameOverLost()
 {
 
-	m_pHighScoreController->ReadHighScores();
-	m_pHighScoreController->WriteToHighScores({ m_pLogic->GetLVLHighScoreName(), m_pLogic->GetLVLPlayerScore() });
 	//MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 	DrawHighScores();
 	SetGameState(EGameState::LOST);
@@ -429,19 +437,25 @@ CGame::DrawHighScores()
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(27, 233, 56));
 
-	std::string _SCORES = " ";
+	std::string highScoreNames = " ";
+	std::string highScoreValues = " ";
+
 	int height = 300;
-	m_pHighScoreController->ReadHighScores();
-	for (unsigned int i = 0; i < m_pHighScoreController->GetHighScores().size(); ++i)
+
+	m_pLogic->ReadHighScores();
+	for (unsigned int i = 0; i < m_pLogic->GetHighScores().size(); ++i)
 	{
-		_SCORES = "";
-		_SCORES += m_pHighScoreController->GetHighScores()[i].name;
-		_SCORES += std::to_string(m_pHighScoreController->GetHighScores()[i].score);//m_pPlayer->GetPlayerScore());
-		TextOutA(hdc, 600, height, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
+		highScoreNames = std::to_string(i + 1) + ") ";
+		highScoreNames += m_pLogic->GetHighScores()[i].name;
+		TextOutA(hdc, 400, height, highScoreNames.c_str(), static_cast<int>(highScoreNames.size()));
 		height += 20;
 	}
-
-	SetTextColor(hdc, RGB(27, 233, 56));
-	//DrawText(hdc, _SCORES.c_str(), static_cast<int>(_SCORES.size()), &rc, DT_LEFT | DT_EXTERNALLEADING | DT_WORDBREAK);
-	TextOutA(hdc, 600, 500, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
+	height = 300;
+	for (unsigned int j = 0; j < m_pLogic->GetHighScores().size(); ++j)
+	{
+		highScoreValues = "";
+		highScoreValues += std::to_string(m_pLogic->GetHighScores()[j].score);
+		TextOutA(hdc, 500, height, highScoreValues.c_str(), static_cast<int>(highScoreValues.size()));
+		height += 20;
+	}
 }

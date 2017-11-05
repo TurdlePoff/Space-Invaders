@@ -43,7 +43,10 @@ CEntity::~CEntity()
 bool
 CEntity::Initialise(ESprite _eType)
 {
-	SetSpriteType(_eType);
+
+	m_eSpriteType = _eType;
+	m_pSprite = new CSprite(m_eSpriteType);
+	//SetSpriteType(_eType);
     VALIDATE(m_pSprite->Initialise());
 
     return (true);
@@ -113,8 +116,6 @@ ESprite CEntity::GetSpriteType()
 *************/
 void CEntity::SetSpriteType(ESprite _e)
 {
-	m_eSpriteType = _e;
-	m_pSprite = new CSprite(m_eSpriteType);
 }
 
 /************

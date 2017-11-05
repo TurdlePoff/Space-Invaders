@@ -87,7 +87,6 @@ protected:
 	CBackGround* m_pInstructions;
 	CBackGround* m_pHighScores;
 	CBackGround* m_pLevelComplete;
-	CHighScores* m_pHighScoreController;
 
 	CPlayer* m_pMenuNavigator;
 	CBackBuffer* m_pBackBuffer;
