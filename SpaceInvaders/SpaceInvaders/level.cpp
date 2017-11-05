@@ -13,7 +13,6 @@
 //
 
 // Library Includes
-//#include <vld.h>
 
 // Local Includes
 #include "game.h"
@@ -253,15 +252,10 @@ CLevel::Draw()
 		m_vecEnemies[i]->Draw();
 	}
 
-	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
+	for (unsigned int i = 0; i < m_vecBarricades.size(); ++i) //Draw all barricades
 	{
 		m_vecBarricades[i]->Draw();
 	}
-
-	/*for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
-	{
-		m_vecBarricades[i]->Draw();
-	}*/
 
 	for (unsigned int j = 0; j < m_vecPlayerBullets.size(); ++j) //Draw all player bullets
 	{
@@ -303,11 +297,6 @@ CLevel::Process(float _fDeltaTick)
 		m_vecBarricades[i]->Process(_fDeltaTick);
 	}
 
-	/*for (unsigned int i = 0; i < m_vecBarricades.size(); ++i)
-	{
-		m_pLevelLogic->GetLVLBarricades()[i]->Process(_fDeltaTick);
-	}
-*/
 	if (GetAsyncKeyState(VK_SPACE) && !m_pPlayer->GetIsShooting()) //Call shooting for player
 	{
 		FireBullet(true, m_pLevelLogic->GetLVLPlayerBulletSpeed());

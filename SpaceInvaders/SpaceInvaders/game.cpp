@@ -185,15 +185,7 @@ CGame::Process(float _fDeltaTick)
 		m_pMenuNavigator->SwitchMenuItem(m_eGameState);  // Allow player to navigate through options.
 		if (m_eGameState == EGameState::GAME)			 //If player selects game mode
 		{
-			while (m_pLevel->GetBarricades().size() > 0)
-			{
-				CBarricade* pBar = m_pLevel->GetBarricades()[m_pLevel->GetBarricades().size() - 1];
-
-				m_pLevel->GetBarricades().pop_back();
-
-				delete pBar;
-				pBar = 0;
-			}
+			
 
 			if (m_pLogic != nullptr)					 //If level logic exists, reset and initialise as player is starting a new game
 			{
@@ -246,6 +238,14 @@ CGame::Process(float _fDeltaTick)
 		m_cEndLevelBreak = clock();
 		if (m_eGameState == EGameState::LOST)
 		{
+			while (m_pLevel->GetBarricades().size() > 0)
+			{
+
+				m_pLevel->GetBarricades().pop_back();
+
+				delete pBar;
+				pBar = 0;
+			}
 			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
 		}
 	}
