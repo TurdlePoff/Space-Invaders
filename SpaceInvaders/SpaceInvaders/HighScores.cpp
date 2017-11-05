@@ -17,35 +17,39 @@
 
 CHighScores::CHighScores()
 {
-	for (int i = 0; i < 5; i++)
-	{
-		m_vTop5Scores[i] = {" ", 0};
-	}
 }
 
 CHighScores::~CHighScores()
 {
 }
 
-void CHighScores::SetScore(std::string pName, int pScore)
+void CHighScores::WriteToHighScores(HScores _newValue)
 {
-	/*std::sort(customers.begin(), customers.end(), &scoreSorter);
-	if (m_vTop5Scores[4].score < pScore)
-	{
-		m_vTop5Scores[4] = { pName, pScore };
-	}
-	std::sort(m_vTop5Scores, m_vTop5Scores + 5);*/
-}
+	m_vecHScores.push_back(_newValue);
+	std::ofstream myFile;
+	const int kiMaxScores = 3;
 
-HScores& CHighScores::GetScores()
-{
-	return *m_vTop5Scores;
+	//Write the score file to scores.txt
+	myFile.open("..\\Sprites\\scores.txt");
+	if (myFile.is_open())
+	{
+		for (int i = 0; i < m_vecHScores.size(); ++i)
+		{
+			myFile << m_vecHScores[i].name << "=";
+			myFile << m_vecHScores[i].score << std::endl;
+		}
+		myFile.close();
+	}
 }
 
 void CHighScores::ReadHighScores()
 {
+	m_vecHScores.clear();
 	std::ifstream myFile;
-	myFile.open("scores.txt");
+	myFile.open("..\\Sprites\\scores.txt");
+	std::string strName;
+	std::string strScore;
+	int iScore;
 	if (myFile.is_open())
 	{
 		std::string strLine;
@@ -53,17 +57,16 @@ void CHighScores::ReadHighScores()
 		{
 			std::getline(myFile, strLine);
 			size_t equalsPos = strLine.find('=');
-			std::string strName = strLine.substr(0, equalsPos);
-			std::string strScore = strLine.substr(equalsPos + 1,
-				strLine.length());
-			int iScore = atoi(strScore.c_str());
-			//Then put the score in the highscore table...
+			strName = strLine.substr(0, equalsPos);
+			iScore = atoi((strLine.substr(equalsPos + 1, strLine.length())).c_str());
+			//Each
+			m_vecHScores.push_back({ strName, iScore });
 		}
 		myFile.close();
 	}
 }
 
-bool CHighScores::scoreSorter(HScores const & lhs, HScores const & rhs)
+std::vector<HScores>& CHighScores::GetHighScores()
 {
-	return lhs.score < rhs.score;
+	return m_vecHScores;
 }

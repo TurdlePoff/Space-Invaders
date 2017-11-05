@@ -152,30 +152,14 @@ int CLevelLogic::GetLVLPlayerScore()
 	return m_iLVLPlayerScore;
 }
 
-//void CLevelLogic::AddLVLHighScoreValue(int _i)
-//{
-//	//ToString(_i);
-///*
-//
-//	std::ifstream myFile("..\\Sprites\\scores.txt");
-//	if (myFile.is_open())
-//	{
-//		while (!myFile.eof())
-//		{
-//			std::getline(myFile, m_sHighScoreText);
-//
-//		}
-//	}*/
-//}
-
 void CLevelLogic::SetLVLHighScoreName(std::string _s)
 {
-	hs.SetScore(_s, GetLVLPlayerScore());
+	m_sLVLPlayerName = _s;
 }
 
-std::string CLevelLogic::GetLVLHighScores()
+std::string CLevelLogic::GetLVLHighScoreName()
 {
-	return m_sHighScoreText;
+	return m_sLVLPlayerName;
 }
 
 /************

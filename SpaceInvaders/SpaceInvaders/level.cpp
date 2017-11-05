@@ -854,7 +854,6 @@ CLevel::DrawScore()
 		m_strPlayerLives += "                                                                     YOU ARE CURRENTLY INVINCIBLE";
 	}
 	TextOutA(hdc, 20, m_iHeight - 100, m_strPlayerLives.c_str(), static_cast<int>(m_strPlayerLives.size()));
-
 }
 
 /********

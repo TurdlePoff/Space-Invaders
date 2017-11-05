@@ -52,6 +52,9 @@ CGame::~CGame()
 	delete m_pMenu;
 	m_pMenu = 0;
 
+	delete m_pHighScoreController;
+	m_pHighScoreController = 0;
+
 	delete m_pMenuNavigator;
 	m_pMenuNavigator = 0;
 
@@ -112,6 +115,8 @@ CGame::Initialise(HINSTANCE _hInstance, HWND _hWnd, int _iWidth, int _iHeight)
 	VALIDATE(m_pLevelComplete->Initialise(ESprite::LVLCOMP));
 	m_pLevelComplete->SetX((float)1000 / 2);
 	m_pLevelComplete->SetY((float)750 / 2);
+
+	m_pHighScoreController = new CHighScores();
 
 	m_pLogic = new CLevelLogic();
 	ShowCursor(true);
@@ -185,7 +190,7 @@ CGame::Process(float _fDeltaTick)
 		else if (m_eGameState == EGameState::HIGHSCORES)	//If player selects highscore mode
 		{
 			m_pHighScores->Process(_fDeltaTick);			//Display list of highscores
-			//TODO: Display high scores here
+			DrawHighScores();
 		}
 	}
 	else if (m_eGameState == EGameState::INSTRUCTIONS || m_eGameState == EGameState::HIGHSCORES) 	//if current gamestate is instructions/highscores
@@ -328,9 +333,10 @@ CGame::GameOverWon()
 void
 CGame::GameOverLost()
 {
+	m_pHighScoreController->WriteToHighScores({ m_pLogic->GetLVLHighScoreName(), m_pLogic->GetLVLPlayerScore() });
 	MessageBox(m_hMainWindow, L"Loser!", L"Game Over", MB_OK);
 
-	SetGameState(EGameState::MENU);
+	SetGameState(EGameState::HIGHSCORES);
 }
 
 
@@ -397,4 +403,28 @@ CGame::SetNextLevel()
 		m_pLogic->SetLVLLevelCount(m_pLogic->GetLVLLevelCount() + 1);		//Increase level count
 		n_bReadyForNextLevel = false;
 	}
+}
+
+
+/********
+* DrawLevelCount: Draw the current games level count
+*********/
+void
+CGame::DrawHighScores()
+{
+	HDC hdc = CGame::GetInstance().GetBackBuffer()->GetBFDC();
+
+	SetBkMode(hdc, TRANSPARENT);
+	SetTextColor(hdc, RGB(27, 233, 56));
+	std::string _SCORES = " ";
+	for (unsigned int i = 0; i <m_pHighScoreController->GetHighScores().size(); ++i)
+	{
+		_SCORES += m_pHighScoreController->GetHighScores()[i].name;
+		_SCORES += m_pHighScoreController->GetHighScores()[i].score;//m_pPlayer->GetPlayerScore());
+		_SCORES += "\n";
+	}
+
+
+	SetTextColor(hdc, RGB(27, 233, 56));
+	TextOutA(hdc, 500, 400, _SCORES.c_str(), static_cast<int>(_SCORES.size()));
 }

@@ -51,8 +51,6 @@ public:
 	void GameOverWon();
 	void GameOverLost();
 
-	void CreateBarricades();
-
 	//static elements
 	static void SetGameState(EGameState _state);
 	static EGameState GetGameState();
@@ -66,8 +64,9 @@ public:
 	static void SetLevelComplete(bool _b);
 	static bool GetLevelComplete();
 
+	void DrawHighScores();
+
 	void SetNextLevel();
-	bool n_bReadyForNextLevel;
 
 	CBackBuffer* GetBackBuffer();
 	HINSTANCE GetAppInstance();
@@ -88,12 +87,15 @@ protected:
 	CBackGround* m_pInstructions;
 	CBackGround* m_pHighScores;
 	CBackGround* m_pLevelComplete;
+	CHighScores* m_pHighScoreController;
 
 	CPlayer* m_pMenuNavigator;
 	CBackBuffer* m_pBackBuffer;
 
 	clock_t m_cBeginLevelBreak;
 	clock_t m_cEndLevelBreak;
+
+	bool n_bReadyForNextLevel;
 
 	//Application data
 	HINSTANCE m_hApplicationInstance;

@@ -14,6 +14,8 @@
 //
 #include <string>
 #include <fstream>
+#include <vector>
+
 struct HScores
 {
 	std::string name;
@@ -27,10 +29,10 @@ public:
 	CHighScores();
 	~CHighScores();
 
-	void SetScore(std::string pName, int pScore);
-	HScores& GetScores();
+	void WriteToHighScores(HScores _newValue);
 	void ReadHighScores();
-	bool scoreSorter(HScores const& lhs, HScores const& rhs);
+	std::vector<HScores>& GetHighScores();
+
 private:
-	HScores m_vTop5Scores[5];
+	std::vector<HScores> m_vecHScores;
 };

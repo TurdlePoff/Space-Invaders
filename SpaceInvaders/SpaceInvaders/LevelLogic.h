@@ -68,8 +68,8 @@ public:
 
 	void DisplayHighScores();
 	void SetLVLHighScoreName(std::string _s);
+	std::string GetLVLHighScoreName();
 
-	std::string GetLVLHighScores();
 	std::vector<CBarricade*> m_LVLVecBarricades;
 
 protected:
@@ -88,10 +88,10 @@ protected:
 	bool m_fLVLPlayerInvincibility;
 
 	//Level UI variables
+	std::string m_sLVLPlayerName;
 	int m_iLVLPlayerScore;
 	int m_iLVLPlayerLives;
 	int m_iLVLLevelCount;
-	std::string m_sHighScoreText;
 
 	CHighScores hs;
 

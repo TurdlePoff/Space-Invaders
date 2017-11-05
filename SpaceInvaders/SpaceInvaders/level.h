@@ -30,6 +30,7 @@ class CFPSCounter;
 class CBackGround;
 class CLevelLogic;
 class CBarricade;
+class CHighScores;
 
 class CLevel
 {
