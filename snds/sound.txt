@@ -1,0 +1,5 @@
+					
+					#include <Windows.h>
+
+					PlaySound(TEXT("shot.wav"), NULL, SND_ASYNC);
+Winmm.lib
